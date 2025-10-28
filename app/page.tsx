@@ -5,6 +5,8 @@ import { Product3DShowcase } from "@/components/product-3d-showcase"
 import { BestSellers } from "@/components/best-sellers"
 import { BrandStoryPreview } from "@/components/brand-story-preview"
 import { SocialMediaShowcase } from "@/components/social-media-showcase"
+import { PRArticles } from "@/components/pr-articles"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
@@ -16,6 +18,8 @@ export default function Home() {
       <BestSellers />
       <BrandStoryPreview />
       <SocialMediaShowcase />
+      <PRArticles />
+      <Footer />
     </div>
   )
 }

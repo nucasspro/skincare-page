@@ -235,3 +235,5 @@ export function Navigation() {
     </header>
   )
 }
+
+export default Navigation
