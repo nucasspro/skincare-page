@@ -3,10 +3,11 @@ import { ProductImageGallery } from "@/components/product-image-gallery"
 import { ProductInfo } from "@/components/product-info"
 import { FeatureHighlight } from "@/components/feature-highlight"
 import { ProductDetailsAccordion } from "@/components/product-details-accordion"
-import { BeforeAfterReviews } from "@/components/before-after-reviews"
+import { RealResults } from "@/components/real-results"
 import { SimilarProducts } from "@/components/similar-products"
 import { ProductQA } from "@/components/product-qa"
 import { RecentlyViewed } from "@/components/recently-viewed"
+import { Footer } from "@/components/footer"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   return (
@@ -16,9 +17,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <main className="pt-20">
         {/* Product Gallery & Info Section */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid lg:grid-cols-2 gap-12">
-            <ProductImageGallery />
-            <ProductInfo />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="lg:col-span-1">
+              <ProductImageGallery />
+            </div>
+            <div className="lg:col-span-1">
+              <ProductInfo />
+            </div>
           </div>
         </section>
 
@@ -30,8 +35,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <ProductDetailsAccordion />
         </section>
 
-        {/* Before/After Reviews */}
-        <BeforeAfterReviews />
+        <RealResults productId={params.id} />
 
         {/* Similar Products */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
@@ -48,6 +52,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <RecentlyViewed />
         </section>
       </main>
+
+      <Footer />
     </div>
   )
 }
