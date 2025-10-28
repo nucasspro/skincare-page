@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X, Search, ShoppingCart, User, ChevronDown } from "lucide-react"
+import { Menu, X, Search, ShoppingCart, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useI18n } from "@/lib/i18n-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
@@ -12,7 +11,6 @@ export function Navigation() {
   const { t } = useI18n()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isProductsOpen, setIsProductsOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,27 +66,13 @@ export function Navigation() {
                 {t.nav.home}
               </Link>
 
-              {/* Products Dropdown */}
-              <DropdownMenu open={isProductsOpen} onOpenChange={setIsProductsOpen}>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors outline-none">
-                  {t.nav.products}
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform duration-200 ${isProductsOpen ? "rotate-180" : ""}`}
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white/95 backdrop-blur-md border-gray-200">
-                  <DropdownMenuItem asChild>
-                    <Link href="/products/category" className="cursor-pointer text-gray-700 hover:text-gray-900">
-                      {t.nav.byCategory}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/products/needs" className="cursor-pointer text-gray-700 hover:text-gray-900">
-                      {t.nav.byNeeds}
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Products Link */}
+              <Link
+                href="/products"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                {t.nav.products}
+              </Link>
 
               <Link
                 href="/brand-story"
@@ -180,38 +164,14 @@ export function Navigation() {
               {t.nav.home}
             </Link>
 
-            {/* Mobile Products Submenu */}
-            <div>
-              <button
-                onClick={() => setIsProductsOpen(!isProductsOpen)}
-                className="flex items-center justify-between w-full py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                {t.nav.products}
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-200 ${isProductsOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  isProductsOpen ? "max-h-32 mt-2" : "max-h-0"
-                }`}
-              >
-                <Link
-                  href="/products/category"
-                  className="block py-2 pl-4 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t.nav.byCategory}
-                </Link>
-                <Link
-                  href="/products/needs"
-                  className="block py-2 pl-4 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t.nav.byNeeds}
-                </Link>
-              </div>
-            </div>
+            {/* Products Link */}
+            <Link
+              href="/products"
+              className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t.nav.products}
+            </Link>
 
             <Link
               href="/brand-story"
