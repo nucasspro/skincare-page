@@ -80,10 +80,6 @@ export function Navigation() {
               >
                 {t.nav.brandStory}
               </Link>
-
-              <Link href="/media" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                {t.nav.media}
-              </Link>
             </div>
 
             {/* Icons */}
@@ -179,14 +175,6 @@ export function Navigation() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t.nav.brandStory}
-            </Link>
-
-            <Link
-              href="/media"
-              className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t.nav.media}
             </Link>
 
             <Link
