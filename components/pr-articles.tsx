@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { ExternalLink } from "lucide-react"
+import { useI18n } from "@/lib/i18n-context"
 
 interface Article {
   id: string
@@ -50,16 +51,15 @@ const articles: Article[] = [
 
 export function PRArticles() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const { t } = useI18n()
 
   return (
     <section className="py-24 px-4 bg-stone-50">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl text-stone-900 mb-4 text-balance">Featured In</h2>
-          <p className="text-stone-600 text-lg max-w-2xl mx-auto text-pretty">
-            Discover what beauty editors and skincare experts are saying about our products
-          </p>
+          <h2 className="font-serif text-4xl md:text-5xl text-stone-900 mb-4 text-balance">{t.prArticles.title}</h2>
+          <p className="text-stone-600 text-lg max-w-2xl mx-auto text-pretty">{t.prArticles.subtitle}</p>
         </div>
 
         {/* Articles Grid */}
@@ -92,7 +92,7 @@ export function PRArticles() {
                     }`}
                   >
                     <div className="flex items-center gap-2 text-white">
-                      <span className="text-sm font-medium">Read Article</span>
+                      <span className="text-sm font-medium">{t.prArticles.readArticle}</span>
                       <ExternalLink className="w-4 h-4" />
                     </div>
                   </div>

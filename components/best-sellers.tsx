@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
+import { useI18n } from "@/lib/i18n-context"
 
 interface Product {
   id: string
@@ -14,53 +15,52 @@ interface Product {
   hoverImage: string
 }
 
-const products: Product[] = [
-  {
-    id: "1",
-    name: "Hydrating Essence",
-    tagline: "Deep moisture for radiant skin",
-    price: 68,
-    image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-    hoverImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-  },
-  {
-    id: "2",
-    name: "Vitamin C Serum",
-    tagline: "Brightening & anti-aging",
-    price: 89,
-    image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-  },
-  {
-    id: "3",
-    name: "Ceramide Cream",
-    tagline: "Barrier repair & protection",
-    price: 75,
-    image: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-    hoverImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-  },
-  {
-    id: "4",
-    name: "Gentle Cleanser",
-    tagline: "pH-balanced daily cleanse",
-    price: 42,
-    image: "/luxury-facial-cleanser-bottle-minimal-white-backgr.jpg",
-    hoverImage: "/luxury-facial-cleanser-bottle-product-shot-cream-b.jpg",
-  },
-]
-
 export function BestSellers() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const { t } = useI18n()
+
+  const products: Product[] = [
+    {
+      id: "1",
+      name: t.bestSellers.products.essence.name,
+      tagline: t.bestSellers.products.essence.tagline,
+      price: 68,
+      image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
+      hoverImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
+    },
+    {
+      id: "2",
+      name: t.bestSellers.products.serum.name,
+      tagline: t.bestSellers.products.serum.tagline,
+      price: 89,
+      image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
+      hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
+    },
+    {
+      id: "3",
+      name: t.bestSellers.products.cream.name,
+      tagline: t.bestSellers.products.cream.tagline,
+      price: 75,
+      image: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
+      hoverImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
+    },
+    {
+      id: "4",
+      name: t.bestSellers.products.cleanser.name,
+      tagline: t.bestSellers.products.cleanser.tagline,
+      price: 42,
+      image: "/luxury-facial-cleanser-bottle-minimal-white-backgr.jpg",
+      hoverImage: "/luxury-facial-cleanser-bottle-product-shot-cream-b.jpg",
+    },
+  ]
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">Best Sellers</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our most-loved products, trusted by thousands for visible results
-          </p>
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.bestSellers.title}</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.bestSellers.subtitle}</p>
         </div>
 
         {/* Product Grid */}
@@ -100,7 +100,7 @@ export function BestSellers() {
                       className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
                     >
                       <ShoppingCart className="w-4 h-4" />
-                      Add to Cart
+                      {t.bestSellers.addToCart}
                     </button>
                   </div>
                 </div>

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { X, Instagram, Facebook, Youtube } from "lucide-react"
 import Image from "next/image"
+import { useI18n } from "@/lib/i18n-context"
 
 // TikTok icon component (not in lucide-react)
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -79,6 +80,7 @@ const socialLinks = [
 
 export function SocialMediaShowcase() {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null)
+  const { t } = useI18n()
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
@@ -98,10 +100,8 @@ export function SocialMediaShowcase() {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">Join Our Community</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Follow us for skincare tips, tutorials, and behind-the-scenes content
-          </p>
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.social.title}</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.social.subtitle}</p>
         </div>
 
         {/* Video Grid */}
@@ -145,7 +145,7 @@ export function SocialMediaShowcase() {
 
         {/* Social Media Links */}
         <div className="flex items-center justify-center gap-8">
-          <p className="text-sm text-gray-600 font-medium">Follow us:</p>
+          <p className="text-sm text-gray-600 font-medium">{t.social.followUs}:</p>
           <div className="flex gap-6">
             {socialLinks.map((social) => {
               const Icon = social.icon
@@ -198,7 +198,9 @@ export function SocialMediaShowcase() {
 
               <div className="space-y-4">
                 <h3 className="text-2xl font-medium text-gray-900">{selectedVideo.title}</h3>
-                <p className="text-gray-600">Watch this video on {selectedVideo.platform}</p>
+                <p className="text-gray-600">
+                  {t.social.watchOn} {selectedVideo.platform}
+                </p>
                 <a
                   href={selectedVideo.videoUrl}
                   target="_blank"
@@ -206,7 +208,9 @@ export function SocialMediaShowcase() {
                   className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
                 >
                   {getPlatformIcon(selectedVideo.platform)}
-                  <span>Watch on {selectedVideo.platform}</span>
+                  <span>
+                    {t.social.watchOn} {selectedVideo.platform}
+                  </span>
                 </a>
               </div>
             </div>

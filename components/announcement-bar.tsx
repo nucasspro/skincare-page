@@ -2,18 +2,17 @@
 
 import { X } from "lucide-react"
 import { useState } from "react"
+import { useI18n } from "@/lib/i18n-context"
 
 export function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(true)
+  const { t } = useI18n()
 
   if (!isVisible) return null
 
   return (
     <div className="relative bg-stone-800 text-white py-2.5 px-4 text-center text-sm">
-      <p className="font-light tracking-wide">
-        Free shipping on orders over <span className="font-medium">$50</span> • Use code{" "}
-        <span className="font-medium">GLOW20</span> for 20% off
-      </p>
+      <p className="font-light tracking-wide">{t.announcement.freeShipping}</p>
       <button
         onClick={() => setIsVisible(false)}
         className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors"

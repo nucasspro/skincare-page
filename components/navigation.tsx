@@ -5,8 +5,11 @@ import Link from "next/link"
 import { Menu, X, Search, ShoppingCart, User, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useI18n } from "@/lib/i18n-context"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 export function Navigation() {
+  const { t } = useI18n()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProductsOpen, setIsProductsOpen] = useState(false)
@@ -62,13 +65,13 @@ export function Navigation() {
           <div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:gap-8">
             <div className="flex items-center gap-8">
               <Link href="/" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                Home
+                {t.nav.home}
               </Link>
 
               {/* Products Dropdown */}
               <DropdownMenu open={isProductsOpen} onOpenChange={setIsProductsOpen}>
                 <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors outline-none">
-                  Products
+                  {t.nav.products}
                   <ChevronDown
                     className={`h-4 w-4 transition-transform duration-200 ${isProductsOpen ? "rotate-180" : ""}`}
                   />
@@ -76,12 +79,12 @@ export function Navigation() {
                 <DropdownMenuContent align="start" className="w-48 bg-white/95 backdrop-blur-md border-gray-200">
                   <DropdownMenuItem asChild>
                     <Link href="/products/category" className="cursor-pointer text-gray-700 hover:text-gray-900">
-                      By Category
+                      {t.nav.byCategory}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/products/needs" className="cursor-pointer text-gray-700 hover:text-gray-900">
-                      By Needs
+                      {t.nav.byNeeds}
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -91,21 +94,23 @@ export function Navigation() {
                 href="/brand-story"
                 className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
               >
-                Brand Story
+                {t.nav.brandStory}
               </Link>
 
               <Link href="/media" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                Media
+                {t.nav.media}
               </Link>
             </div>
 
             {/* Icons */}
             <div className="flex items-center gap-4 ml-8 pl-8 border-l border-gray-200">
+              <LanguageSwitcher />
+
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-                aria-label="Search"
+                aria-label={t.nav.search}
               >
                 <Search className="h-5 w-5" />
               </Button>
@@ -114,7 +119,7 @@ export function Navigation() {
                 variant="ghost"
                 size="icon"
                 className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 relative"
-                aria-label="Shopping cart"
+                aria-label={t.nav.cart}
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
@@ -126,7 +131,7 @@ export function Navigation() {
                 variant="ghost"
                 size="icon"
                 className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-                aria-label="User account"
+                aria-label={t.nav.account}
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -135,11 +140,13 @@ export function Navigation() {
 
           {/* Mobile Icons - Right */}
           <div className="flex md:hidden items-center gap-2">
+            <LanguageSwitcher />
+
             <Button
               variant="ghost"
               size="icon"
               className="h-9 w-9 text-gray-700 hover:text-gray-900"
-              aria-label="Search"
+              aria-label={t.nav.search}
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -148,7 +155,7 @@ export function Navigation() {
               variant="ghost"
               size="icon"
               className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
-              aria-label="Shopping cart"
+              aria-label={t.nav.cart}
             >
               <ShoppingCart className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
@@ -170,7 +177,7 @@ export function Navigation() {
               className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Home
+              {t.nav.home}
             </Link>
 
             {/* Mobile Products Submenu */}
@@ -179,7 +186,7 @@ export function Navigation() {
                 onClick={() => setIsProductsOpen(!isProductsOpen)}
                 className="flex items-center justify-between w-full py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
               >
-                Products
+                {t.nav.products}
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${isProductsOpen ? "rotate-180" : ""}`}
                 />
@@ -194,14 +201,14 @@ export function Navigation() {
                   className="block py-2 pl-4 text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  By Category
+                  {t.nav.byCategory}
                 </Link>
                 <Link
                   href="/products/needs"
                   className="block py-2 pl-4 text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  By Needs
+                  {t.nav.byNeeds}
                 </Link>
               </div>
             </div>
@@ -211,7 +218,7 @@ export function Navigation() {
               className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Brand Story
+              {t.nav.brandStory}
             </Link>
 
             <Link
@@ -219,7 +226,7 @@ export function Navigation() {
               className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Media
+              {t.nav.media}
             </Link>
 
             <Link
@@ -227,7 +234,7 @@ export function Navigation() {
               className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors border-t border-gray-200 pt-4 mt-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              My Account
+              {t.nav.myAccount}
             </Link>
           </div>
         </div>

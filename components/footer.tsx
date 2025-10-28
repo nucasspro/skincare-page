@@ -7,10 +7,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Instagram, Facebook, Youtube } from "lucide-react"
+import { useI18n } from "@/lib/i18n-context"
 
 export function Footer() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const { t } = useI18n()
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,21 +31,19 @@ export function Footer() {
         {/* Newsletter Section */}
         <div className="mb-12 pb-12 border-b border-stone-700">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-light mb-3 text-balance">Join Our Community</h3>
-            <p className="text-stone-400 mb-6 text-pretty">
-              Subscribe to receive exclusive offers, skincare tips, and early access to new products.
-            </p>
+            <h3 className="text-2xl font-light mb-3 text-balance">{t.footer.newsletter.title}</h3>
+            <p className="text-stone-400 mb-6 text-pretty">{t.footer.newsletter.description}</p>
             <form onSubmit={handleSubscribe} className="flex gap-3 max-w-md mx-auto">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t.footer.newsletter.placeholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="bg-stone-800 border-stone-700 text-stone-100 placeholder:text-stone-500 focus:border-stone-500"
               />
               <Button type="submit" className="bg-stone-100 text-stone-900 hover:bg-stone-200 whitespace-nowrap">
-                {isSubscribed ? "Subscribed!" : "Subscribe"}
+                {isSubscribed ? "Subscribed!" : t.footer.newsletter.button}
               </Button>
             </form>
           </div>
@@ -53,21 +53,21 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Column 1: About */}
           <div>
-            <h4 className="text-lg font-medium mb-4">About Us</h4>
+            <h4 className="text-lg font-medium mb-4">{t.footer.about.title}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/brand-story" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Our Story
+                  {t.brandStory.title}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  About Us
+                  {t.footer.about.aboutUs}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Contact
+                  {t.footer.about.contact}
                 </Link>
               </li>
               <li>
@@ -80,21 +80,21 @@ export function Footer() {
 
           {/* Column 2: Customer Service */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Customer Service</h4>
+            <h4 className="text-lg font-medium mb-4">{t.footer.customerService.title}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/faq" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  FAQs
+                  {t.footer.customerService.faqs}
                 </Link>
               </li>
               <li>
                 <Link href="/shipping" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Shipping & Returns
+                  {t.footer.about.shippingReturns}
                 </Link>
               </li>
               <li>
                 <Link href="/track-order" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Track Order
+                  {t.footer.customerService.trackOrder}
                 </Link>
               </li>
               <li>
@@ -107,31 +107,31 @@ export function Footer() {
 
           {/* Column 3: Product Categories */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Shop</h4>
+            <h4 className="text-lg font-medium mb-4">{t.footer.shop.title}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/products/cleansers" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Cleansers
+                  {t.footer.shop.cleansers}
                 </Link>
               </li>
               <li>
                 <Link href="/products/serums" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Serums & Essences
+                  {t.footer.shop.serums}
                 </Link>
               </li>
               <li>
                 <Link href="/products/moisturizers" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Moisturizers
+                  {t.footer.shop.moisturizers}
                 </Link>
               </li>
               <li>
                 <Link href="/products/sunscreen" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Sun Protection
+                  {t.footer.shop.suncare}
                 </Link>
               </li>
               <li>
                 <Link href="/products/masks" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Masks & Treatments
+                  {t.footer.shop.masks}
                 </Link>
               </li>
             </ul>
@@ -139,7 +139,7 @@ export function Footer() {
 
           {/* Column 4: Connect */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Connect With Us</h4>
+            <h4 className="text-lg font-medium mb-4">{t.footer.connect.title}</h4>
             <div className="flex gap-4 mb-6">
               <a
                 href="https://instagram.com"
@@ -183,7 +183,7 @@ export function Footer() {
 
             {/* Payment Methods */}
             <div>
-              <p className="text-sm text-stone-400 mb-3">We Accept</p>
+              <p className="text-sm text-stone-400 mb-3">{t.footer.payment.title}</p>
               <div className="flex gap-2 flex-wrap">
                 <div className="bg-stone-800 px-3 py-2 rounded text-xs font-medium">VISA</div>
                 <div className="bg-stone-800 px-3 py-2 rounded text-xs font-medium">MC</div>
@@ -196,13 +196,13 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-stone-700 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-stone-400 text-sm">© {new Date().getFullYear()} Premium Skincare. All rights reserved.</p>
+          <p className="text-stone-400 text-sm">{t.footer.copyright}</p>
           <div className="flex gap-6 text-sm">
             <Link href="/privacy" className="text-stone-400 hover:text-stone-100 transition-colors">
-              Privacy Policy
+              {t.footer.privacy}
             </Link>
             <Link href="/terms" className="text-stone-400 hover:text-stone-100 transition-colors">
-              Terms of Service
+              {t.footer.terms}
             </Link>
             <Link href="/accessibility" className="text-stone-400 hover:text-stone-100 transition-colors">
               Accessibility

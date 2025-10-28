@@ -4,10 +4,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { useI18n } from "@/lib/i18n-context"
 
 export function BrandStoryPreview() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useI18n()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,36 +53,26 @@ export function BrandStoryPreview() {
             }`}
           >
             <div className="space-y-4">
-              <p className="text-sm font-medium text-stone-600 tracking-wider uppercase">Our Story</p>
-              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">
-                Where Science Meets Nature
-              </h2>
+              <p className="text-sm font-medium text-stone-600 tracking-wider uppercase">{t.brandStory.title}</p>
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.brandStory.subtitle}</h2>
             </div>
 
             <div className="space-y-6 text-gray-700 leading-relaxed">
               <div className="flex gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>
-                  Founded in 2018, we believe that effective skincare should be both scientifically proven and naturally
-                  derived.
-                </p>
+                <p>{t.brandStory.point1}</p>
               </div>
               <div className="flex gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>
-                  Our formulations combine cutting-edge dermatological research with sustainably sourced botanical
-                  ingredients.
-                </p>
+                <p>{t.brandStory.point2}</p>
               </div>
               <div className="flex gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>Every product is clinically tested, cruelty-free, and designed for all skin types.</p>
+                <p>{t.brandStory.point3}</p>
               </div>
               <div className="flex gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>
-                  We're committed to transparency, sustainability, and helping you achieve your healthiest skin yet.
-                </p>
+                <p>{t.brandStory.point4}</p>
               </div>
             </div>
 
@@ -88,7 +80,7 @@ export function BrandStoryPreview() {
               href="/brand-story"
               className="inline-flex items-center gap-2 text-gray-900 font-medium hover:gap-4 transition-all duration-300 group"
             >
-              Read Full Story
+              {t.brandStory.cta}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
