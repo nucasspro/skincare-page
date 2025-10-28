@@ -61,6 +61,93 @@ export default {
     point3: "Cam kết bền vững và đạo đức",
     point4: "Không thử nghiệm trên động vật",
     cta: "Đọc câu chuyện đầy đủ",
+    page: {
+      hero: {
+        title: "LUMIÈRE",
+        subtitle: "Từ tiếng Pháp 'Ánh sáng'",
+        value1: "Khoa học được chứng minh lâm sàng",
+        value2: "Thành phần tự nhiên tinh khiết",
+        value3: "Cam kết bền vững",
+        value4: "Không thử nghiệm trên động vật",
+      },
+      chapter1: {
+        label: "Chương Một",
+        title: "Nơi mọi thứ bắt đầu",
+        p1: "Năm 2015, người sáng lập của chúng tôi, một bác sĩ da liễu với hơn 20 năm kinh nghiệm, nhận thấy một khoảng trống trong thị trường chăm sóc da. Bệnh nhân đang tìm kiếm các sản phẩm kết hợp hiệu quả lâm sàng với thành phần tự nhiên nhẹ nhàng.",
+        p2: "Quan sát này đã khơi dậy một sứ mệnh: tạo ra một dòng sản phẩm chăm sóc da kết nối khoảng cách giữa khoa học da liễu và trí tuệ của thiên nhiên. Mỗi công thức sẽ được phát triển với sự nghiêm ngặt như các sản phẩm dược phẩm, nhưng khai thác sức mạnh của các thành phần thực vật.",
+        p3: "Những gì bắt đầu trong một phòng thí nghiệm nhỏ đã phát triển thành một phong trào toàn cầu, chạm đến cuộc sống của hàng triệu người tin rằng chăm sóc da hiệu quả không nên ảnh hưởng đến sự an toàn hoặc tính bền vững.",
+      },
+      chapter2: {
+        label: "Chương Hai",
+        title: "Sứ mệnh của chúng tôi",
+        p1: "Chúng tôi tin rằng mọi người đều xứng đáng được tiếp cận với sản phẩm chăm sóc da hiệu quả. Sứ mệnh của chúng tôi là dân chủ hóa chuyên môn da liễu thông qua các sản phẩm vừa hiệu quả vừa dễ tiếp cận.",
+        p2: "Mỗi sản phẩm trải qua thử nghiệm lâm sàng nghiêm ngặt và được điều chế với các thành phần có hiệu quả đã được chứng minh. Chúng tôi không bao giờ thỏa hiệp về chất lượng, và chúng tôi không bao giờ thử nghiệm trên động vật.",
+      },
+      chapter3: {
+        label: "Chương Ba",
+        title: "Triết lý thành phần",
+        description:
+          "Chúng tôi tìm nguồn các thành phần tốt nhất từ khắp nơi trên thế giới, kết hợp các thực vật đã được kiểm chứng theo thời gian với các hoạt chất tiên tiến. Mỗi thành phần được chọn lựa vì lợi ích đã được chứng minh và nguồn gốc bền vững.",
+      },
+      chapter4: {
+        label: "Chương Bốn",
+        title: "Cam kết bền vững",
+        p1: "Cam kết của chúng tôi với hành tinh mạnh mẽ như cam kết với làn da của bạn. Chúng tôi sử dụng bao bì có thể tái chế, giảm thiểu chất thải trong quy trình sản xuất và hợp tác với các nhà cung cấp chia sẻ giá trị môi trường của chúng tôi.",
+        p2: "Đến năm 2025, chúng tôi hướng tới mục tiêu đạt được trung hòa carbon trong toàn bộ chuỗi cung ứng. Mỗi giao dịch mua hàng đóng góp vào các dự án tái trồng rừng và làm sạch đại dương.",
+        cta: "Tìm hiểu về tác động của chúng tôi",
+      },
+      chapter5: {
+        label: "Chương Năm",
+        title: "Hợp tác với chuyên gia",
+        p1: "Chúng tôi hợp tác với các bác sĩ da liễu, nhà khoa học và chuyên gia chăm sóc da hàng đầu để phát triển các công thức đáp ứng nhu cầu thực sự của làn da.",
+        p2: "Mỗi sản phẩm được thử nghiệm lâm sàng và được chứng nhận bởi các chuyên gia da liễu độc lập. Chúng tôi tin vào sức mạnh của khoa học và chuyên môn.",
+      },
+      chapter6: {
+        label: "Chương Sáu",
+        title: "Tương lai của chăm sóc da",
+        description:
+          "Chúng tôi không ngừng đổi mới và nghiên cứu để mang đến những giải pháp chăm sóc da tốt nhất. Tầm nhìn của chúng tôi là trở thành thương hiệu chăm sóc da được tin cậy nhất, nơi khoa học và thiên nhiên hòa quyện hoàn hảo.",
+      },
+      stats: {
+        stat1: {
+          number: "SỐ 1",
+          description: "Thương hiệu được yêu thích 9 năm liên tiếp",
+        },
+        stat2: {
+          number: "47",
+          description: "Bệnh viện sử dụng sản phẩm",
+        },
+        stat3: {
+          number: "4,100+",
+          description: "Phòng khám tin dùng",
+        },
+        stat4: {
+          number: "49",
+          description: "Bác sĩ da liễu hợp tác",
+        },
+      },
+      values: {
+        title: "Giá trị cốt lõi",
+        subtitle: "Những nguyên tắc định hướng mọi việc chúng tôi làm",
+        value1: {
+          title: "Dựa trên khoa học",
+          description: "Mỗi công thức được phát triển với nghiên cứu lâm sàng và thử nghiệm hiệu quả",
+        },
+        value2: {
+          title: "Lấy cảm hứng từ thiên nhiên",
+          description: "Chúng tôi khai thác sức mạnh của các thành phần thực vật với lợi ích đã được chứng minh",
+        },
+        value3: {
+          title: "Bền vững",
+          description: "Cam kết bảo vệ hành tinh cho các thế hệ tương lai",
+        },
+      },
+      cta: {
+        title: "Trải nghiệm sự khác biệt",
+        description: "Khám phá bộ sưu tập sản phẩm chăm sóc da được phát triển bởi bác sĩ da liễu",
+        button: "Mua sắm sản phẩm",
+      },
+    },
   },
   social: {
     title: "Theo dõi hành trình làm đẹp",

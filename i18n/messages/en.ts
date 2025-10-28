@@ -61,6 +61,93 @@ export default {
     point3: "Sustainable and ethical commitment",
     point4: "Cruelty-free",
     cta: "Read Full Story",
+    page: {
+      hero: {
+        title: "LUMIÈRE",
+        subtitle: "From French 'Light'",
+        value1: "Clinically Proven Science",
+        value2: "Pure Natural Ingredients",
+        value3: "Sustainable Commitment",
+        value4: "Cruelty-Free",
+      },
+      chapter1: {
+        label: "Chapter One",
+        title: "Where It All Began",
+        p1: "In 2015, our founder, a dermatologist with over 20 years of experience, noticed a gap in the skincare market. Patients were seeking products that combined clinical efficacy with gentle, natural ingredients.",
+        p2: "This observation sparked a mission: to create a skincare line that bridges the gap between dermatological science and nature's wisdom. Every formula would be developed with the same rigor as pharmaceutical products, yet harness the power of botanical ingredients.",
+        p3: "What started in a small laboratory has grown into a global movement, touching the lives of millions who believe that effective skincare shouldn't compromise on safety or sustainability.",
+      },
+      chapter2: {
+        label: "Chapter Two",
+        title: "Our Mission",
+        p1: "We believe that everyone deserves access to skincare that works. Our mission is to democratize dermatological expertise through products that are both effective and accessible.",
+        p2: "Every product undergoes rigorous clinical testing and is formulated with ingredients that have proven efficacy. We never compromise on quality, and we never test on animals.",
+      },
+      chapter3: {
+        label: "Chapter Three",
+        title: "Ingredients Philosophy",
+        description:
+          "We source the finest ingredients from around the world, combining time-tested botanicals with cutting-edge actives. Each ingredient is selected for its proven benefits and sustainable sourcing.",
+      },
+      chapter4: {
+        label: "Chapter Four",
+        title: "Sustainability Commitment",
+        p1: "Our commitment to the planet is as strong as our commitment to your skin. We use recyclable packaging, minimize waste in our production processes, and partner with suppliers who share our environmental values.",
+        p2: "By 2025, we aim to achieve carbon neutrality across our entire supply chain. Every purchase contributes to reforestation projects and ocean cleanup initiatives.",
+        cta: "Learn About Our Impact",
+      },
+      chapter5: {
+        label: "Chapter Five",
+        title: "Collaboration with Experts",
+        p1: "We partner with leading dermatologists, scientists, and skincare experts to develop formulas that address real skin needs.",
+        p2: "Every product is clinically tested and certified by independent dermatologists. We believe in the power of science and expertise.",
+      },
+      chapter6: {
+        label: "Chapter Six",
+        title: "The Future of Skincare",
+        description:
+          "We continuously innovate and research to bring you the best skincare solutions. Our vision is to become the most trusted skincare brand, where science and nature blend perfectly.",
+      },
+      stats: {
+        stat1: {
+          number: "NO.1",
+          description: "Most loved brand for 9 consecutive years",
+        },
+        stat2: {
+          number: "47",
+          description: "Hospitals using our products",
+        },
+        stat3: {
+          number: "4,100+",
+          description: "Trusted clinics",
+        },
+        stat4: {
+          number: "49",
+          description: "Dermatologist partners",
+        },
+      },
+      values: {
+        title: "Our Core Values",
+        subtitle: "The principles that guide everything we do",
+        value1: {
+          title: "Science-Backed",
+          description: "Every formula is developed with clinical research and tested for efficacy",
+        },
+        value2: {
+          title: "Nature-Inspired",
+          description: "We harness the power of botanical ingredients with proven benefits",
+        },
+        value3: {
+          title: "Sustainable",
+          description: "Committed to protecting the planet for future generations",
+        },
+      },
+      cta: {
+        title: "Experience the Difference",
+        description: "Discover our collection of dermatologist-developed skincare products",
+        button: "Shop Our Products",
+      },
+    },
   },
   social: {
     title: "Follow the Beauty Journey",
