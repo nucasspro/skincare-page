@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/currency-util"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -63,7 +64,7 @@ export function RecentlyViewed() {
                     </span>
                   ))}
                 </div>
-                <p className="text-lg font-medium text-gray-900">${product.price}.00</p>
+                <p className="text-lg font-medium text-gray-900">{formatCurrency(product.price)}</p>
               </div>
             </div>
           </Link>
@@ -92,7 +93,7 @@ export function RecentlyViewed() {
                   >
                     {product.name}
                   </h3>
-                  <p className="text-lg font-medium text-gray-900">${product.price}.00</p>
+                  <p className="text-lg font-medium text-gray-900">{formatCurrency(product.price)}</p>
                 </div>
               </div>
             </Link>

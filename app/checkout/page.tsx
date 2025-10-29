@@ -3,6 +3,7 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useCart } from "@/lib/cart-context"
+import { formatCurrency } from "@/lib/currency-util"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
@@ -269,10 +270,10 @@ export default function CheckoutPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
-                          <p className="text-sm text-stone-600">${item.price.toFixed(2)}</p>
+                            <p className="text-sm text-stone-600">{formatCurrency(item.price)}</p>
                         </div>
                         <div className="text-sm font-medium text-gray-900">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          {formatCurrency(item.price * item.quantity)}
                         </div>
                       </div>
                     ))}
@@ -282,7 +283,7 @@ export default function CheckoutPage() {
                   <div className="space-y-3 mb-6 pt-6 border-t border-stone-300">
                     <div className="flex justify-between text-stone-600">
                       <span>Tạm tính</span>
-                      <span>${getTotalPrice().toFixed(2)}</span>
+                      <span>{formatCurrency(getTotalPrice())}</span>
                     </div>
                     <div className="flex justify-between text-stone-600">
                       <span>Phí vận chuyển</span>
@@ -291,7 +292,7 @@ export default function CheckoutPage() {
                     <div className="border-t border-stone-300 pt-3">
                       <div className="flex justify-between text-xl font-medium text-gray-900">
                         <span>Tổng cộng</span>
-                        <span>${getTotalPrice().toFixed(2)}</span>
+                        <span>{formatCurrency(getTotalPrice())}</span>
                       </div>
                     </div>
                   </div>

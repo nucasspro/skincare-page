@@ -21,8 +21,8 @@ export function ProductInfo() {
         <h1 className="text-3xl sm:text-4xl font-light text-gray-900 text-balance">{t.bestSellers.products.essence.name}</h1>
         <p className="text-sm sm:text-lg text-stone-600">{t.bestSellers.products.essence.tagline}</p>
         <div className="flex items-baseline gap-2 sm:gap-3 pt-2">
-          <span className="text-2xl sm:text-3xl font-medium text-gray-900">$48.00</span>
-          <span className="text-sm sm:text-lg text-stone-500 line-through">$65.00</span>
+          <span className="text-2xl sm:text-3xl font-medium text-gray-900">1.152.000đ</span>
+          <span className="text-sm sm:text-lg text-stone-500 line-through">1.560.000đ</span>
           <span className="text-xs sm:text-sm font-medium text-green-700 bg-green-50 px-2 sm:px-3 py-1 rounded-full">Save 26%</span>
         </div>
       </div>

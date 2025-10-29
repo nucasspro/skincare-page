@@ -168,7 +168,7 @@ export function Product3DShowcase() {
             </ul>
             <div className="pt-4">
               <button className="px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors">
-                {t.product3d.cta} - $89
+                {t.product3d.cta} - 2.136.000đ
               </button>
             </div>
           </div>

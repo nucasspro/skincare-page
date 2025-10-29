@@ -3,6 +3,7 @@
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
 import { getFeaturedProducts } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/currency-util"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -82,7 +83,7 @@ export function BestSellers() {
                     {product.name}
                   </h3>
                   <p className="text-sm text-gray-600 truncate" title={product.tagline}>{product.tagline}</p>
-                  <p className="text-lg font-medium text-gray-900">${product.price}</p>
+                  <p className="text-lg font-medium text-gray-900">{formatCurrency(product.price)}</p>
                 </div>
               </Link>
             </div>

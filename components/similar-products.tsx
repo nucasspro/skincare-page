@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { getRelatedProducts } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/currency-util"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -38,7 +39,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
                   {product.name}
                 </h3>
                 <p className="text-sm text-stone-600 truncate" title={product.tagline}>{product.tagline}</p>
-                <p className="text-lg font-medium text-gray-900">${product.price}.00</p>
+                <p className="text-lg font-medium text-gray-900">{formatCurrency(product.price)}</p>
               </div>
               <Button
                 variant="outline"

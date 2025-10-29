@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
+import { formatCurrency } from "@/lib/currency-util"
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -80,9 +81,9 @@ export default function CartPage() {
                       </button>
                     </div>
 
-                    <p className="text-lg font-medium text-gray-900 mb-4">
-                      ${item.price.toFixed(2)}
-                    </p>
+                        <p className="text-lg font-medium text-gray-900 mb-4">
+                          {formatCurrency(item.price)}
+                        </p>
 
                     {/* Quantity Controls */}
                     <div className="flex items-center border border-stone-300 rounded-lg w-fit">
@@ -106,12 +107,12 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  {/* Item Total */}
-                  <div className="text-right">
-                    <p className="text-lg font-medium text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
+                      {/* Item Total */}
+                      <div className="text-right">
+                        <p className="text-lg font-medium text-gray-900">
+                          {formatCurrency(item.price * item.quantity)}
+                        </p>
+                      </div>
                 </div>
               ))}
             </div>
@@ -124,7 +125,7 @@ export default function CartPage() {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-stone-600">
                     <span>Tạm tính ({getTotalItems()} sản phẩm)</span>
-                    <span>${getTotalPrice().toFixed(2)}</span>
+                    <span>{formatCurrency(getTotalPrice())}</span>
                   </div>
                   <div className="flex justify-between text-stone-600">
                     <span>Phí vận chuyển</span>
@@ -133,7 +134,7 @@ export default function CartPage() {
                   <div className="border-t border-stone-300 pt-4">
                     <div className="flex justify-between text-lg font-medium text-gray-900">
                       <span>Tổng cộng</span>
-                      <span>${getTotalPrice().toFixed(2)}</span>
+                      <span>{formatCurrency(getTotalPrice())}</span>
                     </div>
                   </div>
                 </div>

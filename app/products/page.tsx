@@ -9,6 +9,8 @@ import { Footer } from "@/components/footer"
 import { useI18n } from "@/lib/i18n-context"
 import { useCart } from "@/lib/cart-context"
 import { ProductService, type Product } from "@/lib/product-service"
+import { getCategoriesAsObject, getSkinNeedsAsObject, getDefaultPriceRange } from "@/lib/category-service"
+import { formatCurrency } from "@/lib/currency-util"
 
 export default function ProductsPage() {
   const { t } = useI18n()
@@ -16,13 +18,18 @@ export default function ProductsPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([])
-  const [priceRange, setPriceRange] = useState([0, 200])
+  const defaultPriceRange = getDefaultPriceRange()
+  const [priceRange, setPriceRange] = useState([defaultPriceRange.min, defaultPriceRange.max])
   const [sortBy, setSortBy] = useState("featured")
   const [currentPage, setCurrentPage] = useState(1)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set())
 
   const productsPerPage = 6
+
+  // Get categories and skin needs from service
+  const categories = getCategoriesAsObject()
+  const skinNeeds = getSkinNeedsAsObject()
 
   // Get products from service and apply filters
   const filteredAndSortedProducts = useMemo(() => {
@@ -49,10 +56,10 @@ export default function ProductsPage() {
   const clearFilters = () => {
     setSelectedCategory("all")
     setSelectedNeeds([])
-    setPriceRange([0, 200])
+    setPriceRange([defaultPriceRange.min, defaultPriceRange.max])
   }
 
-  const hasActiveFilters = selectedCategory !== "all" || selectedNeeds.length > 0 || priceRange[1] < 200
+  const hasActiveFilters = selectedCategory !== "all" || selectedNeeds.length > 0 || priceRange[1] < defaultPriceRange.max
 
   const handleAddToCart = (product: Product) => {
     addItem({
@@ -125,7 +132,7 @@ export default function ProductsPage() {
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-900 mb-3">{t.productListing.filters.category}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {Object.entries(t.productListing.filters.categories).map(([key, label]) => (
+                  {Object.entries(categories).map(([key, label]) => (
                     <button
                       key={key}
                       onClick={() => setSelectedCategory(key)}
@@ -145,21 +152,19 @@ export default function ProductsPage() {
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-900 mb-3">{t.productListing.filters.needs}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {Object.entries(t.productListing.filters.skinNeeds)
-                    .filter(([key]) => key !== "all")
-                    .map(([key, label]) => (
-                      <button
-                        key={key}
-                        onClick={() => toggleNeed(key)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          selectedNeeds.includes(key)
-                            ? "bg-stone-900 text-white shadow-sm"
-                            : "bg-stone-100 text-stone-700 hover:bg-stone-200"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                  {Object.entries(skinNeeds).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => toggleNeed(key)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        selectedNeeds.includes(key)
+                          ? "bg-stone-900 text-white shadow-sm"
+                          : "bg-stone-100 text-stone-700 hover:bg-stone-200"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -169,15 +174,16 @@ export default function ProductsPage() {
                 <div className="space-y-3">
                   <input
                     type="range"
-                    min="0"
-                    max="200"
+                    min={defaultPriceRange.min}
+                    max={defaultPriceRange.max}
+                    step={defaultPriceRange.step || 5}
                     value={priceRange[1]}
-                    onChange={(e) => setPriceRange([0, Number(e.target.value)])}
+                    onChange={(e) => setPriceRange([defaultPriceRange.min, Number(e.target.value)])}
                     className="w-full accent-stone-900"
                   />
                   <div className="flex items-center justify-between text-sm text-gray-600">
-                    <span>${priceRange[0]}</span>
-                    <span>${priceRange[1]}</span>
+                    <span>{formatCurrency(priceRange[0])}</span>
+                    <span>{formatCurrency(priceRange[1])}</span>
                   </div>
                 </div>
               </div>
@@ -275,7 +281,7 @@ export default function ProductsPage() {
                           {product.name}
                         </h3>
                         <p className="text-sm text-gray-600 mb-3 truncate" title={product.tagline}>{product.tagline}</p>
-                        <p className="text-lg font-medium text-gray-900 mb-4">${product.price}</p>
+                        <p className="text-lg font-medium text-gray-900 mb-4">{formatCurrency(product.price)}</p>
                       </Link>
 
                       <button

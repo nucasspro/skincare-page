@@ -3,6 +3,7 @@
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
 import { searchProducts, type Product } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/currency-util"
 import { Search, ShoppingCart, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -168,7 +169,7 @@ export function SearchModal() {
                                                             {product.name}
                                                         </h3>
                                                         <p className="text-sm text-gray-600 truncate">{product.tagline}</p>
-                                                        <p className="text-sm font-medium text-gray-900 mt-1">${product.price}</p>
+                                                        <p className="text-sm font-medium text-gray-900 mt-1">{formatCurrency(product.price)}</p>
                                                     </div>
                                                     <button
                                                         onClick={(e) => handleQuickAdd(e, product)}
