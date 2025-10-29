@@ -14,7 +14,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     <div className="min-h-screen bg-white">
       <Navigation />
 
-      <main className="pt-20">
+      <main className="pt-0">
         {/* Product Gallery & Info Section */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">

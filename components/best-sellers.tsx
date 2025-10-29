@@ -55,16 +55,16 @@ export function BestSellers() {
   ]
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-20 bg-white">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.bestSellers.title}</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.bestSellers.subtitle}</p>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Product Grid - Full width with gaps */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <div
               key={product.id}
@@ -73,8 +73,8 @@ export function BestSellers() {
               onMouseLeave={() => setHoveredId(null)}
             >
               <Link href={`/product/${product.id}`} className="block">
-                {/* Product Image */}
-                <div className="relative aspect-[3/4] mb-4 overflow-hidden rounded-2xl bg-stone-50">
+                {/* Product Image - To lớn, không rounded */}
+                <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-stone-50">
                   <Image
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}

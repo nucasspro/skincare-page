@@ -21,6 +21,7 @@ const messagesMap = {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("vi")
+  const [isHydrated, setIsHydrated] = useState(false)
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale)
@@ -30,6 +31,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // Mark as hydrated
+    setIsHydrated(true)
+
     // Load saved locale from localStorage
     if (typeof window !== "undefined") {
       const savedLocale = localStorage.getItem("locale") as Locale
@@ -40,6 +44,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const t = messagesMap[locale]
+
+  // Prevent hydration mismatch by not rendering until hydrated
+  if (!isHydrated) {
+    return <I18nContext.Provider value={{ locale: "vi", setLocale, t: messagesMap.vi }}>{children}</I18nContext.Provider>
+  }
 
   return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>
 }

@@ -1,57 +1,28 @@
 "use client"
 
-import Image from "next/image"
+import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { ArrowRight, Play } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
 
 export function BrandStoryPreview() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
   const { t } = useI18n()
+  const [isPlaying, setIsPlaying] = useState(false)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.2 },
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+  const handlePlay = () => {
+    const videoRef = document.getElementById('brand-story-video') as HTMLVideoElement
+    if (videoRef) {
+      videoRef.play()
+      setIsPlaying(true)
     }
-
-    return () => observer.disconnect()
-  }, [])
+  }
 
   return (
-    <section ref={sectionRef} className="py-20 px-4 sm:px-6 lg:px-8 bg-stone-50">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-stone-50">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Image Side */}
-          <div
-            className={`relative aspect-[4/5] rounded-3xl overflow-hidden transition-all duration-1000 ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
-            }`}
-          >
-            <Image
-              src="/luxury-skincare-brand-story-natural-ingredients-lab.jpg"
-              alt="Brand Story"
-              fill
-              className="object-cover"
-            />
-          </div>
-
-          {/* Text Side */}
-          <div
-            className={`space-y-8 transition-all duration-1000 delay-300 ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"
-            }`}
-          >
+          {/* Text Side - Left */}
+          <div className="space-y-8">
             <div className="space-y-4">
               <p className="text-sm font-medium text-stone-600 tracking-wider uppercase">{t.brandStory.title}</p>
               <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.brandStory.subtitle}</h2>
@@ -83,6 +54,33 @@ export function BrandStoryPreview() {
               {t.brandStory.cta}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+          </div>
+
+          {/* Video Side - Right */}
+          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-stone-100">
+            <video
+              id="brand-story-video"
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/videos/videohero.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+
+            {/* Play Button */}
+            {!isPlaying && (
+              <button
+                onClick={handlePlay}
+                className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors group"
+                aria-label="Play video"
+              >
+                <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Play className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" />
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>

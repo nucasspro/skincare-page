@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useI18n } from "@/lib/i18n-context"
 import { Button } from "@/components/ui/button"
 import { Globe } from "lucide-react"
@@ -7,6 +8,24 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useI18n()
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  if (!isHydrated) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+        aria-label="Change language"
+      >
+        <Globe className="h-5 w-5" />
+      </Button>
+    )
+  }
 
   return (
     <DropdownMenu>

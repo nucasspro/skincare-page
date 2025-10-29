@@ -1,12 +1,20 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { GeistSans } from 'geist/font/sans'
+import { Inter } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
+import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
 import { I18nProvider } from "@/lib/i18n-context"
+import { PromotionBanner } from "@/components/promotion-banner"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geistSans = GeistSans
+const inter = Inter({
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-inter',
+  preload: true
+})
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -21,9 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`font-sans antialiased`}>
-        <I18nProvider>{children}</I18nProvider>
-        <Analytics />
+      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+        <ParallaxProviderWrapper>
+          <PromotionBanner />
+          <I18nProvider>{children}</I18nProvider>
+          {/* <Analytics /> */}
+        </ParallaxProviderWrapper>
       </body>
     </html>
   )

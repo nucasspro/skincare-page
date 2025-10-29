@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Image from "next/image"
 
 export function VideoHero() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -17,7 +18,7 @@ export function VideoHero() {
     <section className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden bg-stone-100">
       {/* Background Video */}
       <video ref={videoRef} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
-        <source src="/luxury-skincare-brand-video-aesthetic-cream-textur.jpg" type="video/mp4" />
+        <source src="/videos/videohero.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay */}
@@ -26,9 +27,14 @@ export function VideoHero() {
       {/* Centered Logo/Brand */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center space-y-6 px-4">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-wider text-white drop-shadow-lg">
-            LUMIÈRE
-          </h1>
+          <Image
+            src="/logo/logo-white.png"
+            alt="CELLIC"
+            width={300}
+            height={100}
+            className="mx-auto h-16 md:h-20 lg:h-24 w-auto drop-shadow-lg"
+            priority
+          />
           <p className="text-lg md:text-xl text-white/90 font-light tracking-wide">Science Meets Nature</p>
         </div>
       </div>

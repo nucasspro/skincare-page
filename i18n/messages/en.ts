@@ -63,7 +63,7 @@ export default {
     cta: "Read Full Story",
     page: {
       hero: {
-        title: "LUMIÈRE",
+        title: "CELLIC",
         subtitle: "From French 'Light'",
         value1: "Clinically Proven Science",
         value2: "Pure Natural Ingredients",
@@ -196,7 +196,7 @@ export default {
     payment: {
       title: "Payment Methods",
     },
-    copyright: "© 2025 LUMIÈRE. All rights reserved.",
+    copyright: "© 2025 CELLIC. All rights reserved.",
     privacy: "Privacy Policy",
     terms: "Terms of Service",
   },

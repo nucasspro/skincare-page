@@ -1,9 +1,9 @@
 "use client"
 
 import type React from "react"
+import { useState, useEffect } from "react"
 
 import Image from "next/image"
-import { useState } from "react"
 import { Star } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
 
@@ -43,6 +43,11 @@ function BeforeAfterSlider({
 }) {
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   const handleMouseDown = () => setIsDragging(true)
   const handleMouseUp = () => setIsDragging(false)

@@ -1,17 +1,33 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import Image from "next/image"
 
 export function FeatureHighlight() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.log("Video autoplay failed:", error)
+      })
+    }
+  }, [])
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Image */}
+      {/* Background Video */}
       <div className="absolute inset-0">
-        <Image
-          src="/luxury-skincare-brand-story-natural-ingredients-lab.jpg"
-          alt="Feature highlight"
-          fill
-          className="object-cover"
-          priority
-        />
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/videohero.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40" />
       </div>
 

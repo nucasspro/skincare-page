@@ -1,7 +1,6 @@
 import { Navigation } from "@/components/navigation"
-import { AnnouncementBar } from "@/components/announcement-bar"
 import { VideoHero } from "@/components/video-hero"
-import { Product3DShowcase } from "@/components/product-3d-showcase"
+import { ParallaxProductSection } from "@/components/parallax-product-section"
 import { BestSellers } from "@/components/best-sellers"
 import { BrandStoryPreview } from "@/components/brand-story-preview"
 import { SocialMediaShowcase } from "@/components/social-media-showcase"
@@ -11,10 +10,9 @@ import { Footer } from "@/components/footer"
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      <AnnouncementBar />
       <Navigation />
       <VideoHero />
-      <Product3DShowcase />
+      <ParallaxProductSection />
       <BestSellers />
       <BrandStoryPreview />
       <SocialMediaShowcase />

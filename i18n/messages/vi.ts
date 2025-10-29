@@ -63,7 +63,7 @@ export default {
     cta: "Đọc câu chuyện đầy đủ",
     page: {
       hero: {
-        title: "LUMIÈRE",
+        title: "CELLIC",
         subtitle: "Từ tiếng Pháp 'Ánh sáng'",
         value1: "Khoa học được chứng minh lâm sàng",
         value2: "Thành phần tự nhiên tinh khiết",
@@ -239,7 +239,7 @@ export default {
     payment: {
       title: "Phương thức thanh toán",
     },
-    copyright: "© 2025 LUMIÈRE. Bảo lưu mọi quyền.",
+    copyright: "© 2025 CELLIC. Bảo lưu mọi quyền.",
     privacy: "Chính sách bảo mật",
     terms: "Điều khoản dịch vụ",
   },

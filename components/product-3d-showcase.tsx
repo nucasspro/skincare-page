@@ -7,9 +7,13 @@ import { useI18n } from "@/lib/i18n-context"
 export function Product3DShowcase() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const [scrollY, setScrollY] = useState(0)
+  const [isHydrated, setIsHydrated] = useState(false)
   const { t } = useI18n()
 
   useEffect(() => {
+    // Mark as hydrated
+    setIsHydrated(true)
+
     const handleScroll = () => {
       if (sectionRef.current) {
         const rect = sectionRef.current.getBoundingClientRect()

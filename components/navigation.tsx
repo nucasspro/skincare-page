@@ -2,27 +2,27 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X, Search, ShoppingCart, User } from "lucide-react"
+import Image from "next/image"
+import { Menu, X, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { SearchModal } from "@/components/search-modal"
 
 export function Navigation() {
   const { t } = useI18n()
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    // Mark as hydrated
+    setIsHydrated(true)
   }, [])
 
   // Close mobile menu when window is resized to desktop
   useEffect(() => {
+    if (!isHydrated) return
+
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsMobileMenuOpen(false)
@@ -31,13 +31,11 @@ export function Navigation() {
 
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }, [isHydrated])
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-white"
-      }`}
+      className={`relative bg-white transition-all duration-300`}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
@@ -56,7 +54,14 @@ export function Navigation() {
             href="/"
             className="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0 flex items-center"
           >
-            <span className="text-2xl font-light tracking-wider text-gray-900">LUMIÈRE</span>
+            <Image
+              src="/logo/logo-black.png"
+              alt="CELLIC"
+              width={120}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation - Center/Right */}
@@ -86,14 +91,7 @@ export function Navigation() {
             <div className="flex items-center gap-4 ml-8 pl-8 border-l border-gray-200">
               <LanguageSwitcher />
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-                aria-label={t.nav.search}
-              >
-                <Search className="h-5 w-5" />
-              </Button>
+              <SearchModal />
 
               <Button
                 variant="ghost"
@@ -107,14 +105,6 @@ export function Navigation() {
                 </span>
               </Button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-                aria-label={t.nav.account}
-              >
-                <User className="h-5 w-5" />
-              </Button>
             </div>
           </div>
 
@@ -122,14 +112,7 @@ export function Navigation() {
           <div className="flex md:hidden items-center gap-2">
             <LanguageSwitcher />
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 text-gray-700 hover:text-gray-900"
-              aria-label={t.nav.search}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
+            <SearchModal />
 
             <Button
               variant="ghost"
@@ -147,9 +130,8 @@ export function Navigation() {
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="py-4 space-y-4 border-t border-gray-200">
             <Link
@@ -169,21 +151,7 @@ export function Navigation() {
               {t.nav.products}
             </Link>
 
-            <Link
-              href="/brand-story"
-              className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t.nav.brandStory}
-            </Link>
 
-            <Link
-              href="/account"
-              className="block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors border-t border-gray-200 pt-4 mt-4"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t.nav.myAccount}
-            </Link>
           </div>
         </div>
       </nav>
