@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Filter, ShoppingCart, X, Check } from "lucide-react"
@@ -8,17 +8,7 @@ import Navigation from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useI18n } from "@/lib/i18n-context"
 import { useCart } from "@/lib/cart-context"
-
-interface Product {
-  id: string
-  name: string
-  tagline: string
-  price: number
-  category: string
-  needs: string[]
-  image: string
-  hoverImage: string
-}
+import { ProductService, type Product } from "@/lib/product-service"
 
 export default function ProductsPage() {
   const { t } = useI18n()
@@ -34,96 +24,23 @@ export default function ProductsPage() {
 
   const productsPerPage = 6
 
-  // Product data
-  const allProducts: Product[] = [
-    {
-      id: "1",
-      name: "Hydrating Essence",
-      tagline: t.bestSellers.products.essence.tagline,
-      price: 68,
-      category: "serums",
-      needs: ["hydration", "sensitive"],
-      image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-      hoverImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-    },
-    {
-      id: "2",
-      name: "Vitamin C Serum",
-      tagline: t.bestSellers.products.serum.tagline,
-      price: 89,
-      category: "serums",
-      needs: ["brightening", "antiAging"],
-      image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-      hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-    },
-    {
-      id: "3",
-      name: "Ceramide Cream",
-      tagline: t.bestSellers.products.cream.tagline,
-      price: 75,
-      category: "moisturizers",
-      needs: ["hydration", "sensitive"],
-      image: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-      hoverImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-    },
-    {
-      id: "4",
-      name: "Gentle Cleanser",
-      tagline: t.bestSellers.products.cleanser.tagline,
-      price: 42,
-      category: "cleansers",
-      needs: ["sensitive", "hydration"],
-      image: "/luxury-facial-cleanser-bottle-minimal-white-backgr.jpg",
-      hoverImage: "/luxury-facial-cleanser-bottle-product-shot-cream-b.jpg",
-    },
-    {
-      id: "5",
-      name: "Eye Renewal Cream",
-      tagline: t.bestSellers.products.eyeCream.tagline,
-      price: 95,
-      category: "eyeCare",
-      needs: ["antiAging", "brightening"],
-      image: "/luxury-eye-cream-jar-minimal-white-background.jpg",
-      hoverImage: "/luxury-eye-cream-jar-product-shot-cream-background.jpg",
-    },
-    {
-      id: "6",
-      name: "Radiance Renewal Serum",
-      tagline: t.product3d.subtitle,
-      price: 125,
-      category: "serums",
-      needs: ["brightening", "antiAging", "hydration"],
-      image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-      hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-    },
-  ]
+  // Get products from service and apply filters
+  const filteredAndSortedProducts = useMemo(() => {
+    // Filter products
+    const filtered = ProductService.filterProducts({
+      category: selectedCategory,
+      needs: selectedNeeds,
+      priceRange: [priceRange[0], priceRange[1]],
+    })
 
-  // Filter products
-  const filteredProducts = allProducts.filter((product) => {
-    const categoryMatch = selectedCategory === "all" || product.category === selectedCategory
-    const needMatch = selectedNeeds.length === 0 || selectedNeeds.some((need) => product.needs.includes(need))
-    const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1]
-    return categoryMatch && needMatch && priceMatch
-  })
-
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case "priceLowHigh":
-        return a.price - b.price
-      case "priceHighLow":
-        return b.price - a.price
-      case "newest":
-        return Number(b.id) - Number(a.id)
-      default:
-        return 0
-    }
-  })
+    // Sort products
+    return ProductService.sortProducts(filtered, sortBy)
+  }, [selectedCategory, selectedNeeds, priceRange, sortBy])
 
   // Pagination
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage)
+  const totalPages = Math.ceil(filteredAndSortedProducts.length / productsPerPage)
   const startIndex = (currentPage - 1) * productsPerPage
-  const paginatedProducts = sortedProducts.slice(startIndex, startIndex + productsPerPage)
+  const paginatedProducts = filteredAndSortedProducts.slice(startIndex, startIndex + productsPerPage)
 
   const toggleNeed = (need: string) => {
     setSelectedNeeds((prev) => (prev.includes(need) ? prev.filter((n) => n !== need) : [...prev, need]))
@@ -271,7 +188,7 @@ export default function ProductsPage() {
               {/* Sort and Count */}
               <div className="flex items-center justify-between mb-6">
                 <p className="text-sm text-gray-600">
-                  {sortedProducts.length} {t.productListing.productsCount}
+                  {filteredAndSortedProducts.length} {t.productListing.productsCount}
                 </p>
                 <div className="flex items-center gap-2">
                   <label className="text-sm text-gray-600">{t.productListing.sort.label}</label>

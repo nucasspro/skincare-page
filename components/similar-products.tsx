@@ -1,39 +1,16 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { getRelatedProducts } from "@/lib/product-service"
 
-const similarProducts = [
-  {
-    id: 1,
-    name: "Vitamin C Brightening Serum",
-    tagline: "Radiant, even-toned skin",
-    price: 52,
-    image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-  },
-  {
-    id: 2,
-    name: "Ceramide Repair Cream",
-    tagline: "Strengthen skin barrier",
-    price: 58,
-    image: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-  },
-  {
-    id: 3,
-    name: "Gentle Foaming Cleanser",
-    tagline: "Clean without stripping",
-    price: 32,
-    image: "/luxury-facial-cleanser-bottle-minimal-white-backgr.jpg",
-  },
-  {
-    id: 4,
-    name: "Nourishing Night Cream",
-    tagline: "Overnight renewal",
-    price: 65,
-    image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-  },
-]
+interface SimilarProductsProps {
+  productId: string
+}
 
-export function SimilarProducts() {
+export function SimilarProducts({ productId }: SimilarProductsProps) {
+  // Get related products from service
+  const similarProducts = getRelatedProducts(productId, 4)
+
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
