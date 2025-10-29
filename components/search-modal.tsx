@@ -1,33 +1,54 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Search, X } from "lucide-react"
+import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import { searchProducts, type Product } from "@/lib/product-service"
+import { Search, ShoppingCart, X } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
 
 export function SearchModal() {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const { t } = useI18n()
+    const { addItem } = useCart()
+
+    // Search products in real-time
+    const searchResults = useMemo(() => {
+        if (!searchQuery.trim()) return []
+        return searchProducts(searchQuery)
+    }, [searchQuery])
 
     // Close modal when pressing Escape
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
                 setIsOpen(false)
+                setSearchQuery("") // Reset search when closing
             }
         }
 
         if (isOpen) {
             document.addEventListener("keydown", handleEscape)
             // Focus on input when modal opens
-            const input = document.getElementById("search-input")
-            if (input) {
-                input.focus()
-            }
+            setTimeout(() => {
+                const input = document.getElementById("search-input")
+                if (input) {
+                    input.focus()
+                }
+            }, 100)
         }
 
         return () => {
             document.removeEventListener("keydown", handleEscape)
+        }
+    }, [isOpen])
+
+    // Reset search when modal closes
+    useEffect(() => {
+        if (!isOpen) {
+            setSearchQuery("")
         }
     }, [isOpen])
 
@@ -46,8 +67,28 @@ export function SearchModal() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
-        // TODO: Implement search functionality
-        console.log("Searching for:", searchQuery)
+        if (searchQuery.trim()) {
+            // Navigate to products page with search query
+            window.location.href = `/products?q=${encodeURIComponent(searchQuery)}`
+            setIsOpen(false)
+        }
+    }
+
+    const handleProductClick = (productId: string) => {
+        setIsOpen(false)
+        setSearchQuery("")
+    }
+
+    const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
+        e.preventDefault()
+        e.stopPropagation()
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            tagline: product.tagline,
+        }, 1)
     }
 
     return (
@@ -63,7 +104,14 @@ export function SearchModal() {
 
             {/* Search Modal */}
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm">
+                <div
+                    className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsOpen(false)
+                        }
+                    }}
+                >
                     <div className="w-full max-w-2xl mx-4">
                         {/* Search Container */}
                         <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
@@ -93,34 +141,86 @@ export function SearchModal() {
                                     />
                                 </div>
 
-                                {/* Search Suggestions */}
-                                <div className="mt-6 space-y-2">
-                                    <p className="text-sm font-medium text-gray-600 mb-3">Tìm kiếm phổ biến:</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {[
-                                            "Serum Vitamin C",
-                                            "Kem dưỡng ẩm",
-                                            "Sữa rửa mặt",
-                                            "Toner",
-                                            "Mặt nạ",
-                                            "Kem chống nắng"
-                                        ].map((suggestion) => (
-                                            <button
-                                                key={suggestion}
-                                                onClick={() => setSearchQuery(suggestion)}
-                                                className="px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                                            >
-                                                {suggestion}
-                                            </button>
-                                        ))}
+                                {/* Search Results - Real-time */}
+                                {searchResults.length > 0 && (
+                                    <div className="mt-4 max-h-96 overflow-y-auto border border-gray-200 rounded-xl">
+                                        <div className="p-4 space-y-2">
+                                            <p className="text-sm font-medium text-gray-600 mb-3">
+                                                Tìm thấy {searchResults.length} sản phẩm:
+                                            </p>
+                                            {searchResults.map((product) => (
+                                                <Link
+                                                    key={product.id}
+                                                    href={`/product/${product.id}`}
+                                                    onClick={() => handleProductClick(product.id)}
+                                                    className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-lg transition-colors group"
+                                                >
+                                                    <div className="relative w-16 h-16 flex-shrink-0 bg-stone-50 rounded-lg overflow-hidden">
+                                                        <Image
+                                                            src={product.image || "/placeholder.svg"}
+                                                            alt={product.name}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-medium text-gray-900 group-hover:text-stone-600 truncate">
+                                                            {product.name}
+                                                        </h3>
+                                                        <p className="text-sm text-gray-600 truncate">{product.tagline}</p>
+                                                        <p className="text-sm font-medium text-gray-900 mt-1">${product.price}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={(e) => handleQuickAdd(e, product)}
+                                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                                                        aria-label="Thêm vào giỏ"
+                                                    >
+                                                        <ShoppingCart className="h-5 w-5 text-gray-600" />
+                                                    </button>
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
+
+                                {/* No Results */}
+                                {searchQuery.trim() && searchResults.length === 0 && (
+                                    <div className="mt-4 text-center py-8">
+                                        <p className="text-gray-600">Không tìm thấy sản phẩm nào cho "{searchQuery}"</p>
+                                    </div>
+                                )}
+
+                                {/* Search Suggestions - Only show when no query */}
+                                {!searchQuery.trim() && (
+                                    <div className="mt-6 space-y-2">
+                                        <p className="text-sm font-medium text-gray-600 mb-3">Tìm kiếm phổ biến:</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                "Serum Vitamin C",
+                                                "Kem dưỡng ẩm",
+                                                "Sữa rửa mặt",
+                                                "Toner",
+                                                "Mặt nạ",
+                                                "Kem chống nắng"
+                                            ].map((suggestion) => (
+                                                <button
+                                                    key={suggestion}
+                                                    onClick={() => setSearchQuery(suggestion)}
+                                                    className="px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                                                >
+                                                    {suggestion}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Search Button */}
                                 <div className="mt-6 flex gap-3">
                                     <button
                                         type="submit"
-                                        className="flex-1 bg-gray-900 text-white py-3 px-6 rounded-xl hover:bg-gray-800 transition-colors font-medium"
+                                        disabled={!searchQuery.trim()}
+                                        className="flex-1 bg-gray-900 text-white py-3 px-6 rounded-xl hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Tìm kiếm
                                     </button>
@@ -135,7 +235,7 @@ export function SearchModal() {
                             </form>
 
                             {/* Recent Searches */}
-                            <div className="px-6 pb-6">
+                            {/* <div className="px-6 pb-6">
                                 <p className="text-sm font-medium text-gray-600 mb-3">Tìm kiếm gần đây:</p>
                                 <div className="space-y-2">
                                     {["Serum chống lão hóa", "Kem dưỡng ban đêm", "Mặt nạ đất sét"].map((recent) => (
@@ -149,7 +249,7 @@ export function SearchModal() {
                                         </button>
                                     ))}
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

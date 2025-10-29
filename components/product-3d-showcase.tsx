@@ -1,8 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import Image from "next/image"
+/**
+ * NOTE: This component is currently UNUSED
+ * TODO: Remove this component if not needed in the future
+ * Last checked: Component exists but not imported/used anywhere in the codebase
+ */
+
 import { useI18n } from "@/lib/i18n-context"
+import Image from "next/image"
+import { useEffect, useRef, useState } from "react"
 
 export function Product3DShowcase() {
   const sectionRef = useRef<HTMLDivElement>(null)
