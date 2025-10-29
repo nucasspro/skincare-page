@@ -3,13 +3,16 @@
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus, Heart, Share2 } from "lucide-react"
+import { Minus, Plus, Heart, Share2, Check } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
+import { useCart } from "@/lib/cart-context"
 
 export function ProductInfo() {
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [isAdded, setIsAdded] = useState(false)
   const { t } = useI18n()
+  const { addItem } = useCart()
 
   return (
     <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
@@ -73,8 +76,29 @@ export function ProductInfo() {
 
       {/* Action Buttons */}
       <div className="space-y-3 pt-2">
-        <Button size="lg" className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full">
-          {t.productDetail.addToCart}
+        <Button
+          size="lg"
+          className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full"
+          onClick={() => {
+            addItem({
+              id: "1",
+              name: t.bestSellers.products.essence.name,
+              price: 48,
+              image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
+              tagline: t.bestSellers.products.essence.tagline,
+            }, quantity)
+            setIsAdded(true)
+            setTimeout(() => setIsAdded(false), 2000)
+          }}
+        >
+          {isAdded ? (
+            <>
+              <Check className="w-5 h-5 mr-2" />
+              Đã thêm vào giỏ
+            </>
+          ) : (
+            t.productDetail.addToCart
+          )}
         </Button>
         <div className="flex gap-3">
           <Button

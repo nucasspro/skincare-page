@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
 import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
 import { I18nProvider } from "@/lib/i18n-context"
+import { CartProvider } from "@/lib/cart-context"
 import { PromotionBanner } from "@/components/promotion-banner"
 import "./globals.css"
 
@@ -31,9 +32,11 @@ export default function RootLayout({
     <html lang="vi">
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         <ParallaxProviderWrapper>
-          <PromotionBanner />
-          <I18nProvider>{children}</I18nProvider>
-          {/* <Analytics /> */}
+          <CartProvider>
+            <PromotionBanner />
+            <I18nProvider>{children}</I18nProvider>
+            {/* <Analytics /> */}
+          </CartProvider>
         </ParallaxProviderWrapper>
       </body>
     </html>

@@ -3,10 +3,11 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Filter, ShoppingCart, X } from "lucide-react"
+import { Filter, ShoppingCart, X, Check } from "lucide-react"
 import Navigation from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useI18n } from "@/lib/i18n-context"
+import { useCart } from "@/lib/cart-context"
 
 interface Product {
   id: string
@@ -21,6 +22,7 @@ interface Product {
 
 export default function ProductsPage() {
   const { t } = useI18n()
+  const { addItem } = useCart()
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([])
@@ -28,6 +30,7 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState("featured")
   const [currentPage, setCurrentPage] = useState(1)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set())
 
   const productsPerPage = 6
 
@@ -133,6 +136,25 @@ export default function ProductsPage() {
   }
 
   const hasActiveFilters = selectedCategory !== "all" || selectedNeeds.length > 0 || priceRange[1] < 200
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      tagline: product.tagline,
+    }, 1)
+
+    setAddedItems((prev) => new Set(prev).add(product.id))
+    setTimeout(() => {
+      setAddedItems((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(product.id)
+        return newSet
+      })
+    }, 2000)
+  }
 
   return (
     <>
@@ -337,11 +359,24 @@ export default function ProductsPage() {
                       </Link>
 
                       <button
-                        onClick={() => console.log("Added to cart:", product.name)}
-                        className="w-full py-2.5 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition-colors flex items-center justify-center gap-2"
+                        onClick={() => handleAddToCart(product)}
+                        className={`w-full py-2.5 rounded-full font-medium transition-colors flex items-center justify-center gap-2 ${
+                          addedItems.has(product.id)
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-stone-900 hover:bg-stone-800 text-white"
+                        }`}
                       >
-                        <ShoppingCart className="w-4 h-4" />
-                        {t.productListing.addToCart}
+                        {addedItems.has(product.id) ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            Đã thêm vào giỏ
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart className="w-4 h-4" />
+                            {t.productListing.addToCart}
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>

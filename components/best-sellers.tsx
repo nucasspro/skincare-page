@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
 import { useI18n } from "@/lib/i18n-context"
+import { useCart } from "@/lib/cart-context"
 
 interface Product {
   id: string
@@ -18,6 +19,7 @@ interface Product {
 export function BestSellers() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const { t } = useI18n()
+  const { addItem } = useCart()
 
   const products: Product[] = [
     {
@@ -95,7 +97,13 @@ export function BestSellers() {
                     <button
                       onClick={(e) => {
                         e.preventDefault()
-                        console.log("Added to cart:", product.name)
+                        addItem({
+                          id: product.id,
+                          name: product.name,
+                          price: product.price,
+                          image: product.image,
+                          tagline: product.tagline,
+                        })
                       }}
                       className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
                     >

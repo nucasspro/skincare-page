@@ -6,11 +6,13 @@ import Image from "next/image"
 import { Menu, X, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n-context"
+import { useCart } from "@/lib/cart-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SearchModal } from "@/components/search-modal"
 
 export function Navigation() {
   const { t } = useI18n()
+  const { getTotalItems } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
 
@@ -93,17 +95,21 @@ export function Navigation() {
 
               <SearchModal />
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 relative"
-                aria-label={t.nav.cart}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                  0
-                </span>
-              </Button>
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 relative"
+                  aria-label={t.nav.cart}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
             </div>
           </div>
@@ -114,17 +120,21 @@ export function Navigation() {
 
             <SearchModal />
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
-              aria-label={t.nav.cart}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                0
-              </span>
-            </Button>
+            <Link href="/cart">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
+                aria-label={t.nav.cart}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Button>
+            </Link>
           </div>
         </div>
 
