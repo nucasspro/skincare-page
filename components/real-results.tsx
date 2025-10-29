@@ -4,6 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 
 import { useI18n } from "@/lib/i18n-context"
+import { getReviewsByProductId } from "@/lib/review-service"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import Image from "next/image"
 
@@ -14,16 +15,6 @@ interface BeforeAfterImage {
   afterImage: string
   duration: string
   description: string
-}
-
-interface Review {
-  id: number
-  name: string
-  rating: number
-  date: string
-  review: string
-  beforeImage: string
-  afterImage: string
 }
 
 function BeforeAfterSlider({
@@ -159,90 +150,8 @@ export function RealResults({ productId }: { productId: string }) {
     },
   ]
 
-const reviews = [
-  {
-    id: 1,
-    name: "Nguyễn Minh Anh",
-    rating: 5,
-    date: "2 tuần trước",
-    review: "Kem chống nắng tốt nhất mình từng dùng! Da mình vừa được bảo vệ vừa sáng lên trông thấy, không hề bết dính.",
-    beforeImage: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-    afterImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-  },
-  {
-    id: 2,
-    name: "Trần Thanh Hương",
-    rating: 5,
-    date: "1 tháng trước",
-    review: "Da mình khô và dễ bị sạm sau khi ra nắng, nhưng từ khi dùng Cellic thì da đều màu và mịn hơn hẳn. Giá hợp lý cho chất lượng!",
-    beforeImage: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    afterImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-  },
-  {
-    id: 3,
-    name: "Phạm Thu Trang",
-    rating: 5,
-    date: "3 tuần trước",
-    review: "Ban đầu mình cũng nghi ngờ, nhưng sau 2 tuần dùng thì thấy da mịn màng hơn rõ rệt. Texture nhẹ tênh, thấm nhanh!",
-    beforeImage: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-    afterImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-  },
-  {
-    id: 4,
-    name: "Lê Hoàng Mai",
-    rating: 5,
-    date: "5 ngày trước",
-    review: "Mình hay bị nám và tàn nhang, dùng Cellic được 3 tuần thấy vết nám mờ đi nhiều. Quan trọng là không gây mụn nữa!",
-
-    beforeImage: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    afterImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-  },
-  {
-    id: 5,
-    name: "Võ Thị Lan",
-    rating: 5,
-    date: "2 tháng trước",
-    review: "Da mình nhạy cảm dễ đỏ, nhưng dùng em này không bị kích ứng gì cả. Lại còn kiềm dầu tốt, makeup lên cũng đẹp hơn.",
-    beforeImage: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-    afterImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-  },
-  {
-    id: 6,
-    name: "Đặng Khánh Linh",
-    rating: 5,
-    date: "1 tuần trước",
-    review: "Texture mịn lắm, bôi lên không thấy trắng bệch hay vón cục. Da mình tone up tự nhiên, mọi người cứ hỏi mình dùng kem gì!",
-    beforeImage: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-    afterImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-  },
-  {
-    id: 7,
-    name: "Hoàng Bảo Ngọc",
-    rating: 5,
-    date: "10 ngày trước",
-    review: "Mình làm việc ngoài trời nhiều, da hay bị cháy nắng. Từ khi dùng Cellic thì da khỏe hơn hẳn, không còn bị rát đỏ như trước.",
-    beforeImage: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-    afterImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-  },
-  {
-    id: 8,
-    name: "Bùi Thùy Dương",
-    rating: 5,
-    date: "3 tuần trước",
-    review: "SPF 50+ mà không hề nặng mặt! Mình dùng cả ngày vẫn thấy thoải mái, da không bị bóng nhờn. Repurchase chắc chắn!",
-    beforeImage: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    afterImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-  },
-  {
-    id: 9,
-    name: "Phan Quỳnh Anh",
-    rating: 5,
-    date: "1 tháng trước",
-    review: "Đắng nhất là mình mua muộn quá! Da mình từ xỉn màu giờ sáng đều tự nhiên, lỗ chân lông cũng nhỏ lại. Yêu Cellic quá đi!",
-        beforeImage: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-    afterImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-  },
-];
+  // Get reviews from service
+  const reviews = getReviewsByProductId(productId)
 
   const currentResult = resultsData.find((r) => r.productId === productId) || resultsData[0]
 

@@ -9,7 +9,10 @@ import { RealResults } from "@/components/real-results"
 import { RecentlyViewed } from "@/components/recently-viewed"
 import { SimilarProducts } from "@/components/similar-products"
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Await params in Next.js 15+
+  const { id } = await params
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -37,11 +40,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <ProductDetailsAccordion />
         </section>
 
-        <RealResults productId={params.id} />
+        <RealResults productId={id} />
 
         {/* Similar Products */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-          <SimilarProducts productId={params.id} />
+          <SimilarProducts productId={id} />
         </section>
 
         {/* Q&A Section */}
