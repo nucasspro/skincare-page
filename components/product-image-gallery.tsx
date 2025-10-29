@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
+import { useState } from "react"
 
 const productImages = [
   "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
@@ -18,9 +18,9 @@ export function ProductImageGallery() {
 
   return (
     <div className="space-y-4">
-      {/* Main Image */}
+      {/* Main Image - Responsive ratio: 4/3 on mobile, square on desktop */}
       <div
-        className="relative aspect-square bg-stone-50 rounded-2xl overflow-hidden cursor-zoom-in"
+        className="relative bg-stone-50 rounded-2xl overflow-hidden cursor-zoom-in aspect-[4/3] sm:aspect-square lg:aspect-square"
         onMouseEnter={() => setIsZoomed(true)}
         onMouseLeave={() => setIsZoomed(false)}
       >

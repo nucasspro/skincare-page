@@ -1,13 +1,13 @@
+import { FeatureHighlight } from "@/components/feature-highlight"
+import { Footer } from "@/components/footer"
 import { Navigation } from "@/components/navigation"
+import { ProductDetailsAccordion } from "@/components/product-details-accordion"
 import { ProductImageGallery } from "@/components/product-image-gallery"
 import { ProductInfo } from "@/components/product-info"
-import { FeatureHighlight } from "@/components/feature-highlight"
-import { ProductDetailsAccordion } from "@/components/product-details-accordion"
-import { RealResults } from "@/components/real-results"
-import { SimilarProducts } from "@/components/similar-products"
 import { ProductQA } from "@/components/product-qa"
+import { RealResults } from "@/components/real-results"
 import { RecentlyViewed } from "@/components/recently-viewed"
-import { Footer } from "@/components/footer"
+import { SimilarProducts } from "@/components/similar-products"
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   return (
@@ -18,9 +18,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         {/* Product Gallery & Info Section */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Mobile: 60% image, Desktop: 50% image */}
             <div className="lg:col-span-1">
               <ProductImageGallery />
             </div>
+            {/* Mobile: 40% text, Desktop: 50% text */}
             <div className="lg:col-span-1">
               <ProductInfo />
             </div>
