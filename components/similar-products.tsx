@@ -1,7 +1,7 @@
-import Image from "next/image"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { getRelatedProducts } from "@/lib/product-service"
+import Image from "next/image"
+import Link from "next/link"
 
 interface SimilarProductsProps {
   productId: string
@@ -31,10 +31,13 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
                 />
               </div>
               <div className="space-y-1">
-                <h3 className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors">
+                <h3
+                  className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+                  title={product.name}
+                >
                   {product.name}
                 </h3>
-                <p className="text-sm text-stone-600">{product.tagline}</p>
+                <p className="text-sm text-stone-600 truncate" title={product.tagline}>{product.tagline}</p>
                 <p className="text-lg font-medium text-gray-900">${product.price}.00</p>
               </div>
               <Button

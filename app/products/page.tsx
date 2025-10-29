@@ -268,10 +268,13 @@ export default function ProductsPage() {
 
                     <div className="p-4">
                       <Link href={`/product/${product.id}`}>
-                        <h3 className="text-lg font-medium text-gray-900 mb-1 group-hover:text-stone-600 transition-colors">
+                        <h3
+                          className="text-lg font-medium text-gray-900 mb-1 group-hover:text-stone-600 transition-colors truncate"
+                          title={product.name}
+                        >
                           {product.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3">{product.tagline}</p>
+                        <p className="text-sm text-gray-600 mb-3 truncate" title={product.tagline}>{product.tagline}</p>
                         <p className="text-lg font-medium text-gray-900 mb-4">${product.price}</p>
                       </Link>
 

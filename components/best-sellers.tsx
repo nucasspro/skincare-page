@@ -1,12 +1,12 @@
 "use client"
 
+import { useCart } from "@/lib/cart-context"
+import { useI18n } from "@/lib/i18n-context"
+import { getFeaturedProducts } from "@/lib/product-service"
+import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
-import { useI18n } from "@/lib/i18n-context"
-import { useCart } from "@/lib/cart-context"
-import { getFeaturedProducts } from "@/lib/product-service"
 
 export function BestSellers() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
@@ -75,10 +75,13 @@ export function BestSellers() {
 
                 {/* Product Info */}
                 <div className="space-y-1">
-                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors">
+                  <h3
+                    className="text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+                    title={product.name}
+                  >
                     {product.name}
                   </h3>
-                  <p className="text-sm text-gray-600">{product.tagline}</p>
+                  <p className="text-sm text-gray-600 truncate" title={product.tagline}>{product.tagline}</p>
                   <p className="text-lg font-medium text-gray-900">${product.price}</p>
                 </div>
               </Link>

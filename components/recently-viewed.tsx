@@ -50,7 +50,10 @@ export function RecentlyViewed() {
                 />
               </div>
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors">
+                <h3
+                  className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+                  title={product.name}
+                >
                   {product.name}
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -83,7 +86,10 @@ export function RecentlyViewed() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors">
+                  <h3
+                    className="font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+                    title={product.name}
+                  >
                     {product.name}
                   </h3>
                   <p className="text-lg font-medium text-gray-900">${product.price}.00</p>

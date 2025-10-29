@@ -1,12 +1,12 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { GeistSans } from 'geist/font/sans'
-import { Inter } from 'next/font/google'
-import { Analytics } from "@vercel/analytics/next"
 import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
-import { I18nProvider } from "@/lib/i18n-context"
-import { CartProvider } from "@/lib/cart-context"
 import { PromotionBanner } from "@/components/promotion-banner"
+import { ScrollToTop } from "@/components/scroll-to-top"
+import { CartProvider } from "@/lib/cart-context"
+import { I18nProvider } from "@/lib/i18n-context"
+import { GeistSans } from 'geist/font/sans'
+import type { Metadata } from "next"
+import { Inter } from 'next/font/google'
+import type React from "react"
 import "./globals.css"
 
 const geistSans = GeistSans
@@ -35,6 +35,7 @@ export default function RootLayout({
           <CartProvider>
             <PromotionBanner />
             <I18nProvider>{children}</I18nProvider>
+            <ScrollToTop />
             {/* <Analytics /> */}
           </CartProvider>
         </ParallaxProviderWrapper>
