@@ -24,11 +24,11 @@ export function BrandStoryPreview() {
           {/* Text Side - Left */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <p className="text-sm font-medium text-stone-600 tracking-wider uppercase">{t.brandStory.title}</p>
-              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">{t.brandStory.subtitle}</h2>
+              <p className="text-sm font-medium text-stone-600 tracking-wider uppercase p-desc">{t.brandStory.title}</p>
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 h-heading">{t.brandStory.subtitle}</h2>
             </div>
 
-            <div className="space-y-6 text-gray-700 leading-relaxed">
+            <div className="space-y-6 text-gray-700 leading-relaxed p-desc">
               <div className="flex gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
                 <p>{t.brandStory.point1}</p>
@@ -49,7 +49,7 @@ export function BrandStoryPreview() {
 
             <Link
               href="/brand-story"
-              className="inline-flex items-center gap-2 text-gray-900 font-medium hover:gap-4 transition-all duration-300 group"
+              className="inline-flex items-center gap-2 text-gray-900 font-medium hover:gap-4 transition-all duration-300 group p-desc"
             >
               {t.brandStory.cta}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

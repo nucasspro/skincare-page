@@ -144,3 +144,14 @@
     font-feature-settings: "liga" 1, "kern" 1, "calt" 1;
   }
 }
+
+/* Font utility classes */
+.font-air { font-family: var(--font-air); }
+.font-fragment { font-family: var(--font-fragment); }
+
+/* Short-hand roles per yêu cầu */
+.h-heading { font-family: var(--font-air); font-weight: 400; }
+.p-desc { font-family: var(--font-air); font-style: italic; }
+.nav-link { font-family: var(--font-air); font-style: italic; }
+.tag-small { font-family: var(--font-air); font-style: italic; font-size: 0.875rem; }
+.slogan { font-family: var(--font-fragment); }

@@ -4,6 +4,7 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { GeistSans } from 'geist/font/sans'
+import { Air, Fragment } from './fonts'
 import type { Metadata } from "next"
 import { Inter } from 'next/font/google'
 import type React from "react"
@@ -30,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.className} ${Air.variable} ${Fragment.variable} antialiased`} suppressHydrationWarning>
         <ParallaxProviderWrapper>
           <CartProvider>
             <PromotionBanner />

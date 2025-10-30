@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 
 const promotions = [
-    "🎁 NHẬN NGAY MẪU THỬ MIỄN PHÍ SERUM VITAMIN C - NHẬN TẠI ĐÂY",
-    "✨ GIẢM 30% TẤT CẢ SẢN PHẨM CHĂM SÓC DA - ÁP DỤNG NGAY",
-    "💎 COMBO CHĂM SÓC DA CAO CẤP CHỈ 1.299K - MUA NGAY",
-    "🌟 MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC CHO ĐƠN HÀNG TỪ 500K",
-    "🔥 SALE CUỐI TUẦN - GIẢM ĐẾN 50% TẤT CẢ SẢN PHẨM",
-    "🎯 CHƯƠNG TRÌNH TÍCH ĐIỂM ĐỔI QUÀ - THAM GIA NGAY"
+    "🎁 Nhận ngay mẫu thử miễn phí serum vitamin C - nhận tại đây",
+    "✨ Giảm 30% tất cả sản phẩm chăm sóc da - áp dụng ngay",
+    "💎 Combo chăm sóc da cao cấp chỉ 1.299k - mua ngay",
+    "🌟 Miễn phí vận chuyển toàn quốc cho đơn hàng từ 500k",
+    "🔥 Sale cuối tuần - giảm đến 50% tất cả sản phẩm",
+    "🎯 Chương trình tích điểm đổi quà - tham gia ngay"
 ]
 
 export function PromotionBanner() {
@@ -23,7 +23,7 @@ export function PromotionBanner() {
     }, [])
 
     return (
-        <div className="relative bg-black text-white py-3 px-4 text-center text-sm font-medium h-[50px] flex items-center justify-center overflow-hidden z-50">
+        <div className="relative bg-black text-white py-1 px-4 text-center text-xs font-medium h-[30px] flex items-center justify-center overflow-hidden z-50">
             {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black animate-pulse opacity-50" />
 
