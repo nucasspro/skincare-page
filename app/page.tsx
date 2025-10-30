@@ -1,17 +1,16 @@
-import { Navigation } from "@/components/navigation"
-import { VideoHero } from "@/components/video-hero"
 import { BestSellers } from "@/components/best-sellers"
 import { BrandStoryPreview } from "@/components/brand-story-preview"
-import { SocialMediaShowcase } from "@/components/social-media-showcase"
-import { PRArticles } from "@/components/pr-articles"
-import { PromoSlider } from "@/components/promo-slider"
 import { Footer } from "@/components/footer"
+import { Navigation } from "@/components/navigation"
 import { ProductFeature } from "@/components/product-feature"
+import { PromoSlider } from "@/components/promo-slider"
+import { SocialMediaShowcase } from "@/components/social-media-showcase"
+import { VideoHero } from "@/components/video-hero"
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      <Navigation isHomePage={true} />
       <VideoHero />
       <ProductFeature />
       <BestSellers />

@@ -1,20 +1,20 @@
 "use client"
 
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { CartDropdown } from "@/components/cart-dropdown"
 import { SearchModal } from "@/components/search-modal"
-import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
-import { Menu, ShoppingCart, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
 export interface NavigationProps {
   isTransparent?: boolean
+  isHomePage?: boolean
 }
 
-export function Navigation({ isTransparent = true }: NavigationProps) {
+export function Navigation({ isTransparent = true, isHomePage = false }: NavigationProps) {
   const { t } = useI18n()
   const { getTotalItems } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -23,7 +23,12 @@ export function Navigation({ isTransparent = true }: NavigationProps) {
   const [passedBanner, setPassedBanner] = useState(false) // true khi scroll qua 30px
   const menuLinkClass = isSticky
     ? "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-    : "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+    : isTransparent
+    ? "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+    : "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+
+  // Determine logo based on isHomePage and sticky state
+  const logoSrc = isHomePage && !isSticky ? "/logo/logo-white.svg" : "/logo/logo-black.svg"
 
   useEffect(() => {
     // Mark as hydrated
@@ -80,7 +85,7 @@ export function Navigation({ isTransparent = true }: NavigationProps) {
               className="flex items-center min-w-0"
             >
               <Image
-                src="/logo/logo-color.svg"
+                src={logoSrc}
                 alt="CELLIC"
                 width={320}
                 height={80}
@@ -121,49 +126,21 @@ export function Navigation({ isTransparent = true }: NavigationProps) {
             </div>
 
             {/* Desktop Icons - Far Right */}
-            <div className={`hidden md:flex items-center gap-4 ml-auto pl-6 border-l ${isSticky ? "border-gray-200 text-gray-700" : "border-white/30 text-white group-hover:text-black group-hover:border-gray-200"}`}>
-              <LanguageSwitcher />
+            <div className={`hidden md:flex items-center gap-4 ml-auto pl-6 border-l ${isSticky ? "border-gray-200 text-gray-700" : isTransparent ? "border-white/30 text-white group-hover:text-black group-hover:border-gray-200" : "border-gray-200 text-gray-700"}`}>
+              {/* <LanguageSwitcher /> */}
 
               <SearchModal />
 
-              <Link href="/cart">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`${isSticky ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100" : "text-white group-hover:text-black hover:bg-transparent"} h-9 w-9 relative`}
-                  aria-label={t.nav.cart}
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  {getTotalItems() > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                      {getTotalItems()}
-                    </span>
-                  )}
-                </Button>
-              </Link>
+              <CartDropdown />
             </div>
 
             {/* Mobile Icons - Right */}
             <div className="flex md:hidden items-center gap-2 ml-auto">
-              <LanguageSwitcher />
+              {/* <LanguageSwitcher /> */}
 
               <SearchModal />
 
-              <Link href="/cart">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
-                  aria-label={t.nav.cart}
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  {getTotalItems() > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                      {getTotalItems()}
-                    </span>
-                  )}
-                </Button>
-              </Link>
+              <CartDropdown />
             </div>
           </div>
 

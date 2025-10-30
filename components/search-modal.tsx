@@ -98,7 +98,7 @@ export function SearchModal() {
             <button
                 onClick={() => setIsOpen(true)}
                 data-slot="button"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md flex items-center justify-center transition-colors"
+                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Tìm kiếm"
             >
                 <Search className="h-5 w-5" />

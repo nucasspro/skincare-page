@@ -54,7 +54,7 @@ export function ProductCard({
                 e.preventDefault()
                 onAddToCart(product)
               }}
-              className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+              className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer"
             >
               <ShoppingCart className="w-4 h-4" />
               {addToCartLabel}
