@@ -20,7 +20,7 @@ export function ProductImageGallery() {
     <div className="space-y-4">
       {/* Main Image - Responsive ratio: 4/3 on mobile, square on desktop */}
       <div
-        className="relative bg-stone-50 rounded-2xl overflow-hidden cursor-zoom-in aspect-[4/3] sm:aspect-square lg:aspect-square"
+        className="relative bg-stone-50 overflow-hidden cursor-zoom-in aspect-[4/3] sm:aspect-square lg:aspect-square"
         onMouseEnter={() => setIsZoomed(true)}
         onMouseLeave={() => setIsZoomed(false)}
       >
@@ -40,7 +40,7 @@ export function ProductImageGallery() {
             key={index}
             onClick={() => setSelectedImage(index)}
             className={cn(
-              "relative aspect-square bg-stone-50 rounded-lg overflow-hidden border-2 transition-all",
+              "relative aspect-square bg-stone-50 overflow-hidden transition-all",
               selectedImage === index
                 ? "border-stone-900 ring-2 ring-stone-900 ring-offset-2"
                 : "border-transparent hover:border-stone-300",

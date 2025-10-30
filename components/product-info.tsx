@@ -1,11 +1,10 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus, Heart, Share2, Check } from "lucide-react"
-import { useI18n } from "@/lib/i18n-context"
 import { useCart } from "@/lib/cart-context"
+import { useI18n } from "@/lib/i18n-context"
+import { Check, Minus, Plus } from "lucide-react"
+import { useState } from "react"
 
 export function ProductInfo() {
   const [quantity, setQuantity] = useState(1)
@@ -19,7 +18,7 @@ export function ProductInfo() {
       {/* Product Title & Price */}
       <div className="space-y-2">
         <h1 className="text-3xl sm:text-4xl font-light text-gray-900 text-balance">{t.bestSellers.products.essence.name}</h1>
-        <p className="text-sm sm:text-lg text-stone-600">{t.bestSellers.products.essence.tagline}</p>
+        {/* <p className="text-sm sm:text-lg text-stone-600">{t.bestSellers.products.essence.tagline}</p> */}
         <div className="flex items-baseline gap-2 sm:gap-3 pt-2">
           <span className="text-2xl sm:text-3xl font-medium text-gray-900">1.152.000đ</span>
           <span className="text-sm sm:text-lg text-stone-500 line-through">1.560.000đ</span>
@@ -48,6 +47,40 @@ export function ProductInfo() {
             <span>{t.productDetail.benefits.allSkinTypes}</span>
           </li>
         </ul>
+      </div>
+
+      {/* Product Highlights - 4 Icons */}
+      <div className="grid grid-cols-4 gap-3 py-4 px-4">
+        {/* Icon 1: No Alcohol */}
+        <div className="flex flex-col items-center gap-2 text-center">
+          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2L9 6H15L12 2Z" />
+            <path d="M9 6V18C9 19.66 10.34 21 12 21C13.66 21 15 19.66 15 18V6" />
+            <path d="M7 8H17" />
+            <line x1="10" y1="12" x2="14" y2="12" strokeLinecap="round" />
+          </svg>
+          <p className="text-xs font-medium text-gray-900">Không cồn</p>
+        </div>
+
+        {/* Icon 2: No Sulfate */}
+        <div className="flex flex-col items-center gap-2 text-center">
+          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="9" />
+            <line x1="12" y1="7" x2="12" y2="17" />
+            <line x1="7" y1="12" x2="17" y2="12" />
+          </svg>
+          <p className="text-xs font-medium text-gray-900">Không sulfate</p>
+        </div>
+
+        {/* Icon 3: No Mineral Oil */}
+        <div className="flex flex-col items-center gap-2 text-center">
+          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2L19 7V17C19 18.66 15.66 20 12 20C8.34 20 5 18.66 5 17V7L12 2Z" />
+            <path d="M12 10L8 12.5V17" />
+            <path d="M12 10L16 12.5V17" />
+          </svg>
+          <p className="text-xs font-medium text-gray-900">Không dầu khoáng</p>
+        </div>
       </div>
 
       {/* Quantity Selector */}
@@ -100,7 +133,7 @@ export function ProductInfo() {
             t.productDetail.addToCart
           )}
         </Button>
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <Button
             variant="outline"
             size="lg"
@@ -114,11 +147,11 @@ export function ProductInfo() {
             <Share2 className="w-5 h-5 mr-2" />
             {t.productDetail.share}
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* Additional Info */}
-      <div className="space-y-2 pt-4 text-sm text-stone-600">
+      {/* <div className="space-y-2 pt-4 text-sm text-stone-600">
         <p className="flex items-center gap-2">
           <span className="font-medium text-gray-900">{t.productDetail.freeShipping}</span>{" "}
           {t.productDetail.freeShippingText}
@@ -126,7 +159,7 @@ export function ProductInfo() {
         <p className="flex items-center gap-2">
           <span className="font-medium text-gray-900">{t.productDetail.returns}</span> {t.productDetail.returnsText}
         </p>
-      </div>
+      </div> */}
     </div>
   )
 }

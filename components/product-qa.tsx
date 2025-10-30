@@ -35,7 +35,13 @@ const faqs = [
   },
 ]
 
-export function ProductQA() {
+export interface ProductQAProps {
+  limit?: number
+}
+
+export function ProductQA({ limit }: ProductQAProps) {
+  const displayedFaqs = limit ? faqs.slice(0, limit) : faqs
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center space-y-2 mb-10">
@@ -44,7 +50,7 @@ export function ProductQA() {
       </div>
 
       <Accordion type="single" collapsible className="space-y-3">
-        {faqs.map((faq, index) => (
+        {displayedFaqs.map((faq, index) => (
           <AccordionItem
             key={index}
             value={`item-${index}`}
@@ -58,11 +64,17 @@ export function ProductQA() {
         ))}
       </Accordion>
 
-      <div className="text-center mt-10">
-        <p className="text-stone-600 mb-4">Vẫn còn thắc mắc?</p>
-        <button className="text-gray-900 font-medium hover:text-stone-600 transition-colors underline underline-offset-4">
-          Liên hệ đội ngũ chăm sóc khách hàng
-        </button>
+      <div className="text-center mt-12">
+        <p className="text-stone-600 mb-6 text-lg">Vẫn còn thắc mắc?</p>
+        <div className="inline-block">
+          <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 font-semibold rounded-full hover:bg-gray-900 hover:text-white transition-all hover:shadow-lg hover:scale-105 duration-300 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Liên hệ đội ngũ chăm sóc khách hàng
+          </button>
+        </div>
+        <p className="text-stone-500 text-sm mt-4">Chúng tôi sẵn sàng giúp bạn, hãy gửi tin nhắn cho chúng tôi</p>
       </div>
     </div>
   )

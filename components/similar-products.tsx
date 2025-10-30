@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
-import { getRelatedProducts } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/currency-util"
+import { getRelatedProducts } from "@/lib/product-service"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -15,8 +15,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-light text-gray-900">You May Also Like</h2>
-        <p className="text-stone-600">Complete your skincare routine</p>
+        <h2 className="text-4xl text-gray-900">Có thể bạn cũng thích</h2>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -45,7 +44,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
                 variant="outline"
                 className="w-full rounded-full group-hover:bg-gray-900 group-hover:text-white transition-colors bg-transparent"
               >
-                Quick Add
+                Thêm vào giỏ
               </Button>
             </div>
           </Link>

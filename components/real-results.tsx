@@ -208,60 +208,33 @@ export function RealResults({ productId }: { productId: string }) {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-stone-50">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">
-            {t.productDetail.realResults.title}
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.productDetail.realResults.subtitle}</p>
-        </div>
-
-        <div className="max-w-4xl mx-auto mb-20">
-          <BeforeAfterSlider
-            beforeImage={currentResult.beforeImage}
-            afterImage={currentResult.afterImage}
-            beforeLabel={t.productDetail.realResults.before}
-            afterLabel={t.productDetail.realResults.after}
-            dragLabel={t.productDetail.realResults.dragSlider}
-            className="aspect-[4/3] rounded-2xl shadow-2xl"
-          />
-
-          {/* Result Info */}
-          <div className="mt-8 text-center space-y-2">
-            <p className="text-lg font-medium text-gray-900">{currentResult.productName}</p>
-            <p className="text-gray-600">{currentResult.description}</p>
-            <p className="text-sm text-gray-500">
-              {t.productDetail.realResults.after} {currentResult.duration}
-            </p>
-          </div>
-        </div>
 
         <div className="mb-16">
-          <h3 className="text-2xl font-light text-gray-900 mb-8 text-center">
+          <h2 className="text-4xl text-gray-900 mb-8 text-center">
             {t.productDetail.realResults.customerReviews || "Customer Reviews"}
-          </h3>
+          </h2>
 
           {/* Carousel Container */}
           <div className="relative">
-            {/* Navigation Buttons */}
+            {/* Navigation Buttons - Positioned Outside */}
             <button
               onClick={() => { goToPrevReview(); setIsAutoPlaying(false); }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -left-20 md:-left-16 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all cursor-pointer group"
               aria-label="Previous reviews"
             >
-              <ChevronLeft className="w-6 h-6 text-gray-900" />
+              <ChevronLeft className="w-6 h-6 text-gray-900 group-hover:-translate-x-1 transition-transform" />
             </button>
 
             <button
               onClick={() => { goToNextReview(); setIsAutoPlaying(false); }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 -right-20 md:-right-16 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all cursor-pointer group"
               aria-label="Next reviews"
             >
-              <ChevronRight className="w-6 h-6 text-gray-900" />
+              <ChevronRight className="w-6 h-6 text-gray-900 group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Reviews Grid with Animation */}
-            <div className="overflow-hidden">
+            <div className="overflow-hidden px-8 md:px-16">
               <div
                 className="grid md:grid-cols-3 gap-8 transition-all duration-700 ease-in-out"
                 onMouseEnter={() => setIsAutoPlaying(false)}
@@ -269,15 +242,7 @@ export function RealResults({ productId }: { productId: string }) {
               >
                 {getCurrentReviews().map((review) => (
               <div key={review.id} className={`bg-white rounded-2xl overflow-hidden shadow-sm ${direction === 'next' ? 'animate-slideFromRight' : 'animate-slideFromLeft'}`}>
-                {/* Before/After Slider */}
-                <BeforeAfterSlider
-                  beforeImage={review.beforeImage}
-                  afterImage={review.afterImage}
-                  beforeLabel={t.productDetail.realResults.before}
-                  afterLabel={t.productDetail.realResults.after}
-                  dragLabel={t.productDetail.realResults.dragSlider}
-                  className="aspect-square"
-                />
+
 
                 {/* Review Content */}
                 <div className="p-6 space-y-3">
@@ -288,7 +253,7 @@ export function RealResults({ productId }: { productId: string }) {
                   </div>
                   <p className="text-stone-700 leading-relaxed">{review.review}</p>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-gray-900">{review.name}</span>
+                    <span className="font-bold text-gray-900">{review.name}</span>
                     <span className="text-stone-500">{review.date}</span>
                   </div>
                 </div>
@@ -312,27 +277,6 @@ export function RealResults({ productId }: { productId: string }) {
                 />
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <h3 className="text-2xl font-light text-gray-900 mb-8">
-            {t.productDetail.realResults.videoTestimonials || "Video Testimonials"}
-          </h3>
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {[1, 2].map((i) => (
-              <div
-                key={i}
-                className="relative aspect-video bg-stone-100 rounded-xl overflow-hidden group cursor-pointer"
-              >
-                <Image src={`/social-video-${i}.jpg`} alt={`Video testimonial ${i}`} fill className="object-cover" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <div className="w-0 h-0 border-l-[16px] border-l-gray-900 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent ml-1" />
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

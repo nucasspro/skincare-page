@@ -6,7 +6,6 @@ import { ProductImageGallery } from "@/components/product-image-gallery"
 import { ProductInfo } from "@/components/product-info"
 import { ProductQA } from "@/components/product-qa"
 import { RealResults } from "@/components/real-results"
-import { RecentlyViewed } from "@/components/recently-viewed"
 import { SimilarProducts } from "@/components/similar-products"
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -15,7 +14,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      <Navigation isTransparent={false} />
 
       <main className="pt-0">
         {/* Product Gallery & Info Section */}
@@ -33,7 +32,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </section>
 
         {/* Feature Highlight Section */}
-        <FeatureHighlight />
+        <FeatureHighlight features={[
+          { title: "CHỐNG NẮNG", value: "SPF 50+" },
+          { title: "NÂNG TONE", value: "8/10" },
+          { title: "KIỀM DẦU", value: "9/10" }
+        ]} />
 
         {/* Product Details Accordion */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
@@ -49,13 +52,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
         {/* Q&A Section */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 bg-stone-50">
-          <ProductQA />
+          <ProductQA limit={3} />
         </section>
 
-        {/* Recently Viewed */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-          <RecentlyViewed />
-        </section>
+        <div className="h-40"></div>
+
+
       </main>
 
       <Footer />
