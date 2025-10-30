@@ -2,8 +2,8 @@
 
 import { Footer } from "@/components/footer"
 import { Navigation } from "@/components/navigation"
-import { useState } from "react"
 import { Mail, MapPin, Phone } from "lucide-react"
+import { useState } from "react"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -31,7 +31,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      <Navigation isTransparent={false} />
 
       <main className="pt-20">
         {/* Hero Section */}
