@@ -18,13 +18,9 @@ export interface PriceRange {
 // Categories data
 const CATEGORIES: Category[] = [
   { id: "all", name: "Tất cả" },
-  { id: "serums", name: "Serum" },
-  { id: "moisturizers", name: "Kem dưỡng" },
-  { id: "cleansers", name: "Sữa rửa mặt" },
-  { id: "eyeCare", name: "Chăm sóc mắt" },
-  { id: "sunscreen", name: "Kem chống nắng" },
-  { id: "toners", name: "Toner" },
-  { id: "masks", name: "Mặt nạ" },
+  { id: "scalp", name: "Da đầu" },
+  { id: "dry", name: "Da khô" },
+  { id: "normal", name: "Da thường" },
 ]
 
 // Skin Needs data

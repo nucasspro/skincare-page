@@ -1,16 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Menu, X, ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useI18n } from "@/lib/i18n-context"
-import { useCart } from "@/lib/cart-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SearchModal } from "@/components/search-modal"
+import { Button } from "@/components/ui/button"
+import { useCart } from "@/lib/cart-context"
+import { useI18n } from "@/lib/i18n-context"
+import { Menu, ShoppingCart, X } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
-export function Navigation() {
+export interface NavigationProps {
+  isTransparent?: boolean
+}
+
+export function Navigation({ isTransparent = true }: NavigationProps) {
   const { t } = useI18n()
   const { getTotalItems } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -54,155 +58,157 @@ export function Navigation() {
   }, [isHydrated])
 
   return (
-    <header
-      className={`${isSticky ? "fixed" : "absolute"} ${passedBanner ? "top-0" : "top-[30px]"} left-0 right-0 z-50 transition-all duration-300 ${isSticky ? "bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm" : "bg-transparent hover:bg-white border-b border-transparent hover:border-gray-100"} group ${!isSticky ? "is-transparent" : ""}`}
-    >
-      <nav className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center gap-4">
-          {/* Mobile Menu Button - Left */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 -ml-2 text-gray-700 hover:text-gray-900 transition-colors"
-            aria-label="Toggle menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+    <>
+      <header
+        className={`${isSticky ? "fixed" : "absolute"} ${passedBanner ? "top-0" : "top-[30px]"} left-0 right-0 z-50 transition-all duration-300 ${isSticky ? "bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm" : isTransparent ? "bg-transparent hover:bg-white border-b border-transparent hover:border-gray-100" : "bg-white border-b border-gray-100"} group ${!isSticky && isTransparent ? "is-transparent" : ""}`}
+      >
+        <nav className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex h-14 items-center gap-4">
+            {/* Mobile Menu Button - Left */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 -ml-2 text-gray-700 hover:text-gray-900 transition-colors"
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
 
-          {/* Logo - Left on Desktop, Center on Mobile */}
-          <Link
-            href="/"
-            className="flex items-center min-w-0"
-          >
-            <Image
-              src="/logo/logo-color.svg"
-              alt="CELLIC"
-              width={320}
-              height={80}
-              className="h-8 md:h-10 w-auto"
-              priority
-            />
-          </Link>
+            {/* Logo - Left on Desktop, Center on Mobile */}
+            <Link
+              href="/"
+              className="flex items-center min-w-0"
+            >
+              <Image
+                src="/logo/logo-color.svg"
+                alt="CELLIC"
+                width={320}
+                height={80}
+                className="h-8 md:h-10 w-auto"
+                priority
+              />
+            </Link>
 
-          {/* Desktop Navigation - Right of Logo */}
-          <div className="hidden md:flex items-center gap-8 flex-none ml-[50px]">
-            <div className="flex items-center gap-8">
-              <Link href="/about" className={menuLinkClass}>
+            {/* Desktop Navigation - Right of Logo */}
+            <div className="hidden md:flex items-center gap-8 flex-none ml-[50px]">
+              <div className="flex items-center gap-8">
+                <Link href="/about" className={menuLinkClass}>
+                  Giới thiệu
+                </Link>
+
+                {/* Products Link */}
+                <Link
+                  href="/products"
+                  className={menuLinkClass}
+                >
+                  {t.nav.products}
+                </Link>
+
+                <Link
+                  href="/brand-story"
+                  className={menuLinkClass}
+                >
+                  {t.nav.brandStory}
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className={menuLinkClass}
+                >
+                  Liên hệ
+                </Link>
+              </div>
+            </div>
+
+            {/* Desktop Icons - Far Right */}
+            <div className={`hidden md:flex items-center gap-4 ml-auto pl-6 border-l ${isSticky ? "border-gray-200 text-gray-700" : "border-white/30 text-white group-hover:text-black group-hover:border-gray-200"}`}>
+              <LanguageSwitcher />
+
+              <SearchModal />
+
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`${isSticky ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100" : "text-white group-hover:text-black hover:bg-transparent"} h-9 w-9 relative`}
+                  aria-label={t.nav.cart}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile Icons - Right */}
+            <div className="flex md:hidden items-center gap-2 ml-auto">
+              <LanguageSwitcher />
+
+              <SearchModal />
+
+              <Link href="/cart">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
+                  aria-label={t.nav.cart}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              }`}
+          >
+            <div className="py-4 space-y-4 border-t border-gray-200">
+              <Link
+                href="/about"
+                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 Giới thiệu
               </Link>
 
               {/* Products Link */}
               <Link
                 href="/products"
-                className={menuLinkClass}
+                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t.nav.products}
               </Link>
 
               <Link
                 href="/brand-story"
-                className={menuLinkClass}
+                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t.nav.brandStory}
               </Link>
 
               <Link
                 href="/contact"
-                className={menuLinkClass}
+                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Liên hệ
               </Link>
             </div>
           </div>
-
-          {/* Desktop Icons - Far Right */}
-          <div className={`hidden md:flex items-center gap-4 ml-auto pl-6 border-l ${isSticky ? "border-gray-200 text-gray-700" : "border-white/30 text-white group-hover:text-black group-hover:border-gray-200"}`}>
-            <LanguageSwitcher />
-
-            <SearchModal />
-
-            <Link href="/cart">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`${isSticky ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100" : "text-white group-hover:text-black hover:bg-transparent"} h-9 w-9 relative`}
-                aria-label={t.nav.cart}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </Button>
-            </Link>
-          </div>
-
-          {/* Mobile Icons - Right */}
-          <div className="flex md:hidden items-center gap-2 ml-auto">
-            <LanguageSwitcher />
-
-            <SearchModal />
-
-            <Link href="/cart">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 relative"
-                aria-label={t.nav.cart}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            }`}
-        >
-          <div className="py-4 space-y-4 border-t border-gray-200">
-            <Link
-              href="/about"
-              className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Giới thiệu
-            </Link>
-
-            {/* Products Link */}
-            <Link
-              href="/products"
-              className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t.nav.products}
-            </Link>
-
-            <Link
-              href="/brand-story"
-              className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t.nav.brandStory}
-            </Link>
-
-            <Link
-              href="/contact"
-              className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Liên hệ
-            </Link>
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
       <style jsx>{`
         /* Khi header trong suốt: force màu trắng cho mọi nút bên phải */
         .is-transparent :global([data-slot="button"]) {
@@ -231,7 +237,7 @@ export function Navigation() {
           stroke: #000000;
         }
       `}</style>
-    </header>
+    </>
   )
 }
 

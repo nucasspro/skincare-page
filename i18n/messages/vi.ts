@@ -202,6 +202,16 @@ export default {
       next: "Tiếp",
       page: "Trang",
     },
+    featuredArticle: {
+      label: "Bài viết xem thêm",
+      title: "Quy trình 10 bước chăm sóc da Hàn Quốc",
+      description: "Khám phá quy trình chăm sóc da 10 bước được yêu thích tại Hàn Quốc. Chúng tôi sẽ hướng dẫn bạn từng bước để đạt được làn da khỏe mạnh, rạng rỡ và trẻ trung.",
+      readMore: "Đọc bài viết đầy đủ",
+    },
+    faq: {
+      title: "Câu hỏi thường gặp",
+      subtitle: "Tìm câu trả lời cho những câu hỏi phổ biến về sản phẩm và quy trình chăm sóc da của chúng tôi",
+    },
   },
   footer: {
     newsletter: {

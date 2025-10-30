@@ -126,18 +126,18 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   /* Vietnamese text rendering */
   html {
     font-family: var(--font-sans);
   }
-  
+
   /* Ensure Vietnamese characters render correctly */
   * {
     font-variant-ligatures: common-ligatures;
     font-feature-settings: "liga" 1, "kern" 1;
   }
-  
+
   /* Specific fixes for Vietnamese diacritics */
   [lang="vi"], .vietnamese {
     font-family: var(--font-inter), "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
@@ -155,3 +155,13 @@
 .nav-link { font-family: var(--font-air); font-style: italic; }
 .tag-small { font-family: var(--font-air); font-style: italic; font-size: 0.875rem; }
 .slogan { font-family: var(--font-fragment); }
+
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
