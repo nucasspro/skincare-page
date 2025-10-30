@@ -25,15 +25,15 @@ export function FeaturedArticle({
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Text Content - Left */}
-          <div className="space-y-6 p-8 md:p-16 flex flex-col justify-center bg-stone-50">
+          <div className="space-y-6 p-8 md:p-16 pr-12 md:pr-24 flex flex-col justify-start pt-12 md:pt-20 bg-stone-50">
             {label && (
               <span className="text-sm font-medium text-stone-600 uppercase tracking-wider">
                 {label}
               </span>
             )}
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight uppercase">
               {title}
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed">
@@ -56,7 +56,7 @@ export function FeaturedArticle({
           </div>
 
           {/* Image - Right */}
-          <div className="relative w-full h-[800px]">
+          <div className="relative w-full h-[800px] mt-60">
             <Image
               src={imageUrl}
               alt={imageAlt}
