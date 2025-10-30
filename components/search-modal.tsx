@@ -97,6 +97,7 @@ export function SearchModal() {
             {/* Search Button */}
             <button
                 onClick={() => setIsOpen(true)}
+                data-slot="button"
                 className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md flex items-center justify-center transition-colors"
                 aria-label="Tìm kiếm"
             >

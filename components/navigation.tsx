@@ -17,7 +17,9 @@ export function Navigation() {
   const [isHydrated, setIsHydrated] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
   const [passedBanner, setPassedBanner] = useState(false) // true khi scroll qua 30px
-  const menuLinkClass = "relative font-air text-base md:text-lg font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+  const menuLinkClass = isSticky
+    ? "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+    : "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
 
   useEffect(() => {
     // Mark as hydrated
@@ -53,7 +55,7 @@ export function Navigation() {
 
   return (
     <header
-      className={`${isSticky ? "fixed" : "absolute"} ${passedBanner ? "top-0" : "top-[30px]"} left-0 right-0 z-50 transition-all duration-300 ${isSticky ? "bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm" : "bg-transparent hover:bg-white border-b border-transparent hover:border-gray-100"}`}
+      className={`${isSticky ? "fixed" : "absolute"} ${passedBanner ? "top-0" : "top-[30px]"} left-0 right-0 z-50 transition-all duration-300 ${isSticky ? "bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm" : "bg-transparent hover:bg-white border-b border-transparent hover:border-gray-100"} group ${!isSticky ? "is-transparent" : ""}`}
     >
       <nav className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center gap-4">
@@ -73,7 +75,7 @@ export function Navigation() {
             className="flex items-center min-w-0"
           >
             <Image
-              src="/logo/logo-black.svg"
+              src="/logo/logo-color.svg"
               alt="CELLIC"
               width={320}
               height={80}
@@ -114,7 +116,7 @@ export function Navigation() {
           </div>
 
           {/* Desktop Icons - Far Right */}
-          <div className="hidden md:flex items-center gap-4 ml-auto pl-6 border-l border-gray-200">
+          <div className={`hidden md:flex items-center gap-4 ml-auto pl-6 border-l ${isSticky ? "border-gray-200 text-gray-700" : "border-white/30 text-white group-hover:text-black group-hover:border-gray-200"}`}>
             <LanguageSwitcher />
 
             <SearchModal />
@@ -123,7 +125,7 @@ export function Navigation() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100 relative"
+                className={`${isSticky ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100" : "text-white group-hover:text-black hover:bg-transparent"} h-9 w-9 relative`}
                 aria-label={t.nav.cart}
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -201,6 +203,34 @@ export function Navigation() {
           </div>
         </div>
       </nav>
+      <style jsx>{`
+        /* Khi header trong suốt: force màu trắng cho mọi nút bên phải */
+        .is-transparent :global([data-slot="button"]) {
+          color: #ffffff;
+        }
+        .is-transparent :global([data-slot="button"] svg) {
+          stroke: #ffffff;
+        }
+        .is-transparent :global([data-slot="dropdown-menu-trigger"]) {
+          color: #ffffff;
+        }
+        .is-transparent :global([data-slot="dropdown-menu-trigger"] svg) {
+          stroke: #ffffff;
+        }
+        /* Hover toàn header: chuyển text/icon đen */
+        .group:hover :global([data-slot="button"]) {
+          color: #000000;
+        }
+        .group:hover :global([data-slot="button"] svg) {
+          stroke: #000000;
+        }
+        .group:hover :global([data-slot="dropdown-menu-trigger"]) {
+          color: #000000;
+        }
+        .group:hover :global([data-slot="dropdown-menu-trigger"] svg) {
+          stroke: #000000;
+        }
+      `}</style>
     </header>
   )
 }

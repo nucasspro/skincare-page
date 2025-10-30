@@ -48,9 +48,9 @@ export function VideoHero() {
       el.load()
       const playPromise = el.play()
       if (playPromise && typeof playPromise.then === "function") {
-        playPromise.catch(() => {})
+        playPromise.catch(() => { })
       }
-    } catch {}
+    } catch { }
   }, [current])
 
   const goPrev = () => setCurrent((i) => (i - 1 + slides.length) % slides.length)
@@ -65,22 +65,38 @@ export function VideoHero() {
   }, [slides.length])
 
   return (
-    <section className="relative w-full bg-white mt-0">
-      <div className="mx-auto w-full pl-4 sm:pl-6 lg:pl-8 pr-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12 pt-0 md:pt-0 pb-10 md:pb-16">
-          {/* Left: Text */}
-          <div className="order-2 md:order-1">
-            <div className="max-w-xl">
-              <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-gray-900">
+    <section className="relative w-full h-[1080px] md:h-screen overflow-hidden bg-black">
+      {/* Background Video full-screen */}
+      <video
+        key={current}
+        ref={videoRef}
+        muted
+        playsInline
+        autoPlay
+        loop
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src={slides[current].videoSrc} type="video/mp4" />
+      </video>
+
+      {/* Optional subtle gradient for readability */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+
+      {/* Overlay content (left) */}
+      <div className="absolute inset-0 z-10">
+        <div className="mx-auto h-full w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="h-full flex items-center">
+            <div className="max-w-xl text-white">
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight">
                 {slides[current].title}
               </h2>
-              <p className="mt-4 text-sm md:text-base text-gray-600 leading-relaxed">
+              <p className="mt-4 text-base md:text-lg text-white/85 leading-relaxed">
                 {slides[current].description}
               </p>
               {slides[current].cta ? (
                 <a
                   href={slides[current].cta.href}
-                  className="inline-flex items-center mt-6 px-5 py-2.5 rounded-md bg-gray-900 text-white text-sm md:text-base hover:bg-black transition-colors"
+                  className="inline-flex items-center mt-8 px-6 py-3 rounded-full bg-white text-gray-900 text-sm md:text-base hover:bg-gray-100 transition-colors"
                 >
                   {slides[current].cta.label}
                 </a>
@@ -93,53 +109,32 @@ export function VideoHero() {
                     key={idx}
                     aria-label={`slide-${idx + 1}`}
                     onClick={() => setCurrent(idx)}
-                    className={`h-2.5 rounded-full transition-all ${
-                      idx === current ? "w-8 bg-gray-900" : "w-2.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
+                    className={`h-2.5 rounded-full transition-all ${idx === current ? "w-8 bg-white" : "w-2.5 bg-white/50 hover:bg-white/70"
+                      }`}
                   />
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Right: Video */}
-          <div className="order-1 md:order-2">
-            <div className="group relative w-full aspect-[16/9] md:aspect-[4/3] overflow-hidden bg-stone-100">
-              <video
-                key={current}
-                ref={videoRef}
-                muted
-                playsInline
-                autoPlay
-                loop
-                className="absolute inset-0 h-full w-full object-cover"
-              >
-                <source src={slides[current].videoSrc} type="video/mp4" />
-              </video>
-
-              {/* Hover overlay */}
-              <div className="pointer-events-none absolute inset-0 bg-gray-500/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-              {/* Controls */}
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2 sm:px-4">
-                <button
-                  onClick={goPrev}
-                  className="pointer-events-auto h-9 w-9 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow transition"
-                  aria-label="Previous"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={goNext}
-                  className="pointer-events-auto h-9 w-9 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow transition"
-                  aria-label="Next"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
+      </div>
+
+      {/* Slider controls edges */}
+      <div className="absolute inset-0 z-10 flex items-center justify-between px-2 sm:px-4">
+        <button
+          onClick={goPrev}
+          className="h-9 w-9 rounded-full bg-white/85 hover:bg-white text-gray-900 shadow transition"
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <button
+          onClick={goNext}
+          className="h-9 w-9 rounded-full bg-white/85 hover:bg-white text-gray-900 shadow transition"
+          aria-label="Next"
+        >
+          ›
+        </button>
       </div>
     </section>
   )

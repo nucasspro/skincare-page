@@ -1,28 +1,19 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Play } from "lucide-react"
+import Image from "next/image"
+import { ArrowRight } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
 
 export function BrandStoryPreview() {
   const { t } = useI18n()
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const handlePlay = () => {
-    const videoRef = document.getElementById('brand-story-video') as HTMLVideoElement
-    if (videoRef) {
-      videoRef.play()
-      setIsPlaying(true)
-    }
-  }
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-stone-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className="py-20 px-4 sm:px-6 lg:px-0 bg-gradient-to-b from-white to-stone-50">
+      <div className="mx-auto max-w-none">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
           {/* Text Side - Left */}
-          <div className="space-y-8">
+          <div className="space-y-8 lg:pr-12 pl-0 sm:pl-0 md:pl-6 lg:pl-8 xl:pl-12">
             <div className="space-y-4">
               <p className="text-sm font-medium text-stone-600 tracking-wider uppercase p-desc">{t.brandStory.title}</p>
               <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 h-heading">{t.brandStory.subtitle}</h2>
@@ -56,31 +47,16 @@ export function BrandStoryPreview() {
             </Link>
           </div>
 
-          {/* Video Side - Right */}
-          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-stone-100">
-            <video
-              id="brand-story-video"
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            >
-              <source src="/videos/videohero.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-
-            {/* Play Button */}
-            {!isPlaying && (
-              <button
-                onClick={handlePlay}
-                className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors group"
-                aria-label="Play video"
-              >
-                <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                  <Play className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" />
-                </div>
-              </button>
-            )}
+          {/* Image Side - Right (Nature image) - 50% column, full in its half */}
+          <div className="relative h-[600px] overflow-hidden bg-stone-100 w-full">
+            <Image
+              src="/images/backgrounds/5609849.jpg"
+              alt="Nature"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
           </div>
         </div>
       </div>

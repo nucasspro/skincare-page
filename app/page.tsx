@@ -18,7 +18,7 @@ export default function Home() {
       <BrandStoryPreview />
       <SocialMediaShowcase />
       <PromoSlider />
-      <PRArticles />
+      {/* <PRArticles /> hidden temporarily */}
       <Footer />
     </div>
   )
