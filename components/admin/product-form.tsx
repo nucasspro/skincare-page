@@ -13,8 +13,9 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { getAllCategories, getAllSkinNeeds } from '@/lib/category-service'
 import { Product } from '@/lib/product-service'
+import { formatVND } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BookOpen, FileText, FlaskConical, Image as ImageIcon, Package, Plus, Save, Sparkles, Tag, Trash2 } from 'lucide-react'
+import { BookOpen, FileText, FlaskConical, Image as ImageIcon, Package, Plus, Save, Sparkles, Tag, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -41,12 +42,15 @@ interface ProductFormProps {
   product?: Product | null
   onSubmit: (data: ProductFormData & { description: string; benefits: string[]; ingredients: string[] }) => Promise<void>
   onCancel: () => void
+  readOnly?: boolean
 }
 
-export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
+export function ProductForm({ product, onSubmit, onCancel, readOnly = false }: ProductFormProps) {
   const [description, setDescription] = useState('')
   const [benefits, setBenefits] = useState<string[]>([''])
   const [ingredients, setIngredients] = useState<string[]>([''])
+  const [priceDisplay, setPriceDisplay] = useState('')
+  const [originalPriceDisplay, setOriginalPriceDisplay] = useState('')
 
   const {
     register,
@@ -65,6 +69,8 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
   })
 
   const watchedNeeds = watch('needs')
+  const watchedPrice = watch('price')
+  const watchedOriginalPrice = watch('originalPrice')
 
   // Load product data when editing
   useEffect(() => {
@@ -72,6 +78,8 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
       setDescription(product.description || '')
       setBenefits(product.benefits && product.benefits.length > 0 ? product.benefits : [''])
       setIngredients(product.ingredients && product.ingredients.length > 0 ? product.ingredients : [''])
+      setPriceDisplay(product.price ? formatVND(product.price).replace(' đ', '') : '')
+      setOriginalPriceDisplay(product.originalPrice ? formatVND(product.originalPrice).replace(' đ', '') : '')
 
       reset({
         name: product.name,
@@ -93,6 +101,8 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
       setDescription('')
       setBenefits([''])
       setIngredients([''])
+      setPriceDisplay('')
+      setOriginalPriceDisplay('')
       reset({
         name: '',
         tagline: '',
@@ -110,6 +120,19 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
       })
     }
   }, [product, reset])
+
+  // Format price display when form value changes
+  useEffect(() => {
+    if (watchedPrice && watchedPrice > 0) {
+      setPriceDisplay(formatVND(watchedPrice).replace(' VNĐ', ''))
+    }
+  }, [watchedPrice])
+
+  useEffect(() => {
+    if (watchedOriginalPrice && watchedOriginalPrice > 0) {
+      setOriginalPriceDisplay(formatVND(watchedOriginalPrice).replace(' VNĐ', ''))
+    }
+  }, [watchedOriginalPrice])
 
   const handleFormSubmit = async (data: ProductFormData) => {
     await onSubmit({
@@ -148,27 +171,29 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
   const skinNeeds = getAllSkinNeeds()
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 bg-white">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-3 bg-neutral-50">
       <Accordion type="multiple" defaultValue={['basic', 'images', 'classification']} className="w-full">
         {/* Basic Information */}
-        <AccordionItem value="basic" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="basic" className="rounded px-3 mb-2 bg-white border border-neutral-200">
+          <AccordionTrigger className="hover:no-underline py-3 cursor-pointer">
             <div className="flex items-center gap-2">
-              <Package className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Thông tin cơ bản</span>
+              <Package className="h-4 w-4 text-neutral-600" />
+              <span className="text-sm font-medium text-neutral-900">Thông tin cơ bản</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
               <div>
-                <Label htmlFor="name">
+                <Label htmlFor="name" className="text-neutral-700 text-sm font-medium">
                   Tên sản phẩm <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
                   {...register('name')}
-                  className="mt-1 bg-white h-11 rounded-none"
+                  placeholder="Nhập tên sản phẩm"
+                  disabled={readOnly}
+                  className="mt-1.5 bg-white h-9 rounded border border-neutral-300 shadow-none focus:border-neutral-400 focus:outline-none focus:ring-0 text-sm transition-colors"
                 />
                 {errors.name && (
                   <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -177,13 +202,15 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
 
               {/* Tagline */}
               <div>
-                <Label htmlFor="tagline">
+                <Label htmlFor="tagline" className="text-gray-700 font-medium">
                   Tagline <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="tagline"
                   {...register('tagline')}
-                  className="mt-1 bg-white h-11 rounded-none"
+                  placeholder="Nhập tagline"
+                  disabled={readOnly}
+                  className="mt-1 bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                 />
                 {errors.tagline && (
                   <p className="mt-1 text-sm text-red-600">{errors.tagline.message}</p>
@@ -192,16 +219,42 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
 
               {/* Price */}
               <div>
-                <Label htmlFor="price">
+                <Label htmlFor="price" className="text-gray-700 font-medium">
                   Giá <span className="text-red-500">*</span>
                 </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  {...register('price', { valueAsNumber: true })}
-                  className="mt-1 bg-white h-11 rounded-none"
-                />
+                <div className="relative mt-1">
+                  <Input
+                    id="price"
+                    type="text"
+                    value={priceDisplay}
+                    onChange={(e) => {
+                      if (readOnly) return
+                      const inputValue = e.target.value.replace(/[^\d]/g, '')
+                      setPriceDisplay(inputValue)
+                      const numValue = parseFloat(inputValue || '0')
+                      if (!isNaN(numValue)) {
+                        setValue('price', numValue, { shouldValidate: true })
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (readOnly) return
+                      const inputValue = e.target.value.replace(/[^\d]/g, '')
+                      const numValue = parseFloat(inputValue || '0')
+                      if (!isNaN(numValue) && numValue > 0) {
+                        const formatted = formatVND(numValue).replace(' đ', '')
+                        setPriceDisplay(formatted)
+                        setValue('price', numValue, { shouldValidate: true })
+                      } else {
+                        setPriceDisplay('')
+                        setValue('price', 0, { shouldValidate: true })
+                      }
+                    }}
+                    placeholder="Nhập giá (VD: 125000)"
+                    disabled={readOnly}
+                    className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors pr-12"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">đ</span>
+                </div>
                 {errors.price && (
                   <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
                 )}
@@ -209,37 +262,66 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
 
               {/* Original Price */}
               <div>
-                <Label htmlFor="originalPrice">Giá gốc</Label>
-                <Input
-                  id="originalPrice"
-                  type="number"
-                  step="0.01"
-                  {...register('originalPrice', { valueAsNumber: true })}
-                  className="mt-1 bg-white h-11 rounded-none"
-                />
+                <Label htmlFor="originalPrice" className="text-gray-700 font-medium">Giá gốc</Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="originalPrice"
+                    type="text"
+                    value={originalPriceDisplay}
+                    onChange={(e) => {
+                      if (readOnly) return
+                      const inputValue = e.target.value.replace(/[^\d]/g, '')
+                      setOriginalPriceDisplay(inputValue)
+                      const numValue = parseFloat(inputValue || '0')
+                      if (!isNaN(numValue)) {
+                        setValue('originalPrice', numValue > 0 ? numValue : null, { shouldValidate: true })
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (readOnly) return
+                      const inputValue = e.target.value.replace(/[^\d]/g, '')
+                      const numValue = parseFloat(inputValue || '0')
+                      if (!isNaN(numValue) && numValue > 0) {
+                        const formatted = formatVND(numValue).replace(' đ', '')
+                        setOriginalPriceDisplay(formatted)
+                        setValue('originalPrice', numValue, { shouldValidate: true })
+                      } else {
+                        setOriginalPriceDisplay('')
+                        setValue('originalPrice', null, { shouldValidate: true })
+                      }
+                    }}
+                    placeholder="Nhập giá gốc (VD: 150000)"
+                    disabled={readOnly}
+                    className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors pr-12"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">đ</span>
+                </div>
               </div>
 
               {/* Discount */}
               <div>
-                <Label htmlFor="discount">Giảm giá (%)</Label>
+                <Label htmlFor="discount" className="text-gray-700 font-medium">Giảm giá (%)</Label>
                 <Input
                   id="discount"
                   type="number"
                   step="0.01"
                   {...register('discount', { valueAsNumber: true })}
-                  className="mt-1 bg-white h-11 rounded-none"
+                  placeholder="Nhập % giảm giá"
+                  disabled={readOnly}
+                  className="mt-1 bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                 />
               </div>
 
               {/* Category */}
               <div>
-                <Label htmlFor="category">
+                <Label htmlFor="category" className="text-gray-700 font-medium">
                   Danh mục <span className="text-red-500">*</span>
                 </Label>
                 <select
                   id="category"
                   {...register('category')}
-                  className="mt-1 h-11 w-full rounded-none border border-input bg-white px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                  disabled={readOnly}
+                  className="mt-1 h-11 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 outline-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 shadow-none transition-colors"
                 >
                   <option value="">Chọn danh mục</option>
                   {categories.map(cat => (
@@ -255,23 +337,23 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
         </AccordionItem>
 
         {/* Images */}
-        <AccordionItem value="images" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="images" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <ImageIcon className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Hình ảnh</span>
+              <ImageIcon className="h-4 w-4 " />
+              <span className="text-base ">Hình ảnh</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Image */}
               <div>
-                <Label>
+                <Label className="text-gray-700 font-medium">
                   Hình ảnh <span className="text-red-500">*</span>
                 </Label>
                 <div className="mt-2">
                   {/* Preview */}
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] bg-white mb-3">
+                  <div className="border border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] bg-white mb-3">
                     {watch('image') ? (
                       <div className="text-center w-full">
                         <img
@@ -296,7 +378,8 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
                     id="image"
                     {...register('image')}
                     placeholder="/path/to/image.jpg"
-                    className="bg-white h-11 rounded-none"
+                    disabled={readOnly}
+                    className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                   />
                   {errors.image && (
                     <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>
@@ -306,12 +389,12 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
 
               {/* Hover Image */}
               <div>
-                <Label>
+                <Label className="text-gray-700 font-medium">
                   Hình ảnh hover <span className="text-red-500">*</span>
                 </Label>
                 <div className="mt-2">
                   {/* Preview */}
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] bg-white mb-3">
+                  <div className="border border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] bg-white mb-3">
                     {watch('hoverImage') ? (
                       <div className="text-center w-full">
                         <img
@@ -336,7 +419,8 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
                     id="hoverImage"
                     {...register('hoverImage')}
                     placeholder="/path/to/hover-image.jpg"
-                    className="bg-white h-11 rounded-none"
+                    disabled={readOnly}
+                    className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                   />
                   {errors.hoverImage && (
                     <p className="mt-1 text-sm text-red-600">{errors.hoverImage.message}</p>
@@ -348,19 +432,15 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
         </AccordionItem>
 
         {/* Classification */}
-        <AccordionItem value="classification" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="classification" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <Tag className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Phân loại</span>
+              <Tag className="h-4 w-4 " />
+              <span className="text-base ">Phân loại</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pt-4">
-              <Label>
-                Nhu cầu da <span className="text-red-500">*</span>
-              </Label>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2">
                 {skinNeeds.map(need => (
                   <Button
                     key={need.id}
@@ -368,69 +448,73 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
                     variant={watchedNeeds?.includes(need.id) ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => toggleNeed(need.id)}
+                    disabled={readOnly}
+                    className={watchedNeeds?.includes(need.id)
+                      ? 'bg-blue-100 text-blue-800 hover:bg-blue-200 border-0 rounded-md px-3 py-1 h-8 text-sm font-normal cursor-pointer'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 rounded-md px-3 py-1 h-8 text-sm font-normal shadow-none cursor-pointer'}
                   >
                     {need.name}
+                    {watchedNeeds?.includes(need.id) && (
+                      <X className="h-3 w-3 ml-1.5" />
+                    )}
                   </Button>
                 ))}
               </div>
               {errors.needs && (
                 <p className="mt-1 text-sm text-red-600">{errors.needs.message}</p>
               )}
-            </div>
           </AccordionContent>
         </AccordionItem>
 
         {/* Description */}
-        <AccordionItem value="description" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="description" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Mô tả sản phẩm</span>
+              <FileText className="h-4 w-4 " />
+              <span className="text-base ">Mô tả sản phẩm</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pt-4">
-              <Label>Mô tả</Label>
-              <div className="mt-2">
-                <RichTextEditor
+              <RichTextEditor
                   content={description}
                   onChange={setDescription}
                   placeholder="Nhập mô tả sản phẩm..."
+                  disabled={readOnly}
                 />
-              </div>
-            </div>
           </AccordionContent>
         </AccordionItem>
 
         {/* Benefits */}
-        <AccordionItem value="benefits" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="benefits" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Lợi ích</span>
+              <Sparkles className="h-4 w-4 " />
+              <span className="text-base ">Lợi ích</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pt-4">
-              <Label>Lợi ích</Label>
-              <div className="mt-2 space-y-2">
+              <div className="space-y-2">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex gap-2">
                     <Input
                       value={benefit}
                       onChange={(e) => {
+                        if (readOnly) return
                         const newBenefits = [...benefits]
                         newBenefits[index] = e.target.value
                         setBenefits(newBenefits)
                       }}
                       placeholder="Nhập lợi ích..."
-                      className="bg-white h-11 rounded-none"
+                      disabled={readOnly}
+                      className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => removeBenefit(index)}
+                      disabled={readOnly}
+                      className="text-gray-600 hover:text-gray-800 h-11 w-11 cursor-pointer"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -440,45 +524,47 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-3 border-2 border-dashed rounded-sm"
+                className="w-full mt-3 border border-dashed border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 bg-white shadow-none cursor-pointer"
                 onClick={addBenefit}
+                disabled={readOnly}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Thêm lợi ích
               </Button>
-            </div>
           </AccordionContent>
         </AccordionItem>
 
         {/* Ingredients */}
-        <AccordionItem value="ingredients" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="ingredients" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <FlaskConical className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Thành phần</span>
+              <FlaskConical className="h-4 w-4 " />
+              <span className="text-base ">Thành phần</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pt-4">
-              <Label>Thành phần</Label>
-              <div className="mt-2 space-y-2">
+              <div className="space-y-2">
                 {ingredients.map((ingredient, index) => (
                   <div key={index} className="flex gap-2">
                     <Input
                       value={ingredient}
                       onChange={(e) => {
+                        if (readOnly) return
                         const newIngredients = [...ingredients]
                         newIngredients[index] = e.target.value
                         setIngredients(newIngredients)
                       }}
                       placeholder="Nhập thành phần..."
-                      className="bg-white h-11 rounded-none"
+                      disabled={readOnly}
+                      className="bg-white h-11 rounded-md border border-gray-300 shadow-none focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 transition-colors"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => removeIngredient(index)}
+                      disabled={readOnly}
+                      className="text-gray-600 hover:text-gray-800 h-11 w-11 cursor-pointer"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -488,48 +574,57 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-3 border-2 border-dashed rounded-sm"
+                className="w-full mt-3 border border-dashed border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 bg-white shadow-none cursor-pointer"
                 onClick={addIngredient}
+                disabled={readOnly}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Thêm thành phần
               </Button>
-            </div>
           </AccordionContent>
         </AccordionItem>
 
         {/* How to use */}
-        <AccordionItem value="usage" className="border rounded-lg px-4 mb-4 shadow-sm bg-white">
-          <AccordionTrigger className="hover:no-underline">
+        <AccordionItem value="usage" className="rounded-lg px-4 mb-4 shadow-sm bg-white border-0">
+          <AccordionTrigger className="hover:no-underline py-4 cursor-pointer">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-gray-600" />
-              <span className="text-base font-semibold">Hướng dẫn sử dụng</span>
+              <BookOpen className="h-4 w-4 " />
+              <span className="text-base ">Hướng dẫn sử dụng</span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="pt-4">
-              <Label htmlFor="howToUse">Cách sử dụng</Label>
               <Textarea
                 id="howToUse"
                 {...register('howToUse')}
-                className="mt-1 bg-white rounded-none"
+                placeholder="Nhập hướng dẫn sử dụng"
+                disabled={readOnly}
+                className="mt-1 bg-white rounded-md border border-gray-300 focus:border-indigo-300 focus:bg-indigo-50/30 focus:outline-none focus:ring-0 focus-visible:border-indigo-300 focus-visible:ring-0 shadow-none transition-colors"
                 rows={4}
               />
-            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-      {/* Submit buttons */}
-      <div className="flex gap-4 pt-4 border-t sticky bottom-0 bg-white z-10 justify-end">
-        <Button type="button" variant="outline" onClick={onCancel} className="rounded-sm">
-          Hủy
-        </Button>
-        <Button type="submit" variant="outline" className="gap-2 rounded-sm">
-          <Save className="h-4 w-4" />
-          {product ? 'Cập nhật' : 'Tạo mới'}
-        </Button>
-      </div>
+          {/* Submit buttons */}
+      {!readOnly && (
+        <div className="flex gap-2 pt-4 border-t border-neutral-200 sticky bottom-0 bg-neutral-50 z-10 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            className="rounded border-neutral-300 text-neutral-700 hover:bg-neutral-100 shadow-none cursor-pointer h-9 px-4 text-sm"
+          >
+            Hủy
+          </Button>
+          <Button
+            type="submit"
+            className="gap-2 rounded bg-neutral-900 hover:bg-neutral-800 text-white border-0 shadow-none cursor-pointer h-9 px-4 text-sm"
+          >
+            <Save className="h-3.5 w-3.5" />
+            {product ? 'Cập nhật' : 'Tạo mới'}
+          </Button>
+        </div>
+      )}
     </form>
   )
 }

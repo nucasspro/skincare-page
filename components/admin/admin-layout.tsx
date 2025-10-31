@@ -2,20 +2,20 @@
 
 import { cn } from '@/lib/utils'
 import {
-    ChevronLeft,
-    ChevronRight,
-    FolderTree,
-    LayoutDashboard,
-    Menu,
-    MessageSquare,
-    Package,
-    ShoppingCart,
-    Users,
-    X
+  ChevronLeft,
+  ChevronRight,
+  FolderTree,
+  LayoutDashboard,
+  Menu,
+  MessageSquare,
+  Package,
+  ShoppingCart,
+  Users,
+  X
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -23,7 +23,7 @@ const navigation = [
   { name: 'Danh mục', href: '/admin/categories', icon: FolderTree },
   { name: 'Người dùng', href: '/admin/users', icon: Users },
   { name: 'Đơn hàng', href: '/admin/orders', icon: ShoppingCart },
-  { name: 'Bình luận', href: '/admin/comments', icon: MessageSquare },
+  { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
 ]
 
 interface AdminLayoutProps {
@@ -52,15 +52,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     setSidebarCollapsed(!sidebarCollapsed)
   }
 
-  const sidebarWidth = sidebarCollapsed ? 'w-16' : 'w-64'
-  const contentPadding = sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'
+  const sidebarWidth = sidebarCollapsed ? 'w-16' : 'w-56'
+  const contentPadding = sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-56'
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-neutral-50">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -68,40 +68,40 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 bg-white border-r border-neutral-200 transform transition-all duration-200 ease-in-out lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full',
           sidebarWidth
         )}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200">
             {!sidebarCollapsed && (
-              <h1 className="text-xl font-bold text-gray-900">Admin Portal</h1>
+              <h1 className="text-sm font-semibold text-neutral-900 tracking-tight">ADMIN</h1>
             )}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button
                 onClick={toggleSidebar}
-                className="hidden lg:flex text-gray-500 hover:text-gray-700 p-1 rounded hover:bg-gray-100"
+                className="hidden lg:flex text-neutral-400 hover:text-neutral-600 p-1.5 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
                 title={sidebarCollapsed ? 'Mở rộng' : 'Thu nhỏ'}
               >
                 {sidebarCollapsed ? (
-                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="h-4 w-4" />
                 ) : (
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="h-4 w-4" />
                 )}
               </button>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden text-gray-500 hover:text-gray-700"
+                className="lg:hidden text-neutral-400 hover:text-neutral-600 p-1.5 rounded hover:bg-neutral-100 cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== '/admin/dashboard' && pathname.startsWith(item.href))
@@ -111,15 +111,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors group',
+                    'flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-all cursor-pointer',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 hover:bg-gray-100',
+                      ? 'bg-neutral-900 text-white'
+                      : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
                     sidebarCollapsed && 'justify-center'
                   )}
                   title={sidebarCollapsed ? item.name : undefined}
                 >
-                  <item.icon className="h-5 w-5 shrink-0" />
+                  <item.icon className="h-4 w-4 shrink-0" />
                   {!sidebarCollapsed && (
                     <span className="truncate">{item.name}</span>
                   )}
@@ -133,17 +133,17 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main content */}
       <div className={contentPadding}>
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between h-16 px-6">
+        <header className="sticky top-0 z-30 bg-white border-b border-neutral-200">
+          <div className="flex items-center justify-between h-14 px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
+              className="lg:hidden text-neutral-400 hover:text-neutral-600 cursor-pointer"
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             </button>
             <div className="flex-1" />
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Admin</span>
+              <span className="text-xs text-neutral-500 font-medium">Admin</span>
             </div>
           </div>
         </header>

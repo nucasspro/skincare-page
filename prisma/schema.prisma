@@ -29,6 +29,7 @@ model Product {
   updatedAt    Int      @default(0)
 
   comments     Comment[]
+  reviews      Review[]
 
   @@index([category])
   @@index([createdAt])
@@ -104,4 +105,20 @@ model Comment {
   @@index([status])
   @@index([createdAt])
   @@map("comments")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  productId    String
+  reviewerName String
+  rating       Float    @default(5)
+  review       String
+  createdAt    Int      @default(0)
+  updatedAt    Int      @default(0)
+
+  product      Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([createdAt])
+  @@map("reviews")
 }

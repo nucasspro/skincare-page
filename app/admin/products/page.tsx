@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Product } from '@/lib/product-service'
 import { adminProductService } from '@/lib/services/admin'
-import { Package, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -20,8 +20,10 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isViewMode, setIsViewMode] = useState(false)
 
   // Fetch products
   const fetchProducts = async () => {
@@ -76,7 +78,18 @@ export default function ProductsPage() {
   // Handle edit - opens dialog
   const handleEdit = (product: Product) => {
     setEditingProduct(product)
+    setViewingProduct(null)
     setIsEditMode(true)
+    setIsViewMode(false)
+    setShowForm(true)
+  }
+
+  // Handle view - opens dialog in read-only mode
+  const handleView = (product: Product) => {
+    setViewingProduct(product)
+    setEditingProduct(null)
+    setIsViewMode(true)
+    setIsEditMode(false)
     setShowForm(true)
   }
 
@@ -97,7 +110,9 @@ export default function ProductsPage() {
   const handleCancel = () => {
     setShowForm(false)
     setEditingProduct(null)
+    setViewingProduct(null)
     setIsEditMode(false)
+    setIsViewMode(false)
   }
 
   // Handle dialog close
@@ -105,14 +120,18 @@ export default function ProductsPage() {
     setShowForm(open)
     if (!open) {
       setEditingProduct(null)
+      setViewingProduct(null)
       setIsEditMode(false)
+      setIsViewMode(false)
     }
   }
 
   // Handle add new - opens dialog
   const handleAddNew = () => {
     setEditingProduct(null)
+    setViewingProduct(null)
     setIsEditMode(false)
+    setIsViewMode(false)
     setShowForm(true)
   }
 
@@ -132,17 +151,18 @@ export default function ProductsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-              <Package className="h-10 w-10" />
-              Quản lý Sản phẩm
-            </h1>
-            <p className="mt-2 text-lg text-gray-600">
-              Thêm, chỉnh sửa và quản lý sản phẩm ({products.length} sản phẩm)
+            <h1 className="text-2xl font-semibold text-neutral-900">Sản phẩm</h1>
+            <p className="mt-1 text-sm text-neutral-500">
+              {products.length} sản phẩm
             </p>
           </div>
-          <Button onClick={handleAddNew} size="lg" variant="outline" className="gap-2 rounded-sm">
-            <Plus className="h-5 w-5" />
-            Thêm sản phẩm
+          <Button
+            onClick={handleAddNew}
+            size="sm"
+            className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Thêm mới
           </Button>
         </div>
 
@@ -151,20 +171,22 @@ export default function ProductsPage() {
           products={products}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onView={handleView}
         />
 
         {/* Dialog for Form */}
         <Dialog open={showForm} onOpenChange={handleDialogChange}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {isEditMode ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-50">
+            <DialogHeader className="border-b border-neutral-200 pb-4">
+              <DialogTitle className="text-lg font-semibold text-neutral-900">
+                {isViewMode ? 'Chi tiết sản phẩm' : isEditMode ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
               </DialogTitle>
             </DialogHeader>
             <ProductForm
-              product={editingProduct}
+              product={viewingProduct || editingProduct}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
+              readOnly={isViewMode}
             />
           </DialogContent>
         </Dialog>

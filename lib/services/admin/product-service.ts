@@ -108,7 +108,7 @@ class AdminProductService {
   /**
    * Transform database product to Product interface
    */
-  private transformProduct(dbProduct: any): Product {
+  private transformProduct(dbProduct: any): Product & { createdAt?: number } {
     return {
       id: dbProduct.id,
       slug: dbProduct.slug || generateSlug(dbProduct.name),
@@ -125,6 +125,7 @@ class AdminProductService {
       benefits: typeof dbProduct.benefits === 'string' ? JSON.parse(dbProduct.benefits) : dbProduct.benefits || [],
       ingredients: typeof dbProduct.ingredients === 'string' ? JSON.parse(dbProduct.ingredients) : dbProduct.ingredients || [],
       howToUse: dbProduct.howToUse || undefined,
+      createdAt: dbProduct.createdAt,
     }
   }
 }

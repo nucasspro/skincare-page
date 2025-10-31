@@ -9,9 +9,10 @@ interface RichTextEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
+  disabled?: boolean
 }
 
-export function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+export function RichTextEditor({ content, onChange, placeholder, disabled = false }: RichTextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [isHtmlMode, setIsHtmlMode] = useState(false)
 
@@ -107,15 +108,17 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
   }
 
   return (
-    <div className="border rounded-md">
+    <div className="border border-gray-300 rounded-md">
       {/* Toolbar */}
-      <div className="flex items-center gap-1 p-2 border-b bg-gray-50">
+      <div className="flex items-center gap-1 p-2 border-b border-gray-300 bg-white">
         <Button
           type="button"
           variant="ghost"
           size="icon-sm"
           onClick={formatBold}
           title="Bold"
+          disabled={disabled}
+          className="text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer"
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -125,6 +128,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="icon-sm"
           onClick={formatItalic}
           title="Italic"
+          disabled={disabled}
+          className="text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer"
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -134,6 +139,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="icon-sm"
           onClick={formatUnderline}
           title="Underline"
+          disabled={disabled}
+          className="text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer"
         >
           <Underline className="h-4 w-4" />
         </Button>
@@ -144,6 +151,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="icon-sm"
           onClick={formatList}
           title="Unordered List"
+          disabled={disabled}
+          className="text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer"
         >
           <List className="h-4 w-4" />
         </Button>
@@ -153,6 +162,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           size="icon-sm"
           onClick={formatOrderedList}
           title="Ordered List"
+          disabled={disabled}
+          className="text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
@@ -162,7 +173,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           variant="ghost"
           size="sm"
           onClick={() => setIsHtmlMode(!isHtmlMode)}
-          className="text-xs"
+          disabled={disabled}
+          className="text-xs text-gray-700 hover:bg-gray-100 cursor-pointer"
         >
           {isHtmlMode ? 'Preview' : 'HTML'}
         </Button>
@@ -176,7 +188,8 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
             value={content}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="min-h-[200px] font-mono text-sm"
+            disabled={disabled}
+            className="min-h-[200px] font-mono text-sm border border-gray-300 rounded-none focus:border-gray-300 focus:outline-none focus:ring-0 focus-visible:border-gray-300 focus-visible:ring-0 shadow-none"
           />
         </div>
       ) : (
@@ -186,10 +199,11 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
             value={content}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="min-h-[200px]"
+            disabled={disabled}
+            className="min-h-[200px] border border-gray-300 rounded-none focus:border-gray-300 focus:outline-none focus:ring-0 focus-visible:border-gray-300 focus-visible:ring-0 shadow-none"
           />
           {content && (
-            <div className="mt-4 p-4 border-t">
+            <div className="mt-4 p-4 border-t border-gray-300">
               <p className="text-xs text-gray-500 mb-2">Preview:</p>
               <div
                 className="prose prose-sm max-w-none"
