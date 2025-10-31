@@ -66,21 +66,39 @@ model User {
 }
 
 model Order {
-  id             String   @id @default(cuid())
-  userId         String
-  status         String   @default("pending")
-  total          Float
-  items          String   // JSON array
-  shippingAddress String
-  phone          String
-  notes          String?
-  createdAt      Int      @default(0)
-  updatedAt      Int      @default(0)
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique  // ORD-12345678
 
-  user           User     @relation(fields: [userId], references: [id])
+  // Customer Info (for guest checkout)
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
 
+  // Optional User ID (if logged in)
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+
+  // Address Details
+  streetAddress   String
+  wardName        String?
+  districtName    String?
+  provinceName    String?
+
+  // Order Details
+  status          String   @default("pending")  // pending, confirmed, shipping, delivered, cancelled
+  paymentMethod   String   // cod, bank
+  items           String   // JSON array of OrderItem[]
+  total           Float
+  notes           String?
+
+  // Timestamps
+  createdAt       Int      @default(0)
+  updatedAt       Int      @default(0)
+
+  @@index([orderNumber])
   @@index([userId])
   @@index([status])
+  @@index([customerPhone])
   @@index([createdAt])
   @@map("orders")
 }

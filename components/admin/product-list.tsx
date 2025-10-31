@@ -1,8 +1,10 @@
 'use client'
 
+import { Pagination } from '@/components/admin/pagination'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { usePagination } from '@/hooks/use-pagination'
 import { CategoryService } from '@/lib/category-service'
 import { Product } from '@/lib/product-service'
 import { formatDate, formatVND } from '@/lib/utils'
@@ -131,10 +133,22 @@ interface ProductListProps {
 export function ProductList({ products, onEdit, onDelete, onView }: ProductListProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  // Pagination
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedProducts,
+    setCurrentPage,
+  } = usePagination({
+    items: filteredProducts,
+    itemsPerPage: 10,
+    dependencies: [searchQuery],
+  })
 
   if (products.length === 0) {
     return (
@@ -198,7 +212,7 @@ export function ProductList({ products, onEdit, onDelete, onView }: ProductListP
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-neutral-100">
-              {filteredProducts.map((product) => (
+              {paginatedProducts.map((product) => (
                 <ProductItem
                   key={product.id}
                   product={product}
@@ -210,6 +224,15 @@ export function ProductList({ products, onEdit, onDelete, onView }: ProductListP
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredProducts.length}
+          itemsPerPage={10}
+          onPageChange={setCurrentPage}
+        />
 
         {filteredProducts.length === 0 && searchQuery && (
           <div className="p-12 text-center text-neutral-400">

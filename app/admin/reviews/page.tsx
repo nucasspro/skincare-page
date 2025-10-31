@@ -1,6 +1,7 @@
 'use client'
 
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { Pagination } from '@/components/admin/pagination'
 import { ReviewForm, type ReviewFormData } from '@/components/admin/review-form'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -11,6 +12,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { usePagination } from '@/hooks/use-pagination'
 import { adminReviewService, type Review } from '@/lib/services/admin/review-service'
 import { formatDate } from '@/lib/utils'
 import { Edit, Eye, MessageSquare, Plus, Search, Star, Trash2 } from 'lucide-react'
@@ -108,6 +110,18 @@ export default function ReviewsPage() {
     review.review.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  // Pagination
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedReviews,
+    setCurrentPage,
+  } = usePagination({
+    items: filteredReviews,
+    itemsPerPage: 10,
+    dependencies: [searchQuery],
+  })
+
   if (loading) {
     return (
       <AdminLayout>
@@ -188,7 +202,7 @@ export default function ReviewsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-100">
-                {filteredReviews.map((review) => {
+                {paginatedReviews.map((review) => {
                   const product = products.find(p => p.id === review.productId)
                   return (
                     <tr
@@ -294,6 +308,15 @@ export default function ReviewsPage() {
             </div>
           )}
         </Card>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredReviews.length}
+          itemsPerPage={10}
+          onPageChange={setCurrentPage}
+        />
 
         {/* Dialog for Form */}
         <Dialog open={showForm} onOpenChange={(open) => !open && resetForm()}>

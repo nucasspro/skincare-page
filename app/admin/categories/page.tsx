@@ -1,11 +1,13 @@
 'use client'
 
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { Pagination } from '@/components/admin/pagination'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { usePagination } from '@/hooks/use-pagination'
 import { Edit, FolderTree, Plus, Save, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'

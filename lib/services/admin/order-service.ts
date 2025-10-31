@@ -1,30 +1,52 @@
 export interface OrderItem {
-  productId: string
+  id: string
   name: string
-  quantity: number
   price: number
+  quantity: number
+  image: string
 }
 
 export interface Order {
   id: string
-  userId: string
-  userName?: string
-  userEmail?: string
+  orderNumber: string
+
+  // Customer
+  customerName: string
+  customerEmail?: string
+  customerPhone: string
+
+  // User (optional - for logged in users)
+  userId?: string
+
+  // Address
+  streetAddress: string
+  wardName?: string
+  districtName?: string
+  provinceName?: string
+
+  // Order
   status: string
-  total: number
+  paymentMethod: string
   items: OrderItem[]
-  shippingAddress: string
-  phone: string
+  total: number
   notes?: string
+
+  // Timestamps
   createdAt: number
   updatedAt: number
 }
 
 interface OrderData {
   status?: string
-  shippingAddress?: string
-  phone?: string
+  paymentMethod?: string
   notes?: string
+  customerName?: string
+  customerEmail?: string
+  customerPhone?: string
+  streetAddress?: string
+  wardName?: string
+  districtName?: string
+  provinceName?: string
 }
 
 class AdminOrderService {
@@ -90,6 +112,23 @@ class AdminOrderService {
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Failed to delete order' }))
       throw new Error(error.error || 'Failed to delete order')
+    }
+  }
+
+  /**
+   * Get order statistics
+   */
+  getOrderStats(orders: Order[]) {
+    return {
+      total: orders.length,
+      pending: orders.filter(o => o.status === 'pending').length,
+      confirmed: orders.filter(o => o.status === 'confirmed').length,
+      shipping: orders.filter(o => o.status === 'shipping').length,
+      delivered: orders.filter(o => o.status === 'delivered').length,
+      cancelled: orders.filter(o => o.status === 'cancelled').length,
+      totalRevenue: orders
+        .filter(o => o.status !== 'cancelled')
+        .reduce((sum, o) => sum + o.total, 0),
     }
   }
 }

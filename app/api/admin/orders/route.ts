@@ -18,14 +18,7 @@ export async function GET() {
       },
     })
 
-    // Transform to match expected format
-    const formattedOrders = orders.map((order) => ({
-      ...order,
-      userName: order.user?.name || null,
-      userEmail: order.user?.email || null,
-    }))
-
-    return NextResponse.json({ data: formattedOrders })
+    return NextResponse.json({ data: orders })
   } catch (error) {
     console.error('Error fetching orders:', error)
     return NextResponse.json(

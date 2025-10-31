@@ -1,49 +1,45 @@
 'use client'
 
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { OrderForm, type OrderFormData } from '@/components/admin/order-form'
+import { Pagination } from '@/components/admin/pagination'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
-import { adminOrderService, type Order, type OrderItem } from '@/lib/services/admin'
-import { ShoppingCart, Edit, Trash2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { usePagination } from '@/hooks/use-pagination'
+import { ORDER_STATUS_OPTIONS, PAYMENT_METHOD_LABELS_SHORT, getStatusInfo } from '@/lib/constants/order-status'
+import { adminOrderService, type Order } from '@/lib/services/admin/order-service'
+import { formatDate, formatVND } from '@/lib/utils'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Edit, Eye, Package, Search, ShoppingCart, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-const statusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  processing: 'bg-blue-100 text-blue-800',
-  shipped: 'bg-purple-100 text-purple-800',
-  delivered: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-}
-
-const statusLabels: Record<string, string> = {
-  pending: 'Chờ xử lý',
-  processing: 'Đang xử lý',
-  shipped: 'Đã gửi',
-  delivered: 'Đã giao',
-  cancelled: 'Đã hủy',
-}
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Tất cả', color: 'bg-neutral-100 text-neutral-600' },
+  ...ORDER_STATUS_OPTIONS,
+]
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
+  const [viewingOrder, setViewingOrder] = useState<Order | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({
-    status: 'pending',
-    shippingAddress: '',
-    phone: '',
-    notes: '',
-  })
+  const [isViewMode, setIsViewMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
 
   const fetchOrders = async () => {
     try {
       setLoading(true)
-      const orders = await adminOrderService.getAllOrders()
-      setOrders(orders)
+      const data = await adminOrderService.getAllOrders()
+      setOrders(data)
     } catch (error) {
       toast.error('Không thể tải danh sách đơn hàng')
     } finally {
@@ -55,29 +51,31 @@ export default function OrdersPage() {
     fetchOrders()
   }, [])
 
-  const handleEdit = (order: Order) => {
-    setEditingOrder(order)
-    setFormData({
-      status: order.status,
-      shippingAddress: order.shippingAddress,
-      phone: order.phone,
-      notes: order.notes || '',
-    })
-    setShowForm(true)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (data: OrderFormData) => {
     if (!editingOrder) return
 
     try {
-      await adminOrderService.updateOrder(editingOrder.id, formData)
+      await adminOrderService.updateOrder(editingOrder.id, data)
       toast.success('Cập nhật đơn hàng thành công')
       resetForm()
       fetchOrders()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Không thể cập nhật đơn hàng')
     }
+  }
+
+  const handleEdit = (order: Order) => {
+    setEditingOrder(order)
+    setViewingOrder(null)
+    setIsViewMode(false)
+    setShowForm(true)
+  }
+
+  const handleView = (order: Order) => {
+    setViewingOrder(order)
+    setEditingOrder(null)
+    setIsViewMode(true)
+    setShowForm(true)
   }
 
   const handleDelete = async (id: string) => {
@@ -95,23 +93,40 @@ export default function OrdersPage() {
   const resetForm = () => {
     setShowForm(false)
     setEditingOrder(null)
-    setFormData({
-      status: 'pending',
-      shippingAddress: '',
-      phone: '',
-      notes: '',
-    })
+    setViewingOrder(null)
+    setIsViewMode(false)
   }
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleString('vi-VN')
-  }
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch =
+      order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerPhone.includes(searchQuery)
+
+    const matchesStatus = statusFilter === 'all' || order.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
+
+  // Pagination
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedOrders,
+    setCurrentPage,
+  } = usePagination({
+    items: filteredOrders,
+    itemsPerPage: 10,
+    dependencies: [searchQuery, statusFilter],
+  })
+
+  const stats = adminOrderService.getOrderStats(orders)
 
   if (loading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Đang tải...</div>
+          <div className="text-sm text-neutral-500">Đang tải...</div>
         </div>
       </AdminLayout>
     )
@@ -120,167 +135,224 @@ export default function OrdersPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <ShoppingCart className="h-8 w-8" />
-            Quản lý Đơn hàng
-          </h1>
-          <p className="mt-2 text-gray-600">Xem và quản lý đơn hàng</p>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-neutral-900">Đơn hàng</h1>
+            <p className="mt-1 text-sm text-neutral-500">
+              {orders.length} đơn hàng • Tổng doanh thu: {formatVND(stats.totalRevenue)}
+            </p>
+          </div>
         </div>
 
-        {showForm && editingOrder && (
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Chỉnh sửa đơn hàng #{editingOrder.id}</h2>
-              <Button variant="ghost" size="icon" onClick={resetForm}>
-                <span className="text-xl">×</span>
-              </Button>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {STATUS_OPTIONS.filter(s => s.value !== 'all').map((status) => (
+            <Card key={status.value} className="p-4 border-neutral-200 bg-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-neutral-500">{status.label}</p>
+                  <p className="text-2xl font-semibold text-neutral-900 mt-1">
+                    {stats[status.value as keyof typeof stats] || 0}
+                  </p>
+                </div>
+                <div className={`p-2 rounded ${status.color}`}>
+                  <ShoppingCart className="h-4 w-4" />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <Card className="p-4 border-neutral-200 bg-white">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+              <Input
+                type="text"
+                placeholder="Tìm kiếm theo mã đơn, tên, SĐT..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9 text-sm border-neutral-300 focus:border-neutral-400 focus:ring-0"
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="status">Trạng thái</Label>
-                  <select
-                    id="status"
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="mt-1 h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-                  >
-                    {Object.entries(statusLabels).map(([value, label]) => (
-                      <option key={value} value={value}>{label}</option>
-                    ))}
-                  </select>
-                </div>
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="h-9 px-3 rounded border border-neutral-300 bg-white text-sm focus:border-neutral-400 focus:outline-none focus:ring-0"
+            >
+              {STATUS_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                <div>
-                  <Label htmlFor="phone">Số điện thoại</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="mt-1"
-                    required
-                  />
-                </div>
+          {(searchQuery || statusFilter !== 'all') && (
+            <p className="mt-3 text-xs text-neutral-500">
+              {filteredOrders.length} kết quả
+            </p>
+          )}
+        </Card>
 
-                <div className="md:col-span-2">
-                  <Label htmlFor="shippingAddress">Địa chỉ giao hàng</Label>
-                  <Textarea
-                    id="shippingAddress"
-                    value={formData.shippingAddress}
-                    onChange={(e) => setFormData({ ...formData, shippingAddress: e.target.value })}
-                    className="mt-1"
-                    rows={2}
-                    required
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <Label htmlFor="notes">Ghi chú</Label>
-                  <Textarea
-                    id="notes"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="mt-1"
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-4 border-t">
-                <Button type="submit" variant="outline" className="rounded-sm">Cập nhật</Button>
-                <Button type="button" variant="outline" onClick={resetForm} className="rounded-sm">
-                  Hủy
-                </Button>
-              </div>
-            </form>
-          </Card>
-        )}
-
-        <Card>
+        {/* Orders Table */}
+        <Card className="overflow-hidden border-neutral-200 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-neutral-50 border-b border-neutral-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Mã đơn
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500 w-28">
+                    Actions
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
+                    Mã đơn hàng
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
                     Khách hàng
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
                     Tổng tiền
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
+                    Thanh toán
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
                     Trạng thái
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ngày tạo
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thao tác
+                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
+                    Ngày đặt
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {orders.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                      Chưa có đơn hàng nào.
-                    </td>
-                  </tr>
-                ) : (
-                  orders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        #{order.id.slice(-6)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div>
-                          <div className="font-medium">{order.userName || 'N/A'}</div>
-                          <div className="text-xs text-gray-400">{order.userEmail || ''}</div>
+              <tbody className="bg-white divide-y divide-neutral-100">
+                {paginatedOrders.map((order) => {
+                  const statusInfo = getStatusInfo(order.status)
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="hover:bg-neutral-50 transition-colors cursor-pointer"
+                      onClick={() => handleView(order)}
+                    >
+                      <td className="p-2.5 w-28">
+                        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleView(order)}
+                            className="rounded h-7 w-7 cursor-pointer hover:bg-neutral-100"
+                            title="Xem"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-neutral-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(order)}
+                            className="rounded h-7 w-7 cursor-pointer hover:bg-neutral-100"
+                            title="Sửa"
+                          >
+                            <Edit className="h-3.5 w-3.5 text-neutral-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(order.id)}
+                            className="rounded h-7 w-7 cursor-pointer hover:bg-red-50"
+                            title="Xóa"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-red-600" />
+                          </Button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        ${order.total.toFixed(2)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          statusColors[order.status] || statusColors.pending
-                        }`}>
-                          {statusLabels[order.status] || order.status}
+                      <td className="p-2.5">
+                        <span className="text-sm font-mono font-medium text-neutral-900">
+                          {order.orderNumber}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(order.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleEdit(order)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleDelete(order.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                      <td className="p-2.5">
+                        <div>
+                          <p className="text-sm font-medium text-neutral-900">
+                            {order.customerName}
+                          </p>
+                          <p className="text-xs text-neutral-500">
+                            {order.customerPhone}
+                          </p>
                         </div>
                       </td>
+                      <td className="p-2.5">
+                        <span className="text-sm font-semibold text-neutral-900">
+                          {formatVND(order.total)}
+                        </span>
+                      </td>
+                      <td className="p-2.5">
+                        <span className="text-xs text-neutral-600">
+                          {PAYMENT_METHOD_LABELS_SHORT[order.paymentMethod] || order.paymentMethod}
+                        </span>
+                      </td>
+                      <td className="p-2.5">
+                        <span className={`text-xs px-2 py-1 rounded ${statusInfo.color}`}>
+                          {statusInfo.label}
+                        </span>
+                      </td>
+                      <td className="p-2.5">
+                        <span className="text-xs text-neutral-500">
+                          {formatDate(order.createdAt)}
+                        </span>
+                      </td>
                     </tr>
-                  ))
-                )}
+                  )
+                })}
               </tbody>
             </table>
           </div>
+
+          {filteredOrders.length === 0 && (
+            <div className="p-12 text-center">
+              <Package className="h-10 w-10 text-neutral-300 mx-auto mb-3" />
+              <h3 className="text-sm font-medium text-neutral-900 mb-1">
+                {searchQuery || statusFilter !== 'all' ? 'Không tìm thấy đơn hàng nào' : 'Chưa có đơn hàng'}
+              </h3>
+              <p className="text-xs text-neutral-500">
+                {searchQuery || statusFilter !== 'all'
+                  ? 'Thử tìm kiếm với từ khóa khác hoặc đổi bộ lọc'
+                  : 'Đơn hàng sẽ xuất hiện khi khách đặt hàng'}
+              </p>
+            </div>
+          )}
         </Card>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredOrders.length}
+          itemsPerPage={10}
+          onPageChange={setCurrentPage}
+        />
+
+        {/* Dialog for Form */}
+        <Dialog open={showForm} onOpenChange={(open) => !open && resetForm()}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-neutral-50">
+            <DialogHeader className="border-b border-neutral-200 pb-4">
+              <DialogTitle className="text-lg font-semibold text-neutral-900">
+                {isViewMode ? 'Chi tiết đơn hàng' : 'Cập nhật đơn hàng'}
+              </DialogTitle>
+            </DialogHeader>
+
+            <OrderForm
+              order={viewingOrder || editingOrder}
+              onSubmit={handleSubmit}
+              onCancel={resetForm}
+              readOnly={isViewMode}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   )
