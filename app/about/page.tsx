@@ -144,10 +144,12 @@ export default function AboutPage() {
       {/* Mission Section */}
       <section className="grid md:grid-cols-2">
         <div className="relative h-[400px] md:h-[600px]">
-          <img 
-            src="/brand-research-scientist.jpg" 
-            alt="Our Mission" 
-            className="h-full w-full object-cover" 
+          <Image
+            src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800&h=1200&fit=crop&q=80"
+            alt="Our Mission"
+            fill
+            className="object-cover"
+            priority
           />
         </div>
         <div className="flex items-center bg-white px-8 py-16 md:px-16 md:py-24">
@@ -219,20 +221,24 @@ export default function AboutPage() {
           </div>
         </div>
         <div className="relative order-1 h-[400px] md:order-2 md:h-[600px]">
-          <img 
-            src="/brand-expert-dermatologist.jpg" 
-            alt="Expert Collaboration" 
-            className="h-full w-full object-cover" 
+          <Image
+            src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=800&h=1200&fit=crop&q=80"
+            alt="Expert Collaboration"
+            fill
+            className="object-cover"
+            priority
           />
         </div>
       </section>
 
       {/* Sustainability */}
       <section className="relative h-[600px] w-full md:h-[700px]">
-        <img 
-          src="/brand-sustainable-packaging.jpg" 
-          alt="Sustainability" 
-          className="h-full w-full object-cover" 
+        <Image
+          src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1400&h=800&fit=crop&q=80"
+          alt="Sustainability"
+          fill
+          className="object-cover"
+          priority
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 z-10 flex items-center justify-center px-6">

@@ -4,34 +4,19 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const faqs = [
   {
-    question: "Sản phẩm này có phù hợp với da nhạy cảm không?",
+    question: "Sản phẩm có phù hợp với da nhạy cảm không?",
     answer:
-      "Có! Công thức của chúng tôi đã được bác sĩ da liễu kiểm nghiệm và phù hợp với mọi loại da, kể cả da nhạy cảm. Chúng tôi sử dụng các thành phần dịu nhẹ, không gây kích ứng và tránh các chất gây dị ứng phổ biến.",
+      "Hoàn toàn phù hợp bạn nhé! Công thức Cellic được phát triển dưới sự tư vấn của các chuyên gia da liễu, không chứa cồn, hương liệu hay silicones nặng. Các thành phần dịu nhẹ như Kim Ngân Hoa và PDRN và cả công nghệ Microbiome giúp làm dịu và phục hồi hàng rào bảo vệ tự nhiên, để da nhạy cảm cũng cảm thấy an toàn và dễ chịu khi sử dụng mỗi ngày.",
   },
   {
-    question: "Một chai sản phẩm dùng được bao lâu?",
+    question: "Có thể dùng chung với serum không?",
     answer:
-      "Với việc sử dụng thường xuyên (2-3 giọt, hai lần mỗi ngày), một chai 30ml thường dùng được 2-3 tháng, mang lại giá trị tuyệt vời cho sản phẩm chăm sóc da cao cấp.",
+      "Có nhé bạn ơi! Kem chống nắng Cellic hoạt động hài hòa với các bước dưỡng khác. Bạn chỉ cần để serum thấm vào da khoảng 30 giây trước khi thoa kem chống nắng là da đã sẵn sàng để được bảo vệ suốt ngày dài rồi.",
   },
   {
-    question: "Tôi có thể dùng sản phẩm này với các serum khác không?",
+    question: "Kem chống nắng có bị trôi khi hoạt động nhiều và đổ mồ hôi không?",
     answer:
-      "Serum này kết hợp rất tốt với các sản phẩm khác. Thoa sau bước làm sạch và trước các loại kem đậm đặc hơn. Đợi 30 giây giữa các lớp để hấp thụ tối ưu.",
-  },
-  {
-    question: "Khi nào tôi sẽ thấy kết quả?",
-    answer:
-      "Hầu hết người dùng nhận thấy da ẩm mượt và sáng hơn trong vòng 7 ngày. Đối với lợi ích chống lão hóa như giảm nếp nhăn, nên sử dụng đều đặn trong 4-6 tuần.",
-  },
-  {
-    question: "Sản phẩm có không thử nghiệm trên động vật và thuần chay không?",
-    answer:
-      "Có! Chúng tôi tự hào là thương hiệu 100% không thử nghiệm trên động vật và thuần chay. Chúng tôi không bao giờ thử nghiệm trên động vật và tất cả thành phần đều có nguồn gốc thực vật hoặc tổng hợp.",
-  },
-  {
-    question: "Chính sách đổi trả của bạn như thế nào?",
-    answer:
-      "Chúng tôi cung cấp chính sách hoàn tiền trong 30 ngày cho sản phẩm chưa mở. Nếu bạn không hài lòng, hãy liên hệ đội ngũ chăm sóc khách hàng để được hoàn tiền đầy đủ.",
+      "Cellic Bright Matte Sunscreen được thiết kế với công nghệ Booster và kết cấu Smart Oil Control, giúp lớp chống nắng bám vững và ổn định ngay cả khi da đổ mồ hôi nhẹ. Chất kem mỏng nhẹ, nhanh khô, không để lại cảm giác nhờn rít, giúp da luôn thoáng mịn và được bảo vệ bền vững suốt nhiều giờ hoạt động.",
   },
 ]
 
@@ -43,38 +28,50 @@ export function ProductQA({ limit }: ProductQAProps) {
   const displayedFaqs = limit ? faqs.slice(0, limit) : faqs
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center space-y-2 mb-10">
-        <h2 className="text-3xl font-light text-gray-900">Câu hỏi thường gặp</h2>
-        <p className="text-stone-600">Mọi thông tin bạn cần biết về sản phẩm này</p>
+    <div className="max-w-3xl mx-auto">
+      {/* Header */}
+      <div className="text-center space-y-3 mb-12">
+        <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">Câu hỏi thường gặp</h2>
+        <p className="text-stone-600 text-base">Mọi thông tin bạn cần biết về sản phẩm này</p>
       </div>
 
-      <Accordion type="single" collapsible className="space-y-3">
+      {/* FAQ Accordion */}
+      <Accordion type="single" collapsible className="space-y-4 mb-16">
         {displayedFaqs.map((faq, index) => (
           <AccordionItem
             key={index}
             value={`item-${index}`}
-            className="bg-white border border-stone-200 rounded-xl px-6"
+            className="border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl overflow-hidden"
           >
-            <AccordionTrigger className="text-left font-medium hover:no-underline py-5">
-              {faq.question}
+            <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline px-6 py-5 hover:bg-stone-50 transition-colors">
+              <span className="pr-4">{faq.question}</span>
             </AccordionTrigger>
-            <AccordionContent className="text-stone-700 pb-5 leading-relaxed">{faq.answer}</AccordionContent>
+            <AccordionContent className="text-stone-700 px-6 pb-6 pt-0 leading-relaxed text-[15px]">
+              {faq.answer}
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
 
-      <div className="text-center mt-12">
-        <p className="text-stone-600 mb-6 text-lg">Vẫn còn thắc mắc?</p>
-        <div className="inline-block">
-          <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 font-semibold rounded-full hover:bg-gray-900 hover:text-white transition-all hover:shadow-lg hover:scale-105 duration-300 flex items-center gap-2">
+      {/* CTA Section */}
+      <div className="text-center bg-gradient-to-br from-stone-50 to-stone-100 rounded-2xl p-8 md:p-10">
+        <div className="max-w-md mx-auto space-y-4">
+          <div className="w-14 h-14 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900">Vẫn còn thắc mắc?</h3>
+          <p className="text-stone-600 text-sm">
+            Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn
+          </p>
+          <button className="mt-4 px-8 py-3 bg-gray-900 text-white font-medium rounded-full hover:bg-gray-800 transition-all hover:shadow-lg hover:scale-105 duration-300 inline-flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            Liên hệ đội ngũ chăm sóc khách hàng
+            Liên hệ ngay
           </button>
         </div>
-        <p className="text-stone-500 text-sm mt-4">Chúng tôi sẵn sàng giúp bạn, hãy gửi tin nhắn cho chúng tôi</p>
       </div>
     </div>
   )

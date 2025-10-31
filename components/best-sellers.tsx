@@ -7,11 +7,13 @@ import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export function BestSellers() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const { t } = useI18n()
-  const { addItem } = useCart()
+  const { addItem, items, isHydrated } = useCart()
+  const router = useRouter()
 
   // Get featured products from service
   const products = getFeaturedProducts(4)
@@ -52,24 +54,46 @@ export function BestSellers() {
                     style={{ opacity: hoveredId === product.id ? 1 : 0 }}
                   />
 
-                  {/* Add to Cart Button - Shows on Hover */}
-                  <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault()
-                        addItem({
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          image: product.image,
-                          tagline: product.tagline,
-                        })
-                      }}
-                      className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      {t.bestSellers.addToCart}
-                    </button>
+                  {/* Add to Cart / Go to Cart Button - Shows on Hover - Inside Image Container */}
+                  <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                    <div className="pointer-events-auto">
+                      {!isHydrated ? (
+                        <div className="w-full py-3 bg-gray-100 rounded-full flex items-center justify-center gap-2 shadow-lg">
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                          <span className="text-gray-500 text-sm">Đang tải...</span>
+                        </div>
+                      ) : items.some(item => item.id === product.id) ? (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            router.push("/cart")
+                          }}
+                          className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          Mua hàng
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: product.price,
+                              image: product.image,
+                              tagline: product.tagline,
+                            })
+                          }}
+                          className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          {t.bestSellers.addToCart}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
 

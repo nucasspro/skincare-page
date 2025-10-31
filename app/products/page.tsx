@@ -122,8 +122,8 @@ export default function ProductsPage() {
         onCategoryChange={setSelectedCategory}
       />
 
-          {/* Products Grid - Full width - 3 columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16 w-full">
+          {/* Products Grid - Full width - 4 columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16 w-full">
             {paginatedProducts.map((product) => (
               <ProductCard
                 key={product.id}

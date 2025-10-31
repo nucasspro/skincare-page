@@ -13,6 +13,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[]
+  isHydrated: boolean
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
@@ -103,6 +104,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider
       value={{
         items,
+        isHydrated,
         addItem,
         removeItem,
         updateQuantity,

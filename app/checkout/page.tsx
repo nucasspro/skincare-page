@@ -59,8 +59,13 @@ export default function CheckoutPage() {
     }
   }, [items, orderedItems.length])
 
-  // Redirect to products if no items
-  if (items.length === 0) {
+  // Chỉ hiển thị "Giỏ hàng trống" nếu:
+  // - Không có items VÀ
+  // - Không phải đang ở step 3 (màn hình cảm ơn) VÀ
+  // - Chưa có orderedItems (chưa checkout thành công)
+  const isEmptyCart = items.length === 0 && currentStep !== 3 && orderedItems.length === 0
+
+  if (isEmptyCart) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Navigation isTransparent={false} />

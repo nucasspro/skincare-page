@@ -1,11 +1,12 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 
 type Banner = {
   title: string
   subtitle?: string
-  imageUrl: string
+  imagePath: string
   cta?: { label: string; href: string }
 }
 
@@ -15,23 +16,32 @@ export function PromoSlider() {
       {
         title: "Thừa kế thành quả 16 năm đầu tư và nghiên cứu khoa học y sinh bài bản",
         subtitle: "Mỗi công thức được đội ngũ chuyên gia Cellic đưa vào sản phẩm đều trải qua quy trình thử nghiệm lâm sàng nghiêm ngặt, và đảm bảo an toàn.",
-        imageUrl:
-          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80",
+        imagePath: "/banner/1.png",
         cta: { label: "Mua ngay", href: "/products" },
       },
       {
         title: "Minh bạch toàn bộ quy trình kiểm nghiệm",
         subtitle: "Mọi công bố về hiệu quả đều được đối chiếu bằng dữ liệu và chứng nhận từ đối tác kiểm nghiệm uy tín từ trong nước và quốc tế.",
-        imageUrl:
-          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2000&q=80",
+        imagePath: "/banner/2.png",
         cta: { label: "Khám phá", href: "/brand-story" },
       },
       {
         title: "Nguồn nguyên liệu tinh khiết và đối tác kiểm nghiệm uy tín",
         subtitle: "Cellic sử dụng thành phần được kiểm định và chọn lọc từ các nhà cung cấp uy tín. Chúng tôi hợp tác cùng các bệnh viện Đại học y Dược, Bệnh viện 108 đảm bảo tiêu chuẩn khoa học cao nhất cho làn da Việt.",
-        imageUrl:
-          "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=2000&q=80",
+        imagePath: "/banner/3.png",
         cta: { label: "Xem chi tiết", href: "/" },
+      },
+      {
+        title: "Chất lượng được chứng nhận",
+        subtitle: "Sản phẩm của Cellic được kiểm định và chứng nhận bởi các tổ chức uy tín, đảm bảo an toàn và hiệu quả cho làn da Việt.",
+        imagePath: "/banner/4.png",
+        cta: { label: "Tìm hiểu thêm", href: "/products" },
+      },
+      {
+        title: "Đổi mới và phát triển liên tục",
+        subtitle: "Cellic không ngừng nghiên cứu và phát triển để mang đến những sản phẩm chăm sóc da tốt nhất với công nghệ tiên tiến nhất.",
+        imagePath: "/banner/5.png",
+        cta: { label: "Khám phá", href: "/brand-story" },
       },
     ],
     []
@@ -54,16 +64,20 @@ export function PromoSlider() {
         >
           {banners.map((b, i) => (
             <div key={i} className="relative h-full w-full flex-shrink-0">
-              {/* Background image */}
-              <img
-                src={b.imageUrl}
+              {/* Background image - Next.js Image tự động optimize sang webp */}
+              <Image
+                src={b.imagePath}
                 alt={b.title}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
+                fill
+                className="object-cover"
+                quality={100}
+                priority={i === 0 || i === 1}
+                sizes="100vw"
+                unoptimized={false}
               />
               {/* Overlays */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-black/40" />
-              <div className="absolute inset-0 backdrop-blur-[1px]" />
+              {/* Bỏ backdrop-blur để ảnh sắc nét hơn */}
               {/* Content */}
               <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center text-center">
                 <div className="transition-opacity duration-500">

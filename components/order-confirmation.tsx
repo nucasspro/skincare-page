@@ -26,15 +26,6 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
     const { removeItems } = useCart()
     const hasClearedCart = useRef(false)
 
-    // Xóa sản phẩm khỏi giỏ hàng khi đơn hàng được xác nhận thành công
-    useEffect(() => {
-        if (!hasClearedCart.current && orderedItems.length > 0) {
-            const itemIdsToRemove = orderedItems.map(item => item.id)
-            removeItems(itemIdsToRemove)
-            hasClearedCart.current = true
-        }
-    }, [orderedItems, removeItems])
-
     // Tính toán từ orderedItems thay vì cart context
     const getTotalPrice = useMemo(() => {
         return orderedItems.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -43,6 +34,56 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
     const getTotalItems = useMemo(() => {
         return orderedItems.reduce((total, item) => total + item.quantity, 0)
     }, [orderedItems])
+
+    // Xóa sản phẩm khỏi giỏ hàng và lưu vào Google Sheets khi đơn hàng được xác nhận thành công
+    useEffect(() => {
+        if (!hasClearedCart.current && orderedItems.length > 0) {
+            const itemIdsToRemove = orderedItems.map(item => item.id)
+            removeItems(itemIdsToRemove)
+            hasClearedCart.current = true
+
+            // Lưu đơn hàng vào Google Sheets
+            const saveOrderToSheets = async () => {
+                try {
+                    const orderPayload = {
+                        orderNumber,
+                        name: orderData.name,
+                        phone: orderData.phone,
+                        streetAddress: orderData.streetAddress,
+                        provinceName: orderData.provinceName,
+                        districtName: orderData.districtName,
+                        wardName: orderData.wardName,
+                        paymentMethod: orderData.paymentMethod,
+                        items: orderedItems,
+                        totalPrice: getTotalPrice,
+                        totalItems: getTotalItems,
+                        createdAt: new Date().toISOString()
+                    }
+
+                    const response = await fetch("/api/orders/save-to-sheets", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(orderPayload),
+                    })
+
+                    const result = await response.json()
+                    
+                    if (result.success) {
+                        console.log("Order saved to Google Sheets:", result)
+                    } else {
+                        console.warn("Failed to save order to Google Sheets:", result)
+                    }
+                } catch (error) {
+                    console.error("Error saving order to Google Sheets:", error)
+                    // Không hiển thị lỗi cho user để không làm gián đoạn checkout flow
+                }
+            }
+
+            saveOrderToSheets()
+        }
+    }, [orderedItems, removeItems, orderNumber, orderData, getTotalPrice, getTotalItems])
 
     const copyOrderNumber = () => {
         navigator.clipboard.writeText(orderNumber)
@@ -257,12 +298,15 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                    href="/"
+                <button
+                    onClick={() => {
+                        // Xác nhận đơn hàng và redirect về trang chủ
+                        window.location.href = "/"
+                    }}
                     className="px-8 py-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 text-center"
                 >
                     Xác nhận đơn hàng
-                </Link>
+                </button>
                 <Link
                     href="/products"
                     className="px-8 py-4 bg-white border-2 border-stone-300 rounded-xl text-gray-700 font-semibold hover:bg-stone-50 hover:border-stone-400 transition-all duration-200 text-center"

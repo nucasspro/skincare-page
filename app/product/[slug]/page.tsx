@@ -9,6 +9,13 @@ import { RealResults } from "@/components/real-results"
 import { SimilarProducts } from "@/components/similar-products"
 import { getProductBySlug } from "@/lib/product-service"
 
+// Stable reference để tránh lỗi React children
+const FEATURE_ITEMS = [
+  { title: "Chỉ số chống nắng", value: "SPF 100/ PA ++++" },
+  { title: "Kiểm soát dầu thông minh", value: "9/10" },
+  { title: "Kết cấu ổn định", value: "9/10" }
+]
+
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   // Await params in Next.js 15+
   const { slug } = await params
@@ -32,7 +39,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
       <main className="pt-0">
         {/* Product Gallery & Info Section */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 md:pt-16 lg:pt-20 pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Mobile: 60% image, Desktop: 50% image */}
             <div className="lg:col-span-1">
@@ -46,11 +53,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </section>
 
         {/* Feature Highlight Section */}
-        <FeatureHighlight features={[
-          { title: "CHỐNG NẮNG", value: "SPF 50+" },
-          { title: "NÂNG TONE", value: "8/10" },
-          { title: "KIỀM DẦU", value: "9/10" }
-        ]} />
+        <FeatureHighlight features={FEATURE_ITEMS} />
 
         {/* Product Details Accordion */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
@@ -65,13 +68,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </section>
 
         {/* Q&A Section */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 bg-stone-50">
-          <ProductQA limit={3} />
+        <section className="w-full bg-stone-50 py-16 pb-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <ProductQA limit={3} />
+          </div>
         </section>
-
-        <div className="h-40"></div>
-
-
       </main>
 
       <Footer />

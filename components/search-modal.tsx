@@ -13,7 +13,7 @@ export function SearchModal() {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const { t } = useI18n()
-    const { addItem } = useCart()
+    const { addItem, items, isHydrated } = useCart()
 
     // Search products in real-time
     const searchResults = useMemo(() => {
@@ -172,13 +172,33 @@ export function SearchModal() {
                                                         <p className="text-sm text-gray-600 truncate">{product.tagline}</p>
                                                         <p className="text-sm font-medium text-gray-900 mt-1">{formatCurrency(product.price)}</p>
                                                     </div>
-                                                    <button
-                                                        onClick={(e) => handleQuickAdd(e, product)}
-                                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
-                                                        aria-label="Thêm vào giỏ"
-                                                    >
-                                                        <ShoppingCart className="h-5 w-5 text-gray-600" />
-                                                    </button>
+                                                    {!isHydrated ? (
+                                                        <div className="p-2 rounded-lg flex-shrink-0 flex items-center justify-center">
+                                                            <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                                                        </div>
+                                                    ) : items.some(item => item.id === product.id) ? (
+                                                        <Link
+                                                            href="/cart"
+                                                            onClick={(e) => {
+                                                                e.preventDefault()
+                                                                e.stopPropagation()
+                                                                setIsOpen(false)
+                                                            }}
+                                                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                                                            aria-label="Mua hàng"
+                                                            title="Mua hàng"
+                                                        >
+                                                            <ShoppingCart className="h-5 w-5 text-green-600" />
+                                                        </Link>
+                                                    ) : (
+                                                        <button
+                                                            onClick={(e) => handleQuickAdd(e, product)}
+                                                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                                                            aria-label="Thêm vào giỏ"
+                                                        >
+                                                            <ShoppingCart className="h-5 w-5 text-gray-600" />
+                                                        </button>
+                                                    )}
                                                 </Link>
                                             ))}
                                         </div>

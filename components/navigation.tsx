@@ -22,14 +22,15 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
   const [isHydrated, setIsHydrated] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
   const [passedBanner, setPassedBanner] = useState(false) // true khi scroll qua 30px
+  const [isHeaderHovered, setIsHeaderHovered] = useState(false) // track hover state
   const menuLinkClass = isSticky
     ? "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
     : isTransparent
       ? "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
       : "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
 
-  // Determine logo based on isHomePage and sticky state
-  const logoSrc = isHomePage && !isSticky ? "/logo/logo-white.svg" : "/logo/logo-black.svg"
+  // Determine logo based on isHomePage, sticky state, and hover state
+  const logoSrc = isHomePage && !isSticky && !isHeaderHovered ? "/logo/logo-white.svg" : "/logo/logo-black.svg"
 
   useEffect(() => {
     // Mark as hydrated
@@ -74,6 +75,8 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
   return (
     <>
       <header
+        onMouseEnter={() => setIsHeaderHovered(true)}
+        onMouseLeave={() => setIsHeaderHovered(false)}
         className={`${isSticky ? "fixed" : "absolute"} ${passedBanner ? "top-0" : "top-[30px]"} left-0 right-0 z-50 transition-all duration-300 ${isSticky ? "bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm" : isTransparent ? "bg-transparent hover:bg-white border-b border-transparent hover:border-gray-100" : "bg-white border-b border-gray-100"} group ${!isSticky && isTransparent ? "is-transparent" : ""}`}
       >
         <nav className="w-full px-4 sm:px-6 lg:px-8">

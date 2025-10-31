@@ -7,6 +7,7 @@ import { getProductById } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/currency-util"
 import { Check, Minus, Plus } from "lucide-react"
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
 
 interface ProductInfoProps {
   productId: string
@@ -17,7 +18,8 @@ export function ProductInfo({ productId }: ProductInfoProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
   const { t } = useI18n()
-  const { addItem } = useCart()
+  const { addItem, items, isHydrated } = useCart()
+  const router = useRouter()
 
   const product = useMemo(() => getProductById(productId), [productId])
 
@@ -67,37 +69,50 @@ export function ProductInfo({ productId }: ProductInfoProps) {
         </div>
       )}
 
-      {/* Product Highlights - 4 Icons */}
-      <div className="grid grid-cols-4 gap-3 py-4 px-4">
-        {/* Icon 1: No Alcohol */}
+      {/* Product Highlights - 3 Icons */}
+      <div className="grid grid-cols-3 gap-3 py-4 px-4">
+        {/* Icon 1: Cho da dầu mụn */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2L9 6H15L12 2Z" />
-            <path d="M9 6V18C9 19.66 10.34 21 12 21C13.66 21 15 19.66 15 18V6" />
-            <path d="M7 8H17" />
-            <line x1="10" y1="12" x2="14" y2="12" strokeLinecap="round" />
+          <svg className="w-10 h-10 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="9" cy="10" r="1.5" fill="currentColor" />
+            <circle cx="15" cy="10" r="1.5" fill="currentColor" />
+            <path d="M9 16c.5 1 1.5 1.5 3 1.5s2.5-.5 3-1.5" />
+            <circle cx="7" cy="8" r="1.5" fill="currentColor" opacity="0.6" />
+            <circle cx="17" cy="8" r="1" fill="currentColor" opacity="0.6" />
+            <circle cx="6" cy="13" r="1" fill="currentColor" opacity="0.6" />
+            <circle cx="18" cy="14" r="1" fill="currentColor" opacity="0.6" />
           </svg>
-          <p className="text-xs font-medium text-gray-900">Không cồn</p>
+          <p className="text-xs font-medium text-gray-900 leading-tight">Cho da dầu mụn</p>
         </div>
 
-        {/* Icon 2: No Sulfate */}
+        {/* Icon 2: Kiểm soát dầu thông minh */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-10 h-10 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="9" />
-            <line x1="12" y1="7" x2="12" y2="17" />
-            <line x1="7" y1="12" x2="17" y2="12" />
+            <path d="M12 6v3M12 15v3M6 12h3M15 12h3" strokeWidth="1.5" />
+            <path d="M8.5 8.5l2.5 2.5M13 13l2.5 2.5M8.5 15.5l2.5-2.5M13 11l2.5-2.5" strokeWidth="1.5" />
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" opacity="0.2" />
+            <circle cx="12" cy="12" r="1" fill="currentColor" />
           </svg>
-          <p className="text-xs font-medium text-gray-900">Không sulfate</p>
+          <p className="text-xs font-medium text-gray-900 leading-tight">Kiểm soát dầu thông minh</p>
         </div>
 
-        {/* Icon 3: No Mineral Oil */}
+        {/* Icon 3: PDRN phục hồi tế bào da */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <svg className="w-8 h-8 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2L19 7V17C19 18.66 15.66 20 12 20C8.34 20 5 18.66 5 17V7L12 2Z" />
-            <path d="M12 10L8 12.5V17" />
-            <path d="M12 10L16 12.5V17" />
+          <svg className="w-10 h-10 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+            <circle cx="12" cy="12" r="3.5" fill="none" />
+            <circle cx="12" cy="8.5" r="1.5" fill="currentColor" />
+            <circle cx="12" cy="15.5" r="1.5" fill="currentColor" />
+            <circle cx="8.5" cy="12" r="1.5" fill="currentColor" />
+            <circle cx="15.5" cy="12" r="1.5" fill="currentColor" />
+            <path d="M10.5 10.5l3 3M13.5 10.5l-3 3" strokeWidth="1.5" />
+            <path d="M7 14l10-10M17 14L7 4" strokeWidth="1" opacity="0.4" />
           </svg>
-          <p className="text-xs font-medium text-gray-900">Không dầu khoáng</p>
+          <p className="text-xs font-medium text-gray-900 leading-tight">PDRN phục hồi tế bào da</p>
         </div>
       </div>
 
@@ -127,30 +142,51 @@ export function ProductInfo({ productId }: ProductInfoProps) {
 
       {/* Action Buttons */}
       <div className="space-y-3 pt-2">
-        <Button
-          size="lg"
-          className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full"
-          onClick={() => {
-            addItem({
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              image: product.image,
-              tagline: product.tagline,
-            }, quantity)
-            setIsAdded(true)
-            setTimeout(() => setIsAdded(false), 2000)
-          }}
-        >
-          {isAdded ? (
-            <>
-              <Check className="w-5 h-5 mr-2" />
-              Đã thêm vào giỏ
-            </>
-          ) : (
-            t.productDetail.addToCart
-          )}
-        </Button>
+        {!isHydrated ? (
+          <Button
+            size="lg"
+            className="w-full h-14 text-base bg-gray-300 hover:bg-gray-300 rounded-full cursor-not-allowed"
+            disabled
+          >
+            <div className="w-5 h-5 border-2 border-gray-500 border-t-white rounded-full animate-spin mr-2" />
+            Đang tải...
+          </Button>
+        ) : items.some(item => item.id === product.id) ? (
+          <Button
+            size="lg"
+            className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full"
+            onClick={() => {
+              router.push("/cart")
+            }}
+          >
+            Mua hàng
+          </Button>
+        ) : (
+          <Button
+            size="lg"
+            className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full"
+            onClick={() => {
+              addItem({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                tagline: product.tagline,
+              }, quantity)
+              setIsAdded(true)
+              setTimeout(() => setIsAdded(false), 2000)
+            }}
+          >
+            {isAdded ? (
+              <>
+                <Check className="w-5 h-5 mr-2" />
+                Đã thêm vào giỏ
+              </>
+            ) : (
+              t.productDetail.addToCart
+            )}
+          </Button>
+        )}
         {/* <div className="flex gap-3">
           <Button
             variant="outline"

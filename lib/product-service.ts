@@ -53,10 +53,8 @@ const MOCK_PRODUCTS: Product[] = [
     ],
     description: "Kem chống nắng kiểm soát dầu hiệu quả, mang lại làn da matte mịn màng và bảo vệ khỏi tia UV với SPF 50+ và PA++++.",
     benefits: [
-      "Bảo vệ da khỏi tia UVA/UVB",
-      "Kiểm soát dầu hiệu quả",
-      "Kết cấu matte, không nhờn rít",
-      "Phù hợp cho da dầu và hỗn hợp"
+      "Với công nghệ Booster kèm 4 màng lọc có kích thước hạt nhỏ thông minh tạo lớp bảo vệ bền vững, KCN Cellic Bright Matte kiểm soát và bảo vệ da khỏi tác động tia UVA, UVB và ánh sáng xanh trong suốt 8 giờ. Bổ sung thành phần PDRN cùng chiết xuất hoa kim ngân và công nghệ MicroBiome hỗ trợ cân bằng hệ vi sinh, làm dịu và giảm kích ứng khi tiếp xúc ánh nắng.",
+      "Chất kem mỏng nhẹ, thấm nhanh vào da, KCN Cellic Bright Matte tạo lớp bảo vệ tự nhiên, thoáng, mịn, không gây bít tắc lỗ chân lông cho da. KCN Cellic Bright Matte phù hợp với làn da hỗn hợp và hỗn hợp thiên dầu."
     ],
     ingredients: ["Zinc Oxide", "Titanium Dioxide", "Matte Powder", "Sebum Control", "PDRN"],
   },
@@ -288,15 +286,58 @@ export class ProductService {
   }
 
   /**
-   * Get related products (same category, excluding current)
+   * Get related products with smart matching algorithm
+   * Priority: 1) Same category + same needs, 2) Same category, 3) Same needs, 4) Other products
    */
-  static getRelatedProducts(productId: string, limit: number = 3): Product[] {
+  static getRelatedProducts(productId: string, limit: number = 4): Product[] {
     const product = this.getProductById(productId)
     if (!product) return []
 
-    return MOCK_PRODUCTS
-      .filter(p => p.id !== productId && p.category === product.category)
+    const otherProducts = MOCK_PRODUCTS.filter(p => p.id !== productId)
+    
+    if (otherProducts.length === 0) return []
+
+    // Helper function to calculate similarity score
+    const calculateScore = (p: Product): number => {
+      let score = 0
+      
+      // Priority 1: Same category and shared needs (highest priority)
+      if (p.category === product.category) {
+        score += 100
+        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        score += sharedNeeds.length * 20 // Each shared need adds 20 points
+      }
+      
+      // Priority 2: Same category but different needs
+      if (p.category === product.category) {
+        // Already added above, but ensure we have base score
+      }
+      
+      // Priority 3: Different category but shared needs
+      if (p.category !== product.category) {
+        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        score += sharedNeeds.length * 10 // Each shared need adds 10 points
+      }
+      
+      return score
+    }
+
+    // Sort by score (highest first) and take limit
+    const sortedProducts = otherProducts
+      .map(p => ({ product: p, score: calculateScore(p) }))
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.product)
       .slice(0, limit)
+
+    // If we don't have enough products, fill with any remaining products
+    if (sortedProducts.length < limit) {
+      const remaining = otherProducts.filter(
+        p => !sortedProducts.some(sp => sp.id === p.id)
+      )
+      sortedProducts.push(...remaining.slice(0, limit - sortedProducts.length))
+    }
+
+    return sortedProducts
   }
 }
 

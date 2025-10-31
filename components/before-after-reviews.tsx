@@ -5,6 +5,32 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+// Helper function to render rating stars with half star support
+function renderRatingStars(rating: number) {
+  const fullStars = Math.floor(rating)
+  const hasHalfStar = rating % 1 !== 0
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: fullStars }).map((_, i) => (
+        <Star key={`full-${i}`} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+      ))}
+      {hasHalfStar && (
+        <div className="relative w-4 h-4">
+          <Star className="w-4 h-4 absolute fill-gray-300 text-gray-300" />
+          <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden">
+            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+          </div>
+        </div>
+      )}
+      {Array.from({ length: emptyStars }).map((_, i) => (
+        <Star key={`empty-${i}`} className="w-4 h-4 fill-gray-300 text-gray-300" />
+      ))}
+    </div>
+  )
+}
+
 interface BeforeAfterReviewsProps {
   productId?: string
 }
@@ -104,11 +130,7 @@ export function BeforeAfterReviews({ productId = "1" }: BeforeAfterReviewsProps)
 
               {/* Review Content */}
               <div className="p-6 space-y-3">
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: review.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
+                {renderRatingStars(review.rating)}
                 <p className="text-stone-700 leading-relaxed">{review.review}</p>
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-gray-900">{review.name}</span>

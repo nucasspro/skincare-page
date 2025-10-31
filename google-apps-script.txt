@@ -1,0 +1,110 @@
+// Google Apps Script để lưu đơn hàng vào Google Sheets
+// Hướng dẫn setup:
+// 1. Tạo Google Sheet mới với tên "Orders" hoặc bất kỳ tên nào bạn muốn
+// 2. Tạo header row trong Sheet 1:
+//    A1: Timestamp | B1: Order Number | C1: Customer Name | D1: Phone | E1: Address | F1: Payment Method | G1: Items | H1: Total Items | I1: Total Price
+// 3. Mở Tools > Script editor
+// 4. Paste code này vào
+// 5. Lưu lại (File > Save)
+// 6. Chạy function doPost() một lần để authorize (Run > Run function > doPost)
+// 7. Authorize permissions
+// 8. Sau khi authorize xong, vào Deploy > New deployment
+// 9. Chọn type: Web app
+// 10. Execute as: Me
+// 11. Who has access: Anyone
+// 12. Click Deploy
+// 13. Copy Web app URL và paste vào biến môi trường GOOGLE_SHEETS_WEB_APP_URL
+
+function doPost(e) {
+  try {
+    // Lấy sheet (Sheet1 là sheet đầu tiên)
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+    
+    // Nếu Sheet1 không tồn tại, tạo mới
+    if (!sheet) {
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const newSheet = ss.insertSheet("Sheet1");
+      
+      // Tạo header row
+      newSheet.getRange(1, 1, 1, 9).setValues([[
+        "Timestamp",
+        "Order Number",
+        "Customer Name",
+        "Phone",
+        "Address",
+        "Payment Method",
+        "Items",
+        "Total Items",
+        "Total Price"
+      ]]);
+      
+      // Format header
+      const headerRange = newSheet.getRange(1, 1, 1, 9);
+      headerRange.setFontWeight("bold");
+      headerRange.setBackground("#4285f4");
+      headerRange.setFontColor("#ffffff");
+      
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Sheet created" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Parse JSON data từ request
+    const data = JSON.parse(e.postData.contents);
+    
+    // Thêm dữ liệu vào sheet
+    const row = [
+      data.timestamp || new Date().toISOString(),
+      data.orderNumber || "",
+      data.customerName || "",
+      data.customerPhone || "",
+      data.address || "",
+      data.paymentMethod || "",
+      data.items || "",
+      data.totalItems || 0,
+      data.totalPrice || ""
+    ];
+    
+    sheet.appendRow(row);
+    
+    // Trả về success response
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true, 
+      message: "Order saved successfully",
+      row: sheet.getLastRow()
+    }))
+      .setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    // Log error và trả về error response
+    console.error("Error:", error);
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.toString() 
+    }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Function để test (chạy thủ công)
+function testFunction() {
+  const testData = {
+    timestamp: new Date().toISOString(),
+    orderNumber: "ORD-TEST-123",
+    customerName: "Test Customer",
+    customerPhone: "0123456789",
+    address: "123 Test Street, Test Ward, Test District, Test Province",
+    paymentMethod: "COD",
+    items: "Product 1 (x2) - 500,000đ; Product 2 (x1) - 300,000đ",
+    totalItems: 3,
+    totalPrice: "800,000đ"
+  };
+  
+  const mockEvent = {
+    postData: {
+      contents: JSON.stringify(testData)
+    }
+  };
+  
+  const result = doPost(mockEvent);
+  Logger.log(result.getContent());
+}

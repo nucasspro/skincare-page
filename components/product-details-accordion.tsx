@@ -22,11 +22,10 @@ export function ProductDetailsAccordion() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 md:px-8 py-4 text-base font-medium transition-all relative whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? "text-gray-900"
-                    : "text-stone-600 hover:text-gray-900"
-                }`}
+                className={`px-6 md:px-8 py-4 text-base font-medium transition-all relative whitespace-nowrap ${activeTab === tab.id
+                  ? "text-gray-900"
+                  : "text-stone-600 hover:text-gray-900"
+                  }`}
               >
                 {tab.label}
                 {/* Bottom border for active tab */}
@@ -50,56 +49,49 @@ export function ProductDetailsAccordion() {
                 <div>
                   <h3 className="text-2xl font-semibold text-gray-900 mb-4">Giới thiệu sản phẩm</h3>
                   <p className="text-stone-700 leading-relaxed">
-                    Cellic được phát triển dựa trên nền tảng khoa học da liễu hiện đại, với công thức độc quyền kết hợp giữa các hoạt chất bảo vệ tiến tiến và chiết xuất sinh học tự nhiên, nhằm mang đến khả năng chống nắng tối ưu, bảo về da khỏi tác hại của tia UV và ô nhiễm môi trường.
+                    Bảo vệ, làm dịu và nuôi dưỡng làn da dưới nắng, Cellic Bright Matte Sunscreen giúp da luôn thoáng nhẹ, sáng mịn và khỏe mạnh nhờ công nghệ chống nắng thông minh và chiết xuất thiên nhiên lành tính.
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-semibold text-gray-900">Công nghệ chính</h3>
-
-                  <div className="space-y-4">
-                    <div className="pb-4 border-b border-stone-100 last:border-b-0">
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
-                          1
-                        </span>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Hệ thống màng lọc tia UV thế hệ mới</h4>
-                          <p className="text-stone-700 text-sm leading-relaxed">
-                            Sự kết hợp giữa Uvinul A Plus, Tinosorb S, và Zinc Oxide đang vị hạt phủ silane giúp tạo nên lớp bảo vệ phổ rộng, ngăn chặn cả tia UVA và UVB, ổn định dưới ánh sáng mạnh và duy trị hiệu quả lâu dài trên da.
-                          </p>
-                          <p className="text-stone-600 text-sm mt-2 italic">→ Công dụng: Giảm thiểu nguy cơ sạm nâm, lão hoá sớm và tổn thương DNA tế bào da.</p>
-                        </div>
+                  <div className="pb-4 border-b border-stone-100">
+                    <div className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
+                        1
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Hiệu quả màng lọc chống nắng ưu việt</h4>
+                        <p className="text-stone-700 text-sm leading-relaxed">
+                          Ứng dụng công nghệ Nano và Booster cùng 4 màng lọc phổ rộng SPF 50+/ PA++++ bảo vệ da an toàn trước ánh sáng năng lượng cao nhìn thấy được HEV.
+                        </p>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="pb-4 border-b border-stone-100 last:border-b-0">
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
-                          2
-                        </span>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Phức hợp chống oxy hóa sinh học (Bio-Antioxidant Complex)</h4>
-                          <p className="text-stone-700 text-sm leading-relaxed">
-                            Chứa Vitamin E, Niacinamide (Vitamin B3) và chiết xuất cá hồi giàu peptide tự nhiên, giúp trung hòa gốc tự do, tăng cường hàng rào bảo vệ da và hỗ trợ tái tạo tế bào mới.
-                          </p>
-                          <p className="text-stone-600 text-sm mt-2 italic">→ Công dụng: Làm dịu da, giảm kích ứng do nắng, phục hồi độ dẫn hồi và sáng mịn tự nhiên.</p>
-                        </div>
+                  <div className="pb-4 border-b border-stone-100">
+                    <div className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
+                        2
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Lớp finish mỏng nhẹ và kiềm dầu</h4>
+                        <p className="text-stone-700 text-sm leading-relaxed">
+                          Công nghệ Smart Oil Control cùng các hạt nano siêu mịn giúp kem thấm nhanh, cho lớp nền ráo, mịn, tự nhiên, hạn chế bóng nhờn suốt cả ngày dài.
+                        </p>
                       </div>
                     </div>
+                  </div>
 
-                    <div>
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
-                          3
-                        </span>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Hệ đặn truyền công nghệ vi bao (Encapsulation Technology)</h4>
-                          <p className="text-stone-700 text-sm leading-relaxed">
-                            Các hoạt chất chống nắng và dưỡng chất được bao vì mô bằng công nghệ Encap-Lipid, giúp phân bố đồng đều, thâm thấu tốt nhưng không gây bít tắc lỗ chân lông.
-                          </p>
-                          <p className="text-stone-600 text-sm mt-2 italic">→ Công dụng: Cảm giác nhẹ, thoáng, không nhờn rít – phù hợp với cả da nhạy cảm.</p>
-                        </div>
+                  <div>
+                    <div className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-semibold">
+                        3
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Thành phần dịu nhẹ và lành tính</h4>
+                        <p className="text-stone-700 text-sm leading-relaxed">
+                          Chứa thành phần PDRN, chiết xuất kim ngân hoa và công nghệ Microbiome cân bằng hệ vi sinh cho da, tăng cường sức đề kháng khi hoạt động dưới ánh nắng. Không cồn, không hương liệu, không silicone nặng, không cay mắt.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -123,131 +115,117 @@ export function ProductDetailsAccordion() {
 
         {/* Thành phân Tab */}
         {activeTab === "ingredients" && (
-          <div className="space-y-6 animate-fadeIn max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Thành phần chính</h3>
-              <p className="text-stone-700 leading-relaxed mb-6">
-                Công thức được phát triển với những thành phần an toàn, hiệu quả và được kiểm chứng lâm sàn:
-              </p>
+          <div className="space-y-8 animate-fadeIn max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Thành phần và công nghệ</h3>
 
-              <div className="space-y-3 grid md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Uvinul A Plus (5%)</div>
-                    <p className="text-sm text-stone-700">Chống UV dài, ổn định và an toàn cho da</p>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Tinosorb S (3%)</div>
-                    <p className="text-sm text-stone-700">Bảo vệ phổ rộng UVA/UVB thế hệ mới</p>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Zinc Oxide (8%)</div>
-                    <p className="text-sm text-stone-700">Chống UV vật lý, an toàn và lành tính</p>
-                  </div>
+            <div className="space-y-1">
+              {/* Uvinul A Plus */}
+              <div className="flex items-start gap-5 py-6 border-b border-stone-200 hover:bg-stone-50 transition-colors">
+                <div className="flex-shrink-0 pt-1">
+                  <svg className="w-6 h-6 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+                    <circle cx="12" cy="12" r="3" fill="currentColor" />
+                  </svg>
                 </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Vitamin E (2%)</div>
-                    <p className="text-sm text-stone-700">Chống oxy hóa mạnh, bảo vệ da</p>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Niacinamide (5%)</div>
-                    <p className="text-sm text-stone-700">Cân bằng độ ẩm, giảm bóng nhờn</p>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 mb-1">Centella Asiatica</div>
-                    <p className="text-sm text-stone-700">Làm dịu, phục hồi da tổn thương</p>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-gray-900 text-base mb-2">Uvinul® A Plus</h4>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Màng lọc UVA thế hệ mới, bảo vệ da khỏi tác nhân gây lão hoá và tổn thương do tia UVA dài, duy trì hiệu quả chống nắng ổn định suốt nhiều giờ.
+                  </p>
                 </div>
               </div>
-            </div>
 
-            <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
-              <p className="text-sm text-blue-900">
-                <span className="font-semibold">Lưu ý:</span> Không chứa paraben, sulfate, dầu khoáng và các chất hóa học có hại. Đã được kiểm nghiệm dermatologically cho cả da nhạy cảm.
-              </p>
+              {/* Công nghệ Microbiome */}
+              <div className="flex items-start gap-5 py-6 border-b border-stone-200 hover:bg-stone-50 transition-colors">
+                <div className="flex-shrink-0 pt-1">
+                  <svg className="w-6 h-6 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="8" r="2" fill="currentColor" />
+                    <circle cx="12" cy="16" r="2" fill="currentColor" />
+                    <circle cx="8" cy="12" r="2" fill="currentColor" />
+                    <circle cx="16" cy="12" r="2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-gray-900 text-base mb-2">Công nghệ Microbiome</h4>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Hỗ trợ cân bằng hệ vi sinh, giúp da giảm kích ứng, tăng sức đề kháng tự nhiên và làm dịu da khi hoạt động dưới ánh nắng.
+                  </p>
+                </div>
+              </div>
+
+              {/* Công nghệ Smart Oil Control */}
+              <div className="flex items-start gap-5 py-6 border-b border-stone-200 hover:bg-stone-50 transition-colors">
+                <div className="flex-shrink-0 pt-1">
+                  <svg className="w-6 h-6 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 6v3M12 15v3M6 12h3M15 12h3" strokeWidth="1.5" />
+                    <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-gray-900 text-base mb-2">Công nghệ Smart Oil Control</h4>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Giúp kiềm dầu và khô thoáng suốt cả ngày dài, phù hợp với nền da thường đến da dầu.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {/* Cách sử dụng Tab */}
         {activeTab === "usage" && (
-          <div className="space-y-6 animate-fadeIn max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Hướng dẫn sử dụng</h3>
+          <div className="space-y-8 animate-fadeIn max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Cách sử dụng</h3>
 
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-900 text-white font-semibold">
-                      1
+            <div className="relative">
+              {/* Vertical line connecting steps */}
+              <div className="absolute left-6 top-0 bottom-0 w-px bg-stone-200 hidden sm:block"></div>
+
+              <div className="space-y-6">
+                {/* Step 1 */}
+                <div className="relative flex gap-6 items-start">
+                  <div className="flex-shrink-0 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center">
+                      <span className="text-lg font-semibold text-white">1</span>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Làm sạch da</h4>
-                    <p className="text-stone-700 text-sm">Rửa mặt bằng sữa rửa mặt nhẹ nhàng, sau đó lau khô hoàn toàn</p>
+                  <div className="flex-1 pt-2">
+                    <p className="text-gray-900 leading-relaxed">
+                      Sử dụng một lượng vừa đủ, đảm bảo che phủ toàn mặt và cổ.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-900 text-white font-semibold">
-                      2
+                {/* Step 2 */}
+                <div className="relative flex gap-6 items-start">
+                  <div className="flex-shrink-0 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center">
+                      <span className="text-lg font-semibold text-white">2</span>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Thoa serum/toner</h4>
-                    <p className="text-stone-700 text-sm">Nếu sử dụng serum hoặc toner, hãy thoa trước khi sử dụng kem chống nắng</p>
+                  <div className="flex-1 pt-2">
+                    <p className="text-gray-900 leading-relaxed">
+                      Thao tác thoa tròn nhẹ nhàng giúp kem dàn đều và thấm vào da.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-900 text-white font-semibold">
-                      3
+                {/* Step 3 */}
+                <div className="relative flex gap-6 items-start">
+                  <div className="flex-shrink-0 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center">
+                      <span className="text-lg font-semibold text-white">3</span>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Thoa kem chống nắng</h4>
-                    <p className="text-stone-700 text-sm">Lấy một lượng khoảng đậu phộng (hạt lạc), phân bố đều lên toàn mặt, cổ và vùng tai</p>
+                  <div className="flex-1 pt-2">
+                    <p className="text-gray-900 leading-relaxed">
+                      Sử dụng trước khi trang điểm và trước đi hoạt động dưới ánh nắng 15 phút để có lớp bảo vệ tuyệt đối cho da.
+                    </p>
                   </div>
                 </div>
-
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-900 text-white font-semibold">
-                      4
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Để khô tự nhiên</h4>
-                    <p className="text-stone-700 text-sm">Để kem tự khô trong 2-3 phút trước khi trang điểm hoặc tiếp xúc với ánh nắng</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-900 text-white font-semibold">
-                      5
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Tái thoa định kỳ</h4>
-                    <p className="text-stone-700 text-sm">Tái thoa mỗi 2-3 giờ, hoặc ngay sau khi bơi/đổ mồ hôi</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 pt-4">
-              <div className="p-4 bg-green-50 border border-green-100 rounded-lg">
-                <h4 className="font-semibold text-green-900 mb-2">Buổi sáng</h4>
-                <p className="text-sm text-green-800">Sử dụng sau các sản phẩm chăm sóc da và trước trang điểm</p>
-              </div>
-              <div className="p-4 bg-purple-50 border border-purple-100 rounded-lg">
-                <h4 className="font-semibold text-purple-900 mb-2">Buổi chiều</h4>
-                <p className="text-sm text-purple-800">Thoa trước khi ra ngoài hoặc lên phố</p>
               </div>
             </div>
           </div>
