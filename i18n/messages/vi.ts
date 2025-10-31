@@ -1,0 +1,331 @@
+export default {
+  nav: {
+    home: "Trang chủ",
+    products: "Sản phẩm",
+    byCategory: "Theo danh mục",
+    byNeeds: "Theo nhu cầu",
+    brandStory: "Câu chuyện thương hiệu",
+    media: "Truyền thông",
+    myAccount: "Tài khoản của tôi",
+    search: "Tìm kiếm",
+    cart: "Giỏ hàng",
+    account: "Tài khoản",
+  },
+  announcement: {
+    freeShipping: "Miễn phí vận chuyển cho đơn hàng trên 1.000.000₫",
+  },
+  hero: {
+    title: "Làn da rạng rỡ tự nhiên",
+    subtitle: "Khám phá bí quyết chăm sóc da cao cấp",
+    cta: "Khám phá ngay",
+  },
+  product3d: {
+    title: "Radiance Renewal Serum",
+    subtitle: "Serum làm sáng da cao cấp",
+    description:
+      "Công thức tiên tiến với vitamin C và axit hyaluronic giúp làm sáng da, giảm nếp nhăn và cải thiện kết cấu da.",
+    cta: "Mua ngay",
+  },
+  bestSellers: {
+    title: "Sản phẩm bán chạy",
+    subtitle: "Khám phá những sản phẩm được yêu thích nhất",
+    addToCart: "Thêm vào giỏ",
+    products: {
+      essence: {
+        name: "Hydrating Essence",
+        tagline: "Cấp ẩm sâu cho làn da mềm mại",
+      },
+      serum: {
+        name: "Vitamin C Serum",
+        tagline: "Làm sáng và đều màu da",
+      },
+      cream: {
+        name: "Ceramide Cream",
+        tagline: "Phục hồi hàng rào bảo vệ da",
+      },
+      cleanser: {
+        name: "Gentle Cleanser",
+        tagline: "Làm sạch nhẹ nhàng không gây khô",
+      },
+      eyeCream: {
+        name: "Eye Renewal Cream",
+        tagline: "Giảm quầng thâm và nếp nhăn",
+      },
+    },
+  },
+  brandStory: {
+    title: "Câu chuyện của chúng tôi",
+    subtitle: "Nơi khoa học gặp gỡ thiên nhiên",
+    point1: "Thành phần tự nhiên được chọn lọc kỹ lưỡng",
+    point2: "Công thức được chứng minh lâm sàng",
+    point3: "Cam kết bền vững và đạo đức",
+    point4: "Không thử nghiệm trên động vật",
+    cta: "Đọc câu chuyện đầy đủ",
+    page: {
+      hero: {
+        title: "CELLIC",
+        subtitle: "Từ tiếng Pháp 'Ánh sáng'",
+        value1: "Khoa học được chứng minh lâm sàng",
+        value2: "Thành phần tự nhiên tinh khiết",
+        value3: "Cam kết bền vững",
+        value4: "Không thử nghiệm trên động vật",
+      },
+      chapter1: {
+        label: "Chương Một",
+        title: "Nơi mọi thứ bắt đầu",
+        p1: "Năm 2015, người sáng lập của chúng tôi, một bác sĩ da liễu với hơn 20 năm kinh nghiệm, nhận thấy một khoảng trống trong thị trường chăm sóc da. Bệnh nhân đang tìm kiếm các sản phẩm kết hợp hiệu quả lâm sàng với thành phần tự nhiên nhẹ nhàng.",
+        p2: "Quan sát này đã khơi dậy một sứ mệnh: tạo ra một dòng sản phẩm chăm sóc da kết nối khoảng cách giữa khoa học da liễu và trí tuệ của thiên nhiên. Mỗi công thức sẽ được phát triển với sự nghiêm ngặt như các sản phẩm dược phẩm, nhưng khai thác sức mạnh của các thành phần thực vật.",
+        p3: "Những gì bắt đầu trong một phòng thí nghiệm nhỏ đã phát triển thành một phong trào toàn cầu, chạm đến cuộc sống của hàng triệu người tin rằng chăm sóc da hiệu quả không nên ảnh hưởng đến sự an toàn hoặc tính bền vững.",
+      },
+      chapter2: {
+        label: "Chương Hai",
+        title: "Sứ mệnh của chúng tôi",
+        p1: "Chúng tôi tin rằng mọi người đều xứng đáng được tiếp cận với sản phẩm chăm sóc da hiệu quả. Sứ mệnh của chúng tôi là dân chủ hóa chuyên môn da liễu thông qua các sản phẩm vừa hiệu quả vừa dễ tiếp cận.",
+        p2: "Mỗi sản phẩm trải qua thử nghiệm lâm sàng nghiêm ngặt và được điều chế với các thành phần có hiệu quả đã được chứng minh. Chúng tôi không bao giờ thỏa hiệp về chất lượng, và chúng tôi không bao giờ thử nghiệm trên động vật.",
+      },
+      chapter3: {
+        label: "Chương Ba",
+        title: "Triết lý thành phần",
+        description:
+          "Chúng tôi tìm nguồn các thành phần tốt nhất từ khắp nơi trên thế giới, kết hợp các thực vật đã được kiểm chứng theo thời gian với các hoạt chất tiên tiến. Mỗi thành phần được chọn lựa vì lợi ích đã được chứng minh và nguồn gốc bền vững.",
+      },
+      chapter4: {
+        label: "Chương Bốn",
+        title: "Cam kết bền vững",
+        p1: "Cam kết của chúng tôi với hành tinh mạnh mẽ như cam kết với làn da của bạn. Chúng tôi sử dụng bao bì có thể tái chế, giảm thiểu chất thải trong quy trình sản xuất và hợp tác với các nhà cung cấp chia sẻ giá trị môi trường của chúng tôi.",
+        p2: "Đến năm 2025, chúng tôi hướng tới mục tiêu đạt được trung hòa carbon trong toàn bộ chuỗi cung ứng. Mỗi giao dịch mua hàng đóng góp vào các dự án tái trồng rừng và làm sạch đại dương.",
+        cta: "Tìm hiểu về tác động của chúng tôi",
+      },
+      chapter5: {
+        label: "Chương Năm",
+        title: "Hợp tác với chuyên gia",
+        p1: "Chúng tôi hợp tác với các bác sĩ da liễu, nhà khoa học và chuyên gia chăm sóc da hàng đầu để phát triển các công thức đáp ứng nhu cầu thực sự của làn da.",
+        p2: "Mỗi sản phẩm được thử nghiệm lâm sàng và được chứng nhận bởi các chuyên gia da liễu độc lập. Chúng tôi tin vào sức mạnh của khoa học và chuyên môn.",
+      },
+      chapter6: {
+        label: "Chương Sáu",
+        title: "Tương lai của chăm sóc da",
+        description:
+          "Chúng tôi không ngừng đổi mới và nghiên cứu để mang đến những giải pháp chăm sóc da tốt nhất. Tầm nhìn của chúng tôi là trở thành thương hiệu chăm sóc da được tin cậy nhất, nơi khoa học và thiên nhiên hòa quyện hoàn hảo.",
+      },
+      stats: {
+        stat1: {
+          number: "SỐ 1",
+          description: "Thương hiệu được yêu thích 9 năm liên tiếp",
+        },
+        stat2: {
+          number: "47",
+          description: "Bệnh viện sử dụng sản phẩm",
+        },
+        stat3: {
+          number: "4,100+",
+          description: "Phòng khám tin dùng",
+        },
+        stat4: {
+          number: "49",
+          description: "Bác sĩ da liễu hợp tác",
+        },
+      },
+      values: {
+        title: "Giá trị cốt lõi",
+        subtitle: "Những nguyên tắc định hướng mọi việc chúng tôi làm",
+        value1: {
+          title: "Dựa trên khoa học",
+          description: "Mỗi công thức được phát triển với nghiên cứu lâm sàng và thử nghiệm hiệu quả",
+        },
+        value2: {
+          title: "Lấy cảm hứng từ thiên nhiên",
+          description: "Chúng tôi khai thác sức mạnh của các thành phần thực vật với lợi ích đã được chứng minh",
+        },
+        value3: {
+          title: "Bền vững",
+          description: "Cam kết bảo vệ hành tinh cho các thế hệ tương lai",
+        },
+      },
+      cta: {
+        title: "Trải nghiệm sự khác biệt",
+        description: "Khám phá bộ sưu tập sản phẩm chăm sóc da được phát triển bởi bác sĩ da liễu",
+        button: "Mua sắm sản phẩm",
+      },
+    },
+  },
+  social: {
+    title: "Theo dõi hành trình làm đẹp",
+    subtitle: "Tham gia cộng đồng của chúng tôi",
+    watchOn: "Xem trên",
+    followUs: "Theo dõi chúng tôi",
+  },
+  prArticles: {
+    title: "Tin tức & Bài viết",
+    subtitle: "Cập nhật xu hướng làm đẹp mới nhất",
+    readArticle: "Đọc bài viết",
+  },
+  productListing: {
+    title: "Khám phá sản phẩm chăm sóc da",
+    productsCount: "sản phẩm",
+    filters: {
+      title: "Bộ lọc",
+      clear: "Xóa bộ lọc",
+      active: "Đang lọc",
+      category: "Danh mục",
+      needs: "Nhu cầu",
+      priceRange: "Khoảng giá",
+      categories: {
+        all: "Tất cả",
+        serums: "Serum",
+        moisturizers: "Kem dưỡng ẩm",
+        cleansers: "Sữa rửa mặt",
+        eyeCare: "Chăm sóc mắt",
+        masks: "Mặt nạ",
+      },
+      skinNeeds: {
+        all: "Tất cả",
+        hydration: "Cấp ẩm",
+        brightening: "Làm sáng",
+        antiAging: "Chống lão hóa",
+        acne: "Trị mụn",
+        sensitive: "Da nhạy cảm",
+      },
+    },
+    sort: {
+      label: "Sắp xếp:",
+      featured: "Nổi bật",
+      priceLowHigh: "Giá: Thấp đến cao",
+      priceHighLow: "Giá: Cao đến thấp",
+      newest: "Mới nhất",
+      bestSelling: "Bán chạy nhất",
+    },
+    addToCart: "Thêm vào giỏ",
+    viewDetails: "Xem chi tiết",
+    pagination: {
+      previous: "Trước",
+      next: "Tiếp",
+      page: "Trang",
+    },
+    featuredArticle: {
+      label: "Bài viết xem thêm",
+      title: "Quy trình 10 bước chăm sóc da Hàn Quốc",
+      description: "Khám phá quy trình chăm sóc da 10 bước được yêu thích tại Hàn Quốc. Chúng tôi sẽ hướng dẫn bạn từng bước để đạt được làn da khỏe mạnh, rạng rỡ và trẻ trung.",
+      readMore: "Đọc bài viết đầy đủ",
+    },
+    faq: {
+      title: "Câu hỏi thường gặp",
+      subtitle: "Tìm câu trả lời cho những câu hỏi phổ biến về sản phẩm và quy trình chăm sóc da của chúng tôi",
+    },
+  },
+  footer: {
+    newsletter: {
+      title: "Đăng ký nhận tin",
+      description: "Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt",
+      placeholder: "Nhập email của bạn",
+      button: "Đăng ký",
+    },
+    about: {
+      title: "Về chúng tôi",
+      aboutUs: "Giới thiệu",
+      contact: "Liên hệ",
+      faqs: "Câu hỏi thường gặp",
+      shippingReturns: "Vận chuyển & Đổi trả",
+    },
+    customerService: {
+      title: "Dịch vụ khách hàng",
+      trackOrder: "Theo dõi đơn hàng",
+      returns: "Đổi trả",
+      shipping: "Vận chuyển",
+      faqs: "Câu hỏi thường gặp",
+    },
+    shop: {
+      title: "Mua sắm",
+      serums: "Serum",
+      moisturizers: "Kem dưỡng ẩm",
+      cleansers: "Sữa rửa mặt",
+      masks: "Mặt nạ",
+      suncare: "Chống nắng",
+    },
+    connect: {
+      title: "Kết nối",
+      followUs: "Theo dõi chúng tôi",
+    },
+    payment: {
+      title: "Phương thức thanh toán",
+    },
+    copyright: "© 2025 CELLIC. Bảo lưu mọi quyền.",
+    privacy: "Chính sách bảo mật",
+    terms: "Điều khoản dịch vụ",
+  },
+  productDetail: {
+    addToCart: "Thêm vào giỏ",
+    quantity: "Số lượng",
+    save: "Lưu",
+    saved: "Đã lưu",
+    share: "Chia sẻ",
+    freeShipping: "Miễn phí vận chuyển",
+    freeShippingText: "cho đơn hàng trên 1.000.000₫",
+    returns: "Đổi trả trong 30 ngày",
+    returnsText: "cho sản phẩm chưa mở",
+    keyBenefits: "Lợi ích chính",
+    benefits: {
+      hydration: "Cấp ẩm sâu và làm căng da",
+      antiAging: "Giảm nếp nhăn và vết chân chim",
+      texture: "Cải thiện kết cấu và độ rạng rỡ của da",
+      allSkinTypes: "Phù hợp với mọi loại da",
+    },
+    featureHighlight: {
+      title: "Công thức tiên tiến",
+      feature1: "Vitamin C tinh khiết 15%",
+      feature2: "Axit Hyaluronic phân tử thấp",
+      feature3: "Chiết xuất thực vật tự nhiên",
+      feature4: "Không paraben, không sulfate",
+      feature5: "Được chứng minh lâm sàng",
+    },
+    accordion: {
+      ingredients: "Thành phần",
+      ingredientsContent:
+        "Nước, Axit Ascorbic (Vitamin C), Natri Hyaluronate, Glycerin, Niacinamide, Chiết xuất Centella Asiatica, Chiết xuất Trà Xanh, Vitamin E, Axit Ferulic, Panthenol.",
+      howToUse: "Cách sử dụng",
+      howToUseContent:
+        "1. Làm sạch da và thoa toner\n2. Thoa 2-3 giọt serum lên mặt và cổ\n3. Massage nhẹ nhàng cho đến khi thấm hoàn toàn\n4. Sử dụng buổi sáng và tối\n5. Thoa kem chống nắng vào ban ngày",
+      benefits: "Lợi ích",
+      benefitsContent:
+        "• Làm sáng da và đều màu da\n• Giảm nếp nhăn và vết chân chim\n• Cải thiện độ đàn hồi của da\n• Bảo vệ chống oxy hóa\n• Cấp ẩm sâu\n• Giảm sắc tố da",
+      suitableFor: "Phù hợp cho",
+      suitableForContent:
+        "Phù hợp với mọi loại da, đặc biệt tốt cho:\n• Da xỉn màu, thiếu sức sống\n• Da có dấu hiệu lão hóa\n• Da không đều màu\n• Da khô, mất nước\n• Da nhạy cảm (công thức nhẹ nhàng)",
+    },
+    reviews: {
+      title: "Đánh giá khách hàng",
+      writeReview: "Viết đánh giá",
+      verified: "Đã xác minh",
+      helpful: "Hữu ích",
+      loadMore: "Xem thêm",
+      filterBy: "Lọc theo:",
+      mostHelpful: "Hữu ích nhất",
+      recent: "Gần đây",
+      rating: "Đánh giá",
+    },
+    similarProducts: {
+      title: "Sản phẩm tương tự",
+      subtitle: "Hoàn thiện quy trình chăm sóc da",
+    },
+    qa: {
+      title: "Câu hỏi thường gặp",
+      askQuestion: "Đặt câu hỏi",
+      searchPlaceholder: "Tìm kiếm câu hỏi...",
+    },
+    recentlyViewed: {
+      title: "Bạn đã xem gần đây",
+      moreFrom: "Thêm từ",
+    },
+    realResults: {
+      title: "Kết quả thực tế",
+      subtitle: "Xem sự thay đổi rõ rệt từ khách hàng của chúng tôi",
+      before: "Trước",
+      after: "Sau",
+      days: "ngày",
+      weeks: "tuần",
+      dragSlider: "Kéo thanh trượt để so sánh",
+      customerReviews: "Đánh giá từ khách hàng",
+      videoTestimonials: "Video từ khách hàng",
+    },
+  },
+}
