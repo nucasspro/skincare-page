@@ -133,7 +133,7 @@ interface ProductListProps {
 export function ProductList({ products, onEdit, onDelete, onView }: ProductListProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredProducts = products.filter(product => 
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
   )
