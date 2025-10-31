@@ -5,18 +5,28 @@ import { formatCurrency } from "@/lib/currency-util"
 import { ShoppingCart, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export function CartDropdown() {
   const { items, removeItem, getTotalItems, getTotalPrice } = useCart()
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
+
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    router.push("/cart")
+  }
 
   return (
     <div className="relative group/cart">
-      {/* Cart Icon Button */}
-      <button
-        className="h-9 w-9 relative text-gray-700 hover:text-gray-900 transition-colors cursor-pointer"
+      {/* Cart Icon Button - Clickable to navigate to cart page */}
+      <Link
+        href="/cart"
+        data-slot="button"
+        className="h-9 w-9 relative text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md flex items-center justify-center transition-colors cursor-pointer"
         aria-label="Shopping cart"
+        onClick={handleCartClick}
       >
         <ShoppingCart className="h-5 w-5" />
         {getTotalItems() > 0 && (
@@ -24,7 +34,7 @@ export function CartDropdown() {
             {getTotalItems()}
           </span>
         )}
-      </button>
+      </Link>
 
       {/* Dropdown Tooltip */}
       <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-stone-200 opacity-0 invisible group-hover/cart:opacity-100 group-hover/cart:visible transition-all duration-200 z-50 pointer-events-none group-hover/cart:pointer-events-auto">

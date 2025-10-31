@@ -29,9 +29,9 @@ export function ProductCard({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <Link href={`/product/${product.id}`} className="block">
-        {/* Product Image - Tall aspect ratio like best-sellers */}
-        <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-stone-50">
+      <Link href={`/product/${product.slug}`} className="block">
+        {/* Product Image - Square aspect ratio */}
+        <div className="relative aspect-square mb-4 overflow-hidden bg-stone-50">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.name}

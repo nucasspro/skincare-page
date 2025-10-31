@@ -7,8 +7,9 @@ export async function GET(request: Request) {
       return Response.json({ error: "Province code is required" }, { status: 400 })
     }
 
+    // Use API v1 - get province with depth=2 to get districts
     const response = await fetch(
-      `https://provinces.open-api.vn/api/v2/p/${provinceCode}?depth=2`,
+      `https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`,
       {
         method: "GET",
         headers: {
@@ -27,10 +28,27 @@ export async function GET(request: Request) {
 
     const data = await response.json()
 
-    // API returns { code, name, ..., wards: [...] }
-    // Note: 'wards' actually contains districts/wards data with division_type
-    // Extract wards array which contains the district/ward list
-    const districts = data?.wards || []
+    // API v1 with depth=2 returns: 
+    // { code, name, ..., districts: [{ code, name, ..., wards: [...] }] }
+    // Extract districts array - each district has its own wards
+    let districts = []
+    
+    if (data?.districts && Array.isArray(data.districts)) {
+      // If districts field exists
+      districts = data.districts
+    } else if (data?.wards && Array.isArray(data.wards)) {
+      // Some API versions use 'wards' for districts
+      districts = data.wards
+    }
+
+    // Debug log to help troubleshoot
+    console.log("Districts API Response for province", provinceCode, ":", {
+      hasDistricts: !!data?.districts,
+      hasWards: !!data?.wards,
+      districtsCount: districts.length,
+      responseKeys: Object.keys(data || {}),
+      sample: districts[0]
+    })
 
     // Return consistent format: { data: [...] }
     return Response.json({ data: districts }, { status: 200 })

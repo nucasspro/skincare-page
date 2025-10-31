@@ -7,6 +7,7 @@ export async function GET(request: Request) {
       return Response.json({ error: "District code is required" }, { status: 400 })
     }
 
+    // Use API v1 as it's more stable and well-documented
     const response = await fetch(
       `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`,
       {
@@ -26,7 +27,6 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json()
-    console.log(data)
 
     // API returns { code, name, ..., wards: [...] }
     // Extract wards array

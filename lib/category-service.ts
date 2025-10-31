@@ -18,9 +18,10 @@ export interface PriceRange {
 // Categories data
 const CATEGORIES: Category[] = [
   { id: "all", name: "Tất cả" },
-  { id: "scalp", name: "Da đầu" },
-  { id: "dry", name: "Da khô" },
-  { id: "normal", name: "Da thường" },
+  { id: "da-mun-nhay-cam", name: "Da mụn nhạy cảm" },
+  { id: "da-dau", name: "Da dầu" },
+  { id: "da-kho", name: "Da khô" },
+  { id: "ngan-ngua-lao-hoa", name: "Ngăn ngừa lão hoá" },
 ]
 
 // Skin Needs data

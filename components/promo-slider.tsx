@@ -13,22 +13,22 @@ export function PromoSlider() {
   const banners: Banner[] = useMemo(
     () => [
       {
-        title: "Ưu đãi chăm sóc da mùa lễ hội",
-        subtitle: "Giảm đến 30% cho bộ sản phẩm dưỡng sáng",
+        title: "Thừa kế thành quả 16 năm đầu tư và nghiên cứu khoa học y sinh bài bản",
+        subtitle: "Mỗi công thức được đội ngũ chuyên gia Cellic đưa vào sản phẩm đều trải qua quy trình thử nghiệm lâm sàng nghiêm ngặt, và đảm bảo an toàn.",
         imageUrl:
           "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80",
         cta: { label: "Mua ngay", href: "/products" },
       },
       {
-        title: "Khoa học và thiên nhiên hòa quyện",
-        subtitle: "Công thức dịu nhẹ, hiệu quả rõ rệt",
+        title: "Minh bạch toàn bộ quy trình kiểm nghiệm",
+        subtitle: "Mọi công bố về hiệu quả đều được đối chiếu bằng dữ liệu và chứng nhận từ đối tác kiểm nghiệm uy tín từ trong nước và quốc tế.",
         imageUrl:
           "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2000&q=80",
         cta: { label: "Khám phá", href: "/brand-story" },
       },
       {
-        title: "Miễn phí vận chuyển toàn quốc",
-        subtitle: "Cho đơn từ 500k trong tuần này",
+        title: "Nguồn nguyên liệu tinh khiết và đối tác kiểm nghiệm uy tín",
+        subtitle: "Cellic sử dụng thành phần được kiểm định và chọn lọc từ các nhà cung cấp uy tín. Chúng tôi hợp tác cùng các bệnh viện Đại học y Dược, Bệnh viện 108 đảm bảo tiêu chuẩn khoa học cao nhất cho làn da Việt.",
         imageUrl:
           "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=2000&q=80",
         cta: { label: "Xem chi tiết", href: "/" },

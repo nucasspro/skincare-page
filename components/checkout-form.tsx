@@ -1,12 +1,12 @@
 "use client"
 
 import { getDistricts, getProvinces, getWards, type District, type Province, type Ward } from "@/lib/location-service"
-import { Building2, Loader2, MapPin, Phone, User } from "lucide-react"
+import { Building2, ChevronDown, Loader2, MapPin, Phone, User, CheckCircle2 } from "lucide-react"
 import { useEffect, useState } from "react"
+import { CustomSelect } from "./custom-select"
 
 interface CheckoutFormData {
   name: string
-  email: string
   phone: string
   streetAddress: string
   provinceCode: number | null
@@ -14,10 +14,51 @@ interface CheckoutFormData {
   wardCode: number | null
 }
 
-export function CheckoutForm() {
+// InputField component defined outside to prevent re-creation on every render
+const InputField = ({
+  icon: Icon,
+  label,
+  type = "text",
+  ...props
+}: {
+  icon?: any
+  label: string
+  type?: string
+  [key: string]: any
+}) => (
+  <div className="group">
+    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2.5">
+      {Icon && (
+        <Icon className="w-4 h-4 text-gray-500 group-focus-within:text-gray-900 transition-colors duration-200" />
+      )}
+      <span className="p-desc text-gray-700">{label}</span>
+    </label>
+    <input
+      type={type}
+      {...props}
+      className="w-full px-4 py-3.5 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all duration-200 bg-white hover:border-stone-300 text-gray-900 placeholder:text-stone-400 text-[15px] leading-relaxed shadow-sm focus:shadow-md"
+      style={{
+        fontFamily: "var(--font-inter), sans-serif"
+      }}
+    />
+  </div>
+)
+
+interface CheckoutFormProps {
+  onStepChange?: (step: number, data?: {
+    name: string
+    phone: string
+    streetAddress: string
+    provinceName?: string
+    districtName?: string
+    wardName?: string
+  }) => void
+  currentStep?: number
+}
+
+export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProps) {
   const [formData, setFormData] = useState<CheckoutFormData>({
     name: "",
-    email: "",
     phone: "",
     streetAddress: "",
     provinceCode: null,
@@ -29,15 +70,20 @@ export function CheckoutForm() {
   const [districts, setDistricts] = useState<District[]>([])
   const [wards, setWards] = useState<Ward[]>([])
   const [loading, setLoading] = useState(true)
-  const [loadingMessage, setLoadingMessage] = useState("Đang tải dữ liệu...")
+  const [loadingDistricts, setLoadingDistricts] = useState(false)
+  const [loadingWards, setLoadingWards] = useState(false)
 
   // Load provinces on mount
   useEffect(() => {
     const loadProvinces = async () => {
-      setLoadingMessage("Đang tải tỉnh/thành phố...")
-      const data = await getProvinces()
-      setProvinces(data || [])
-      setLoading(false)
+      try {
+        const data = await getProvinces()
+        setProvinces(data || [])
+      } catch (error) {
+        console.error("Error loading provinces:", error)
+      } finally {
+        setLoading(false)
+      }
     }
     loadProvinces()
   }, [])
@@ -46,13 +92,29 @@ export function CheckoutForm() {
   useEffect(() => {
     if (formData.provinceCode) {
       const loadDistricts = async () => {
-        setLoadingMessage("Đang tải quận/huyện...")
-        const data = await getDistricts(formData.provinceCode!)
-        setDistricts(data || [])
-        setWards([]) // Clear wards
-        setFormData((prev) => ({ ...prev, districtCode: null, wardCode: null }))
+        try {
+          setLoadingDistricts(true)
+          setDistricts([])
+          setWards([])
+          setFormData((prev) => ({ ...prev, districtCode: null, wardCode: null }))
+          const data = await getDistricts(formData.provinceCode!)
+          console.log("Loaded districts:", {
+            provinceCode: formData.provinceCode,
+            districtsCount: data?.length || 0,
+            districts: data
+          })
+          setDistricts(data || [])
+        } catch (error) {
+          console.error("Error loading districts:", error)
+          setDistricts([])
+        } finally {
+          setLoadingDistricts(false)
+        }
       }
       loadDistricts()
+    } else {
+      setDistricts([])
+      setWards([])
     }
   }, [formData.provinceCode])
 
@@ -60,12 +122,21 @@ export function CheckoutForm() {
   useEffect(() => {
     if (formData.districtCode) {
       const loadWards = async () => {
-        setLoadingMessage("Đang tải xã/phường...")
-        const data = await getWards(formData.districtCode!)
-        setWards(data || [])
-        setFormData((prev) => ({ ...prev, wardCode: null }))
+        try {
+          setLoadingWards(true)
+          setWards([])
+          setFormData((prev) => ({ ...prev, wardCode: null }))
+          const data = await getWards(formData.districtCode!)
+          setWards(data || [])
+        } catch (error) {
+          console.error("Error loading wards:", error)
+        } finally {
+          setLoadingWards(false)
+        }
       }
       loadWards()
+    } else {
+      setWards([])
     }
   }, [formData.districtCode])
 
@@ -80,91 +151,138 @@ export function CheckoutForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate required fields
+    if (!isAddressComplete) {
+      return
+    }
+
+    // Get names from codes
+    const provinceName = provinces.find(p => p.code === formData.provinceCode)?.name
+    const districtName = districts.find(d => d.code === formData.districtCode)?.name
+    const wardName = wards.find(w => w.code === formData.wardCode)?.name
+
+    // Move to next step (payment step = 2) with data
+    if (onStepChange) {
+      onStepChange(2, {
+        name: formData.name,
+        phone: formData.phone,
+        streetAddress: formData.streetAddress,
+        provinceName,
+        districtName,
+        wardName
+      })
+    }
+
     console.log("Form data:", formData)
-    // Handle checkout submission
   }
 
-  const InputField = ({
-    icon: Icon,
-    label,
-    type = "text",
-    ...props
-  }: {
-    icon?: any
-    label: string
-    type?: string
-    [key: string]: any
-  }) => (
-    <div>
-      <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-        {Icon && <Icon className="w-4 h-4 text-gray-600" />}
-        {label}
-      </label>
-      <input
-        type={type}
-        {...props}
-        className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all bg-white hover:border-stone-300"
-      />
-    </div>
-  )
+  const isAddressComplete = formData.streetAddress && formData.provinceCode && formData.districtCode && formData.wardCode
 
   const SelectField = ({
     icon: Icon,
     label,
     options,
     disabled,
+    loading: fieldLoading,
     ...props
   }: {
     icon?: any
     label: string
     options: any[]
     disabled?: boolean
+    loading?: boolean
     [key: string]: any
-  }) => (
-    <div>
-      <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-        {Icon && <Icon className="w-4 h-4 text-gray-600" />}
-        {label}
-      </label>
-      <div className="relative">
-        <select
-          {...props}
-          disabled={disabled || loading}
-          className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all bg-white hover:border-stone-300 disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
-        >
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        {disabled && (
-          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
-        )}
+  }) => {
+    const isDisabled = disabled || fieldLoading || loading
+    const isEmpty = !props.value || props.value === ""
+
+    return (
+      <div className="group">
+        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2.5">
+          {Icon && (
+            <Icon className={`w-4 h-4 transition-colors duration-200 ${isDisabled ? "text-gray-300" : "text-gray-500 group-focus-within:text-gray-900"
+              }`} />
+          )}
+          <span className="p-desc text-gray-700">{label}</span>
+        </label>
+        <div className="relative">
+          <select
+            {...props}
+            disabled={isDisabled}
+            className={`
+              w-full px-4 py-3.5 
+              border rounded-xl
+              bg-white
+              text-gray-900
+              appearance-none
+              cursor-pointer
+              pr-11
+              transition-all duration-200
+              font-normal
+              text-[15px]
+              leading-relaxed
+              ${isDisabled
+                ? "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                : isEmpty
+                  ? "border-stone-200 text-gray-400 hover:border-stone-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/20 focus:outline-none"
+                  : "border-stone-200 text-gray-900 hover:border-stone-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/20 focus:outline-none shadow-sm"
+              }
+            `}
+            style={{
+              fontFamily: "var(--font-inter), sans-serif"
+            }}
+          >
+            {options.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+                className={`
+                  ${option.value === "" ? "text-gray-400" : "text-gray-900"}
+                  py-2
+                `}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Custom dropdown arrow */}
+          <div className={`
+            absolute right-3 top-1/2 -translate-y-1/2 
+            pointer-events-none
+            transition-transform duration-200
+            ${isDisabled ? "opacity-30" : "opacity-60"}
+            group-focus-within:rotate-180
+          `}>
+            {fieldLoading ? (
+              <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            )}
+          </div>
+
+          {/* Focus indicator */}
+          <div className="absolute inset-0 rounded-xl ring-0 ring-gray-900/20 group-focus-within:ring-2 transition-all duration-200 pointer-events-none" />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  // Show shipping form only on step 1
+  if (currentStep !== 1) {
+    return null
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Loading Overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-xl p-8 space-y-4 text-center max-w-md">
-            <Loader2 className="w-12 h-12 animate-spin text-gray-900 mx-auto" />
-            <p className="text-lg font-semibold text-gray-900">{loadingMessage}</p>
-            <p className="text-sm text-stone-600">Vui lòng chờ...</p>
-          </div>
-        </div>
-      )}
-
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Personal Information Section */}
-      <div className="bg-gradient-to-br from-white to-stone-50 rounded-2xl p-8 border border-stone-200">
+      <div className="bg-white rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-            <User className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl flex items-center justify-center shadow-sm">
+            <User className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900">Thông tin cá nhân</h3>
+          <h3 className="text-xl font-bold text-gray-900 h-heading">Thông tin cá nhân</h3>
         </div>
 
         <div className="space-y-5">
@@ -178,28 +296,26 @@ export function CheckoutForm() {
             required
           />
 
-          <div className="grid gap-5">
-            <InputField
-              icon={Phone}
-              label="Số điện thoại *"
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="0912345678"
-              required
-            />
-          </div>
+          <InputField
+            icon={Phone}
+            label="Số điện thoại *"
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="0912345678"
+            required
+          />
         </div>
       </div>
 
       {/* Address Information Section */}
-      <div className="bg-gradient-to-br from-white to-stone-50 rounded-2xl p-8 border border-stone-200">
+      <div className="bg-white rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-            <MapPin className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl flex items-center justify-center shadow-sm">
+            <MapPin className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900">Địa chỉ giao hàng</h3>
+          <h3 className="text-xl font-bold text-gray-900 h-heading">Địa chỉ giao hàng</h3>
         </div>
 
         <div className="space-y-5">
@@ -209,116 +325,122 @@ export function CheckoutForm() {
             name="streetAddress"
             value={formData.streetAddress}
             onChange={handleChange}
-            placeholder="Ví dụ: 123 Đường ABC, Lô A"
+            placeholder="Ví dụ: 123 Đường ABC, Lô A, Tòa nhà XYZ"
             required
           />
 
           <div className="grid md:grid-cols-3 gap-5">
-            <SelectField
+            <CustomSelect
               icon={MapPin}
-              label="Tỉnh/Thành phố *"
-              name="provinceCode"
-              value={formData.provinceCode || ""}
-              onChange={handleChange}
+              label="Tỉnh/Thành phố"
+              value={String(formData.provinceCode || "")}
+              onChange={(value) => handleChange({ target: { name: "provinceCode", value } } as any)}
               disabled={false}
+              loading={loading}
               required
+              placeholder="Chọn tỉnh/thành phố"
+              emptyMessage="Không có dữ liệu tỉnh/thành phố"
+              searchable={true}
               options={[
-                { value: "", label: "Chọn tỉnh/thành phố" },
-                ...provinces.map((p) => ({ value: p.code, label: p.name })),
+                { value: "", label: "-- Chọn tỉnh/thành phố --" },
+                ...provinces.map((p) => ({ value: String(p.code), label: p.name })),
               ]}
             />
 
-            <SelectField
+            <CustomSelect
               icon={MapPin}
-              label="Quận/Huyện *"
-              name="districtCode"
-              value={formData.districtCode || ""}
-              onChange={handleChange}
-              disabled={!formData.provinceCode}
+              label="Quận/Huyện"
+              value={String(formData.districtCode || "")}
+              onChange={(value) => handleChange({ target: { name: "districtCode", value } } as any)}
+              disabled={!formData.provinceCode || loadingDistricts}
+              loading={loadingDistricts}
               required
+              placeholder={formData.provinceCode ? "Chọn quận/huyện" : "Chọn tỉnh/thành phố trước"}
+              emptyMessage={districts.length === 0 ? "Không có dữ liệu quận/huyện" : "Chọn quận/huyện"}
+              searchable={true}
               options={[
-                { value: "", label: "Chọn quận/huyện" },
-                ...districts.map((d) => ({ value: d.code, label: d.name })),
+                { value: "", label: "-- Chọn quận/huyện --" },
+                ...districts.map((d) => ({ value: String(d.code), label: d.name })),
               ]}
             />
 
-            <SelectField
+            <CustomSelect
               icon={MapPin}
-              label="Xã/Phường *"
-              name="wardCode"
-              value={formData.wardCode || ""}
-              onChange={handleChange}
-              disabled={!formData.districtCode}
+              label="Xã/Phường"
+              value={String(formData.wardCode || "")}
+              onChange={(value) => handleChange({ target: { name: "wardCode", value } } as any)}
+              disabled={!formData.districtCode || loadingWards}
+              loading={loadingWards}
               required
+              placeholder={formData.districtCode ? "Chọn xã/phường" : "Chọn quận/huyện trước"}
+              emptyMessage={wards.length === 0 ? "Không có dữ liệu xã/phường" : "Chọn xã/phường"}
+              searchable={true}
               options={[
-                { value: "", label: "Chọn xã/phường" },
-                ...wards.map((w) => ({ value: w.code, label: w.name })),
+                { value: "", label: "-- Chọn xã/phường --" },
+                ...wards.map((w) => ({ value: String(w.code), label: w.name })),
               ]}
             />
           </div>
         </div>
       </div>
 
-      {/* Address Preview */}
-      {formData.streetAddress && formData.provinceCode && formData.districtCode && formData.wardCode && (
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6 space-y-4">
-          <div className="flex items-start gap-3">
-            <MapPin className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div className="space-y-2 flex-1">
-              <p className="text-sm font-bold text-blue-900">📍 Địa chỉ giao hàng của bạn:</p>
-              <p className="text-base text-blue-800 font-semibold">
-                {formData.streetAddress}
-              </p>
-              <div className="space-y-1 text-sm text-blue-700">
-                <p>
-                  <span className="font-semibold">Phường/Xã:</span> {wards.find(w => w.code === formData.wardCode)?.name}
-                </p>
-                <p>
-                  <span className="font-semibold">Quận/Huyện:</span> {districts.find(d => d.code === formData.districtCode)?.name}
-                </p>
-                <p>
-                  <span className="font-semibold">Tỉnh/Thành phố:</span> {provinces.find(p => p.code === formData.provinceCode)?.name}
-                </p>
-              </div>
+      {/* Address Preview - Animated */}
+      {isAddressComplete && (
+        <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-50 border-2 border-green-200 rounded-2xl p-6 space-y-4 animate-in slide-in-from-bottom-4 fade-in duration-500">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shadow-sm">
+              <CheckCircle2 className="w-6 h-6 text-white" />
             </div>
-            <div className="bg-blue-600 text-white rounded-full p-2 flex-shrink-0">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+            <div className="space-y-3 flex-1">
+              <p className="text-sm font-bold text-green-900 uppercase tracking-wider tag-small">
+                Địa chỉ giao hàng đã hoàn tất
+              </p>
+              <div className="space-y-2">
+                <p className="text-base text-gray-900 font-semibold p-desc">
+                  {formData.streetAddress}
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-700 p-desc">
+                  <span>
+                    <span className="font-semibold">Phường/Xã:</span> {wards.find(w => w.code === formData.wardCode)?.name}
+                  </span>
+                  <span>
+                    <span className="font-semibold">Quận/Huyện:</span> {districts.find(d => d.code === formData.districtCode)?.name}
+                  </span>
+                  <span>
+                    <span className="font-semibold">Tỉnh/TP:</span> {provinces.find(p => p.code === formData.provinceCode)?.name}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Data Status Info */}
-      <div className="text-xs text-stone-500 space-y-1">
-        <p>✓ Provinces loaded: {provinces.length > 0 ? `${provinces.length} items` : "pending"}</p>
-        <p>✓ Districts loaded: {districts.length > 0 ? `${districts.length} items` : "pending"}</p>
-        <p>✓ Wards loaded: {wards.length > 0 ? `${wards.length} items` : "pending"}</p>
-      </div>
-
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={loading}
-        className="w-full py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+        disabled={loading || !isAddressComplete}
+        className="w-full py-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 group relative overflow-hidden"
       >
-        {loading ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            Đang tải...
-          </>
-        ) : (
-          <>
-            Tiếp tục thanh toán
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </>
-        )}
+        <span className="relative z-10 flex items-center gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Đang tải...
+            </>
+          ) : (
+            <>
+              Tiếp tục thanh toán
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </>
+          )}
+        </span>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       </button>
 
       {/* Security Info */}
-      <div className="flex items-center justify-center gap-2 text-xs text-stone-600">
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <div className="flex items-center justify-center gap-2 text-xs text-stone-500 p-desc">
+        <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
         </svg>
         <span>Thông tin của bạn được bảo vệ bằng mã hóa SSL</span>

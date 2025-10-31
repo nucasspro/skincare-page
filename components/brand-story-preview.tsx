@@ -13,29 +13,15 @@ export function BrandStoryPreview() {
       <div className="mx-auto max-w-none">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
           {/* Text Side - Left */}
-          <div className="space-y-8 lg:pr-12 pl-0 sm:pl-0 md:pl-6 lg:pl-8 xl:pl-12">
+          <div className="space-y-8 lg:pr-12 pl-0 sm:pl-0 md:pl-6 lg:pl-8 xl:pl-12 flex flex-col items-center justify-center text-center">
             <div className="space-y-4">
               <p className="text-sm font-medium text-stone-600 tracking-wider uppercase p-desc">{t.brandStory.title}</p>
-              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900 h-heading">{t.brandStory.subtitle}</h2>
             </div>
 
-            <div className="space-y-6 text-gray-700 leading-relaxed p-desc">
-              <div className="flex gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>{t.brandStory.point1}</p>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>{t.brandStory.point2}</p>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>{t.brandStory.point3}</p>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-2 flex-shrink-0" />
-                <p>{t.brandStory.point4}</p>
-              </div>
+            <div className="max-w-2xl">
+              <p className="text-lg md:text-xl leading-relaxed text-gray-700 p-desc">
+                Từ khoa học tử tế, Cellic trao lại làn da Việt vẻ đẹp sáng khỏe tự nhiên.
+              </p>
             </div>
 
             <Link
@@ -50,7 +36,7 @@ export function BrandStoryPreview() {
           {/* Image Side - Right (Nature image) - 50% column, full in its half */}
           <div className="relative h-[600px] overflow-hidden bg-stone-100 w-full">
             <Image
-              src="/images/backgrounds/5609849.jpg"
+              src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=800&fit=crop&q=80"
               alt="Nature"
               fill
               className="object-cover"

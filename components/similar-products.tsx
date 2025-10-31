@@ -20,7 +20,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {similarProducts.map((product) => (
-          <Link key={product.id} href={`/product/${product.id}`} className="group">
+          <Link key={product.id} href={`/product/${product.slug}`} className="group">
             <div className="space-y-4">
               <div className="relative aspect-square bg-stone-50 rounded-xl overflow-hidden">
                 <Image

@@ -157,11 +157,11 @@ export function RealResults({ productId }: { productId: string }) {
 
   // Carousel logic for reviews
   const itemsPerPage = 3
-  const totalPages = Math.ceil(reviews.length / itemsPerPage)
+  const totalPages = reviews.length > 0 ? Math.ceil(reviews.length / itemsPerPage) : 1
 
   // Auto-scroll effect for reviews
   useEffect(() => {
-    if (!isAutoPlaying) return
+    if (!isAutoPlaying || reviews.length === 0) return
 
     const interval = setInterval(() => {
       setDirection('next')
@@ -169,7 +169,7 @@ export function RealResults({ productId }: { productId: string }) {
     }, 4000)
 
     return () => clearInterval(interval)
-  }, [isAutoPlaying, totalPages])
+  }, [isAutoPlaying, totalPages, reviews.length])
 
   const goToNextReview = () => {
     setDirection('next')
@@ -209,13 +209,19 @@ export function RealResults({ productId }: { productId: string }) {
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-stone-50">
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-16">
+        <div className="mb-16 pb-8">
           <h2 className="text-4xl text-gray-900 mb-8 text-center">
             {t.productDetail.realResults.customerReviews || "Customer Reviews"}
           </h2>
 
-          {/* Carousel Container */}
+          {/* Show message if no reviews */}
+          {reviews.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-stone-600 text-lg">Chưa có đánh giá nào cho sản phẩm này.</p>
+            </div>
+          ) : (
           <div className="relative">
+            {/* Carousel Container */}
             {/* Navigation Buttons - Positioned Outside */}
             <button
               onClick={() => { goToPrevReview(); setIsAutoPlaying(false); }}
@@ -234,25 +240,25 @@ export function RealResults({ productId }: { productId: string }) {
             </button>
 
             {/* Reviews Grid with Animation */}
-            <div className="overflow-hidden px-8 md:px-16">
+            <div className="overflow-hidden px-8 md:px-16 min-h-[320px]">
               <div
-                className="grid md:grid-cols-3 gap-8 transition-all duration-700 ease-in-out"
+                className="grid md:grid-cols-3 gap-8 transition-all duration-700 ease-in-out items-stretch"
                 onMouseEnter={() => setIsAutoPlaying(false)}
                 onMouseLeave={() => setIsAutoPlaying(true)}
               >
                 {getCurrentReviews().map((review) => (
-              <div key={review.id} className={`bg-white rounded-2xl overflow-hidden shadow-sm ${direction === 'next' ? 'animate-slideFromRight' : 'animate-slideFromLeft'}`}>
+              <div key={review.id} className={`bg-white rounded-2xl overflow-hidden shadow-sm h-full flex flex-col ${direction === 'next' ? 'animate-slideFromRight' : 'animate-slideFromLeft'}`}>
 
 
                 {/* Review Content */}
-                <div className="p-6 space-y-3">
+                <div className="p-6 space-y-3 flex flex-col flex-1">
                   <div className="flex items-center gap-1">
                     {Array.from({ length: review.rating }).map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-stone-700 leading-relaxed">{review.review}</p>
-                  <div className="flex items-center justify-between text-sm">
+                  <p className="text-stone-700 leading-relaxed flex-1">{review.review}</p>
+                  <div className="flex items-center justify-between text-sm mt-auto">
                     <span className="font-bold text-gray-900">{review.name}</span>
                     <span className="text-stone-500">{review.date}</span>
                   </div>
@@ -263,21 +269,24 @@ export function RealResults({ productId }: { productId: string }) {
           </div>
 
             {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-8">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => { setCurrentReviewIndex(index); setIsAutoPlaying(false); }}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentReviewIndex
-                      ? 'w-8 bg-gray-900'
-                      : 'w-2 bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to review page ${index + 1}`}
-                />
-              ))}
-            </div>
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-8 mb-4">
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => { setCurrentReviewIndex(index); setIsAutoPlaying(false); }}
+                    className={`h-2 rounded-full transition-all ${
+                      index === currentReviewIndex
+                        ? 'w-8 bg-gray-900'
+                        : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to review page ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
+          )}
         </div>
       </div>
 

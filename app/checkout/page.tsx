@@ -1,23 +1,70 @@
 "use client"
 
 import { Footer } from "@/components/footer"
-import { Navigation } from "@/components/navigation"
+import Navigation from "@/components/navigation"
 import { CheckoutForm } from "@/components/checkout-form"
-import { useCart } from "@/lib/cart-context"
+import { CheckoutStepper } from "@/components/checkout-stepper"
+import { PaymentStep } from "@/components/payment-step"
+import { OrderConfirmation } from "@/components/order-confirmation"
+import { useCart, CartItem } from "@/lib/cart-context"
 import { formatCurrency } from "@/lib/currency-util"
 import Image from "next/image"
 import Link from "next/link"
 import { ShoppingBag } from "lucide-react"
+import { useState, useEffect } from "react"
+
+const CHECKOUT_STEPS = [
+  {
+    id: "shipping",
+    title: "Thông tin giao hàng",
+    description: "Nhập địa chỉ nhận hàng"
+  },
+  {
+    id: "payment",
+    title: "Thanh toán",
+    description: "Chọn phương thức thanh toán"
+  },
+  {
+    id: "review",
+    title: "Xác nhận",
+    description: "Kiểm tra và xác nhận đơn hàng"
+  }
+]
+
+interface OrderData {
+  name: string
+  phone: string
+  streetAddress: string
+  provinceName?: string
+  districtName?: string
+  wardName?: string
+  paymentMethod: "cod" | "bank" | null
+}
 
 export default function CheckoutPage() {
-  const { items, getTotalPrice, getTotalItems } = useCart()
+  const { items, getTotalPrice, getTotalItems, removeItems } = useCart()
+  const [currentStep, setCurrentStep] = useState(1)
+  const [orderedItems, setOrderedItems] = useState<CartItem[]>([])
+  const [orderData, setOrderData] = useState<OrderData>({
+    name: "",
+    phone: "",
+    streetAddress: "",
+    paymentMethod: null
+  })
+
+  // Lưu snapshot của cart items khi bắt đầu checkout (chỉ lần đầu)
+  useEffect(() => {
+    if (items.length > 0 && orderedItems.length === 0) {
+      setOrderedItems([...items])
+    }
+  }, [items, orderedItems.length])
 
   // Redirect to products if no items
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <Navigation />
-        <main className="flex-1 flex items-center justify-center px-4 py-20">
+        <Navigation isTransparent={false} />
+        <main className="flex-1 flex items-center justify-center px-4 py-20 pt-[86px]">
           <div className="text-center space-y-6 max-w-md">
             <div className="w-24 h-24 mx-auto bg-stone-100 rounded-full flex items-center justify-center">
               <ShoppingBag className="w-12 h-12 text-stone-400" />
@@ -41,92 +88,122 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <Navigation />
+      <Navigation isTransparent={false} />
 
-      <main className="pt-8 pb-20">
+      <main className="pt-[86px] pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-light text-gray-900 mb-12">Thanh toán</h1>
+          <h1 className="text-4xl font-light text-gray-900 mb-8">Thanh toán</h1>
+
+          {/* Stepper */}
+          <CheckoutStepper currentStep={currentStep} steps={CHECKOUT_STEPS} />
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Checkout Form - Left */}
             <div className="lg:col-span-2">
-              <CheckoutForm />
+              {currentStep === 1 && (
+                <CheckoutForm
+                  onStepChange={(step, data) => {
+                    setCurrentStep(step)
+                    if (data) {
+                      setOrderData(prev => ({ ...prev, ...data }))
+                    }
+                  }}
+                  currentStep={currentStep}
+                />
+              )}
+              {currentStep === 2 && (
+                <PaymentStep
+                  onBack={() => setCurrentStep(1)}
+                  onContinue={(paymentMethod) => {
+                    setOrderData(prev => ({ ...prev, paymentMethod }))
+                    setCurrentStep(3)
+                  }}
+                />
+              )}
+              {currentStep === 3 && (
+                <OrderConfirmation
+                  orderData={orderData}
+                  orderedItems={orderedItems}
+                />
+              )}
             </div>
 
-            {/* Order Summary - Right */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl p-6 border border-stone-200 sticky top-24 space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">Đơn hàng của bạn</h2>
+            {/* Order Summary - Right (Hide on step 3) */}
+            {currentStep !== 3 && (
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-2xl p-6 border border-stone-200 sticky top-24 space-y-6">
+                  <h2 className="text-xl font-semibold text-gray-900">Đơn hàng của bạn</h2>
 
-                {/* Items Summary */}
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex gap-3 pb-3 border-b border-stone-100 last:border-b-0">
-                      <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-stone-50">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
+                  {/* Items Summary */}
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {items.map((item) => (
+                      <div key={item.id} className="flex gap-3 pb-3 border-b border-stone-100 last:border-b-0">
+                        <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-stone-50">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-medium text-gray-900 truncate">
+                            {item.name}
+                          </h3>
+                          <p className="text-xs text-stone-600 mt-1">
+                            {formatCurrency(item.price)} × {item.quantity}
+                          </p>
+                          <p className="text-sm font-semibold text-gray-900 mt-1">
+                            {formatCurrency(item.price * item.quantity)}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-gray-900 truncate">
-                          {item.name}
-                        </h3>
-                        <p className="text-xs text-stone-600 mt-1">
-                          {formatCurrency(item.price)} × {item.quantity}
-                        </p>
-                        <p className="text-sm font-semibold text-gray-900 mt-1">
-                          {formatCurrency(item.price * item.quantity)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Price Summary */}
-                <div className="border-t border-stone-200 pt-4 space-y-3">
-                  <div className="flex justify-between text-stone-600">
-                    <span>Tạm tính ({getTotalItems()} sản phẩm)</span>
-                    <span>{formatCurrency(getTotalPrice())}</span>
-                  </div>
-                  <div className="flex justify-between text-stone-600">
-                    <span>Phí vận chuyển</span>
-                    <span className="text-green-600 font-medium">Miễn phí</span>
-                  </div>
-                  <div className="flex justify-between text-stone-600">
-                    <span>Mã giảm giá</span>
-                    <span>-{formatCurrency(0)}</span>
+                    ))}
                   </div>
 
-                  <div className="border-t border-stone-200 pt-4">
-                    <div className="flex justify-between text-lg font-bold text-gray-900">
-                      <span>Tổng cộng</span>
+                  {/* Price Summary */}
+                  <div className="border-t border-stone-200 pt-4 space-y-3">
+                    <div className="flex justify-between text-stone-600">
+                      <span>Tạm tính ({getTotalItems()} sản phẩm)</span>
                       <span>{formatCurrency(getTotalPrice())}</span>
                     </div>
+                    <div className="flex justify-between text-stone-600">
+                      <span>Phí vận chuyển</span>
+                      <span className="text-green-600 font-medium">Miễn phí</span>
+                    </div>
+                    <div className="flex justify-between text-stone-600">
+                      <span>Mã giảm giá</span>
+                      <span>-{formatCurrency(0)}</span>
+                    </div>
+
+                    <div className="border-t border-stone-200 pt-4">
+                      <div className="flex justify-between text-lg font-bold text-gray-900">
+                        <span>Tổng cộng</span>
+                        <span>{formatCurrency(getTotalPrice())}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Info */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 space-y-2">
-                  <p className="text-sm font-medium text-blue-900">ℹ️ Thông tin thanh toán</p>
-                  <ul className="text-xs text-blue-800 space-y-1">
-                    <li>• Hoàn thành form để tiếp tục</li>
-                    <li>• Hỗ trợ thanh toán online & COD</li>
-                    <li>• Miễn phí vận chuyển toàn quốc</li>
-                  </ul>
-                </div>
+                  {/* Info */}
+                  <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 space-y-2">
+                    <p className="text-sm font-medium text-blue-900">ℹ️ Thông tin thanh toán</p>
+                    <ul className="text-xs text-blue-800 space-y-1">
+                      <li>• Hoàn thành form để tiếp tục</li>
+                      <li>• Hỗ trợ thanh toán online & COD</li>
+                      <li>• Miễn phí vận chuyển toàn quốc</li>
+                    </ul>
+                  </div>
 
-                {/* Back Link */}
-                <Link
-                  href="/cart"
-                  className="text-center text-sm text-stone-600 hover:text-gray-900 transition-colors underline"
-                >
-                  ← Quay lại giỏ hàng
-                </Link>
+                  {/* Back Link */}
+                  <Link
+                    href="/cart"
+                    className="text-center text-sm text-stone-600 hover:text-gray-900 transition-colors underline"
+                  >
+                    ← Quay lại giỏ hàng
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>

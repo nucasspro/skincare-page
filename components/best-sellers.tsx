@@ -34,9 +34,9 @@ export function BestSellers() {
               onMouseEnter={() => setHoveredId(product.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              <Link href={`/product/${product.id}`} className="block">
+              <Link href={`/product/${product.slug}`} className="block">
                 {/* Product Image - To lớn, không rounded */}
-                <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-stone-50">
+                <div className="relative aspect-square mb-4 overflow-hidden bg-stone-50">
                   <Image
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}

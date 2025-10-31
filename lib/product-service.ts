@@ -1,6 +1,7 @@
 // Product types
 export interface Product {
   id: string
+  slug: string
   name: string
   tagline: string
   price: number
@@ -10,123 +11,132 @@ export interface Product {
   needs: string[]
   image: string
   hoverImage: string
+  images?: string[] // Array of additional product images
   description?: string
   benefits?: string[]
   ingredients?: string[]
   howToUse?: string
 }
 
+/**
+ * Generate URL-friendly slug from product name
+ */
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD") // Decompose characters with diacritics
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+}
+
 // Mock product data
 const MOCK_PRODUCTS: Product[] = [
   {
-    id: "1",
-    name: "Tinh Chất Dưỡng Ẩm",
-    tagline: "Cấp ẩm sâu cho làn da rạng rỡ",
-    price: 48,
-    originalPrice: 65,
-    discount: 26,
-    category: "dry",
-    needs: ["hydration", "sensitive"],
-    image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-    hoverImage: "/luxury-skincare-essence-bottle-product-shot-cream-.jpg",
-    description: "Tinh chất nhẹ nhàng cung cấp độ ẩm sâu và giúp da giữ ẩm lâu dài cho làn da căng mướt, rạng rỡ.",
-    benefits: [
-      "Cấp ẩm sâu",
-      "Tính năng chống lão hóa",
-      "Cải thiện kết cấu da",
-      "Phù hợp với mọi loại da"
+    id: "new",
+    slug: "bright-matte-sunscreen",
+    name: "Bright Matte Sunscreen",
+    tagline: "Bảo vệ và kiểm soát dầu hiệu quả",
+    price: 95,
+    category: "oily",
+    needs: ["oily", "uv-protection", "pore"],
+    image: "/image-product/kcnxanhduong/1.png",
+    hoverImage: "/image-product/kcnxanhduong/8.png",
+    images: [
+      "/image-product/kcnxanhduong/1.png",
+      "/image-product/kcnxanhduong/8.png",
+      "/image-product/kcnxanhduong/6.png",
+      "/image-product/kcnxanhduong/7.png",
+      "/image-product/kcnxanhduong/ANHWEB-3.png"
     ],
-    ingredients: ["Hyaluronic Acid", "Niacinamide", "Ceramides", "Peptides"],
+    description: "Kem chống nắng kiểm soát dầu hiệu quả, mang lại làn da matte mịn màng và bảo vệ khỏi tia UV với SPF 50+ và PA++++.",
+    benefits: [
+      "Bảo vệ da khỏi tia UVA/UVB",
+      "Kiểm soát dầu hiệu quả",
+      "Kết cấu matte, không nhờn rít",
+      "Phù hợp cho da dầu và hỗn hợp"
+    ],
+    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Matte Powder", "Sebum Control", "PDRN"],
   },
   {
-    id: "2",
-    name: "Serum Vitamin C",
-    tagline: "Serum làm sáng da và đều màu",
-    price: 89,
+    id: "0",
+    slug: "cellic-calm-defense-sunscreen",
+    name: "Cellic Calm Defense Sunscreen",
+    tagline: "Bảo vệ và làm dịu cho da mụn",
+    price: 95,
     category: "normal",
-    needs: ["brightening", "antiAging"],
-    image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-    description: "Serum vitamin C mạnh mẽ giúp làm sáng da, đều màu và bảo vệ chống tác động của môi trường.",
-    benefits: [
-      "Làm sáng da",
-      "Giảm các vệt đen",
-      "Bảo vệ chống oxy hóa",
-      "Kích thích sản sinh collagen"
+    needs: ["sensitive", "hydration", "acne"],
+    image: "/image-product/kcnxanhlacay/18.png",
+    hoverImage: "/image-product/kcnxanhlacay/19.png",
+    images: [
+      "/image-product/kcnxanhlacay/18.png",
+      "/image-product/kcnxanhlacay/19.png",
+      "/image-product/kcnxanhlacay/20.png",
+      "/image-product/kcnxanhlacay/30.png",
+      "/image-product/kcnxanhlacay/ANHWEB-5.png"
     ],
-    ingredients: ["Vitamin C (15%)", "Vitamin E", "Ferulic Acid", "Hyaluronic Acid"],
-  },
-  {
-    id: "3",
-    name: "Kem Ceramide",
-    tagline: "Kem dưỡng phục hồi cho da nhạy cảm",
-    price: 75,
-    category: "dry",
-    needs: ["hydration", "sensitive"],
-    image: "/luxury-ceramide-cream-jar-minimal-white-background.jpg",
-    hoverImage: "/luxury-ceramide-cream-jar-product-shot-cream-backg.jpg",
-    description: "Kem giàu dưỡng chất giúp phục hồi hàng rào bảo vệ da và cung cấp độ ẩm bền vững cho da nhạy cảm.",
+    description: "Kem chống nắng bảo vệ và làm dịu da mụn, phù hợp cho làn da nhạy cảm.",
     benefits: [
-      "Phục hồi hàng rào da",
-      "Cấp ẩm bền vững",
-      "Giảm sự kích ứng",
-      "Tăng cường khả năng chống chịu của da"
-    ],
-    ingredients: ["Ceramides", "Cholesterol", "Fatty Acids", "Niacinamide"],
-  },
-  {
-    id: "4",
-    name: "Sữa Rửa Mặt Nhẹ Nhàng",
-    tagline: "Sữa rửa mặt dịu nhẹ dùng hàng ngày",
-    price: 42,
-    category: "normal",
-    needs: ["sensitive", "hydration"],
-    image: "/luxury-facial-cleanser-bottle-minimal-white-backgr.jpg",
-    hoverImage: "/luxury-facial-cleanser-bottle-product-shot-cream-b.jpg",
-    description: "Sữa rửa mặt cân bằng pH loại bỏ tạp chất mà không làm mất dầu tự nhiên của da.",
-    benefits: [
-      "Làm sạch nhẹ nhàng",
-      "Cân bằng độ pH da",
-      "Công thức không khô da",
+      "Bảo vệ khỏi tia UV",
+      "Làm dịu da mụn",
+      "Công thức không gây bít tắc",
       "Phù hợp với da nhạy cảm"
     ],
-    ingredients: ["Glycerin", "Ceramides", "Amino Acids", "Panthenol"],
+    ingredients: ["Zinc Oxide", "Niacinamide", "Calming Extracts", "Hyaluronic Acid"],
   },
   {
-    id: "5",
-    name: "Kem Mắt Phục Hồi",
-    tagline: "Kem chăm sóc mắt chống lão hóa",
+    id: "00",
+    slug: "cellic-dew-shield-sunscreen",
+    name: "Cellic Dew Shield Sunscreen",
+    tagline: "Lá chắn ẩm mượt cho da khô",
     price: 95,
-    category: "scalp",
-    needs: ["antiAging", "brightening"],
-    image: "/luxury-eye-cream-jar-minimal-white-background.jpg",
-    hoverImage: "/luxury-eye-cream-jar-product-shot-cream-background.jpg",
-    description: "Kem mắt cao cấp giúp giảm nếp nhăn, vết chân chim và sưng phù cho vùng mắt trẻ trung, tươi sáng.",
-    benefits: [
-      "Giảm nếp nhăn",
-      "Làm sáng vùng mắt",
-      "Giảm sưng phù",
-      "Căng chỉ và nâng vùng mắt"
+    category: "dry",
+    needs: ["dry", "hydration", "uv-protection"],
+    image: "/image-product/kcnmauvang/ANHWEBSTE-2.png",
+    hoverImage: "/image-product/kcnmauvang/14.png",
+    images: [
+      "/image-product/kcnmauvang/ANHWEBSTE-2.png",
+      "/image-product/kcnmauvang/14.png",
+      "/image-product/kcnmauvang/32.png",
+      "/image-product/kcnmauvang/ANHWEB-5.png",
+      "/image-product/kcnmauvang/ANHWEB-6.png"
     ],
-    ingredients: ["Retinol", "Caffeine", "Peptides", "Vitamin K"],
+    description: "Kem chống nắng cấp ẩm sâu, mang lại lớp nền ẩm mượt, bảo vệ da khô khỏi tác hại của tia UV với SPF 50+ và PA++++.",
+    benefits: [
+      "Bảo vệ da khỏi tia UVA/UVB",
+      "Cấp ẩm sâu, dưỡng ẩm lâu dài",
+      "Làm mềm mịn da khô",
+      "Phù hợp cho da khô và thiếu ẩm"
+    ],
+    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Hyaluronic Acid", "Glycerin", "Ceramides", "PDRN"],
   },
   {
-    id: "6",
-    name: "Serum Tái Tạo Rạng Rỡ",
-    tagline: "Công thức tiên tiến cho làn da sáng bóng",
-    price: 125,
+    id: "000",
+    slug: "cellic-right-match-lumi-sunscreen",
+    name: "Cellic Right Match Lumi Sunscreen",
+    tagline: "Bảo vệ và hiệu chỉnh màu da tối ưu",
+    price: 95,
     category: "normal",
-    needs: ["brightening", "antiAging", "hydration"],
-    image: "/luxury-vitamin-c-serum-bottle-minimal-white-backgr.jpg",
-    hoverImage: "/luxury-vitamin-c-serum-bottle-product-shot-cream-b.jpg",
-    description: "Serum tiên tiến nhất của chúng tôi kết hợp nhiều hoạt chất cho tái tạo da toàn diện.",
-    benefits: [
-      "Điều trị đa hiệu ứng",
-      "Kết quả rõ rệt trong 7 ngày",
-      "Được kiểm chứng lâm sàng",
-      "Công thức chuyên nghiệp"
+    needs: ["brightening", "uv-protection", "color-correction"],
+    image: "/image-product/kcnmautim/16.png",
+    hoverImage: "/image-product/kcnmautim/15.png",
+    images: [
+      "/image-product/kcnmautim/16.png",
+      "/image-product/kcnmautim/15.png",
+      "/image-product/kcnmautim/17.png",
+      "/image-product/kcnmautim/31.png",
+      "/image-product/kcnmautim/ANHWEB-5.png"
     ],
-    ingredients: ["Vitamin C", "Hyaluronic Acid", "Peptides", "Botanical Extracts"],
+    description: "Kem chống nắng với công nghệ hiệu chỉnh màu da thông minh, mang lại làn da sáng đều màu và bảo vệ khỏi tia UV với SPF 50+ và PA++++.",
+    benefits: [
+      "Bảo vệ da khỏi tia UVA/UVB",
+      "Hiệu chỉnh và làm đều màu da",
+      "Làm sáng da tự nhiên",
+      "Phù hợp cho mọi loại da"
+    ],
+    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Niacinamide", "Vitamin C", "Light Reflecting Particles", "PDRN"],
   },
 ]
 
@@ -144,6 +154,13 @@ export class ProductService {
    */
   static getProductById(id: string): Product | undefined {
     return MOCK_PRODUCTS.find(product => product.id === id)
+  }
+
+  /**
+   * Get product by slug
+   */
+  static getProductBySlug(slug: string): Product | undefined {
+    return MOCK_PRODUCTS.find(product => product.slug === slug)
   }
 
   /**
@@ -185,7 +202,35 @@ export class ProductService {
 
     // Filter by category
     if (filters.category && filters.category !== "all") {
-      filtered = filtered.filter(p => p.category === filters.category)
+      if (filters.category === "da-mun-nhay-cam") {
+        // Filter for products that are suitable for sensitive/acne skin
+        filtered = filtered.filter(p => 
+          (p.needs.includes("sensitive") || p.needs.includes("acne")) ||
+          p.tagline.toLowerCase().includes("mụn") ||
+          p.description?.toLowerCase().includes("mụn") ||
+          p.description?.toLowerCase().includes("nhạy cảm")
+        )
+      } else if (filters.category === "ngan-ngua-lao-hoa") {
+        // Filter for anti-aging products
+        filtered = filtered.filter(p => 
+          p.needs.includes("antiAging") ||
+          p.tagline.toLowerCase().includes("lão") ||
+          p.description?.toLowerCase().includes("lão")
+        )
+      } else if (filters.category === "da-dau") {
+        // Filter for oily skin products
+        filtered = filtered.filter(p => 
+          p.category === "oily" || p.needs.includes("oily")
+        )
+      } else if (filters.category === "da-kho") {
+        // Filter for dry skin products
+        filtered = filtered.filter(p => 
+          p.category === "dry" || p.needs.includes("dry")
+        )
+      } else {
+        // Standard category filter
+        filtered = filtered.filter(p => p.category === filters.category)
+      }
     }
 
     // Filter by needs
@@ -236,9 +281,9 @@ export class ProductService {
   }
 
   /**
-   * Get featured/best-selling products (first 4)
+   * Get featured/best-selling products
    */
-  static getFeaturedProducts(limit: number = 4): Product[] {
+  static getFeaturedProducts(limit: number = 3): Product[] {
     return MOCK_PRODUCTS.slice(0, limit)
   }
 
@@ -258,6 +303,7 @@ export class ProductService {
 // Export convenience functions (bind to maintain 'this' context)
 export const getAllProducts = ProductService.getAllProducts.bind(ProductService)
 export const getProductById = ProductService.getProductById.bind(ProductService)
+export const getProductBySlug = ProductService.getProductBySlug.bind(ProductService)
 export const getProductsByCategory = ProductService.getProductsByCategory.bind(ProductService)
 export const getProductsByNeeds = ProductService.getProductsByNeeds.bind(ProductService)
 export const getProductsByPriceRange = ProductService.getProductsByPriceRange.bind(ProductService)

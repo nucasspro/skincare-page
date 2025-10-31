@@ -17,7 +17,7 @@ interface Review {
 const reviews: Review[] = [
   {
     id: "1",
-    image: "/social-video-1.jpg",
+    image: "/placeholder.svg",
     title: "Review Serum Vitamin C - CELLIC",
     author: "Nguyễn Thị Linh",
     role: "Beauty Blogger @linh_belle",
@@ -26,7 +26,7 @@ const reviews: Review[] = [
   },
   {
     id: "2",
-    image: "/social-video-2.jpg",
+    image: "/placeholder.svg",
     title: "Trải nghiệm Chăm sóc da với CELLIC",
     author: "Trần Minh Anh",
     role: "Content Creator @minhanh.skincare",
@@ -35,7 +35,7 @@ const reviews: Review[] = [
   },
   {
     id: "3",
-    image: "/social-video-3.jpg",
+    image: "/placeholder.svg",
     title: "KOC Review: Kem dưỡng ẩm Ceramide",
     author: "Lê Thùy Dương",
     role: "Dermatology Expert @drthuylinh",
@@ -44,7 +44,7 @@ const reviews: Review[] = [
   },
   {
     id: "4",
-    image: "/social-video-4.jpg",
+    image: "/placeholder.svg",
     title: "Đánh giá chi tiết Essence CELLIC",
     author: "Phạm Quỳnh Anh",
     role: "Influencer @quynhanh.beauty",

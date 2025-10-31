@@ -103,7 +103,7 @@ export default function ProductsPage() {
         <NatureBannerSlider />
 
         {/* Main Products Section */}
-        <div className="w-full px-6 sm:px-8 lg:px-12 py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
 
 
 
@@ -112,9 +112,7 @@ export default function ProductsPage() {
             <h1 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">
               {selectedCategory === "all"
                 ? "Tất cả sản phẩm"
-                : (t.productListing.filters.categories[
-                    selectedCategory as keyof typeof t.productListing.filters.categories
-                  ] || selectedCategory)}
+                : (categories[selectedCategory] || "Tất cả sản phẩm")}
             </h1>
           </div>
 
@@ -124,8 +122,8 @@ export default function ProductsPage() {
         onCategoryChange={setSelectedCategory}
       />
 
-          {/* Products Grid - 4 Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {/* Products Grid - Full width - 3 columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16 w-full">
             {paginatedProducts.map((product) => (
               <ProductCard
                 key={product.id}

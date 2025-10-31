@@ -156,6 +156,99 @@
 .tag-small { font-family: var(--font-air); font-style: italic; font-size: 0.875rem; }
 .slogan { font-family: var(--font-fragment); }
 
+/* Custom Select Styles */
+select {
+  background-image: none;
+}
+
+select option {
+  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #111827;
+  background-color: white;
+  font-family: var(--font-inter), sans-serif;
+}
+
+select option:disabled {
+  color: #9ca3af;
+}
+
+select option:checked {
+  background-color: #f9fafb;
+  font-weight: 500;
+}
+
+/* Custom scrollbar for select dropdown (if needed) */
+select::-webkit-scrollbar {
+  width: 8px;
+}
+
+select::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Custom Dropdown Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: slideInFromTop 0.2s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.15s ease-out;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop 0.2s ease-out;
+}
+
+/* Custom scrollbar for dropdown options */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
 /* Scrollbar utilities */
 .scrollbar-hide {
   -ms-overflow-style: none;

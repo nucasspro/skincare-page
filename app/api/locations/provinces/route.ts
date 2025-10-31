@@ -1,6 +1,7 @@
 export async function GET() {
   try {
-    const response = await fetch("https://provinces.open-api.vn/api/v2/", {
+    // Use API v1 as it's more stable
+    const response = await fetch("https://provinces.open-api.vn/api/", {
       method: "GET",
       headers: {
         "Accept": "application/json",

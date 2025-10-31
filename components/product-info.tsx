@@ -3,51 +3,69 @@
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import { getProductById } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/currency-util"
 import { Check, Minus, Plus } from "lucide-react"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
-export function ProductInfo() {
+interface ProductInfoProps {
+  productId: string
+}
+
+export function ProductInfo({ productId }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
   const { t } = useI18n()
   const { addItem } = useCart()
 
+  const product = useMemo(() => getProductById(productId), [productId])
+
+  if (!product) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-600">Không tìm thấy sản phẩm</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
       {/* Product Title & Price */}
       <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-light text-gray-900 text-balance">{t.bestSellers.products.essence.name}</h1>
-        {/* <p className="text-sm sm:text-lg text-stone-600">{t.bestSellers.products.essence.tagline}</p> */}
+        <h1 className="text-3xl sm:text-4xl font-light text-gray-900 text-balance">{product.name}</h1>
+        {product.tagline && (
+          <p className="text-sm sm:text-lg text-stone-600">{product.tagline}</p>
+        )}
         <div className="flex items-baseline gap-2 sm:gap-3 pt-2">
-          <span className="text-2xl sm:text-3xl font-medium text-gray-900">1.152.000đ</span>
-          <span className="text-sm sm:text-lg text-stone-500 line-through">1.560.000đ</span>
-          <span className="text-xs sm:text-sm font-medium text-green-700 bg-green-50 px-2 sm:px-3 py-1 rounded-full">Save 26%</span>
+          <span className="text-2xl sm:text-3xl font-medium text-gray-900">{formatCurrency(product.price)}</span>
+          {product.originalPrice && (
+            <>
+              <span className="text-sm sm:text-lg text-stone-500 line-through">{formatCurrency(product.originalPrice)}</span>
+              {product.discount && (
+                <span className="text-xs sm:text-sm font-medium text-green-700 bg-green-50 px-2 sm:px-3 py-1 rounded-full">
+                  Giảm {product.discount}%
+                </span>
+              )}
+            </>
+          )}
         </div>
       </div>
 
       {/* Key Benefits */}
-      <div className="space-y-3 py-4 border-y border-stone-200">
-        <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">{t.productDetail.keyBenefits}</h3>
-        <ul className="space-y-2 text-stone-700">
-          <li className="flex items-start gap-2">
-            <span className="text-stone-400 mt-1">•</span>
-            <span>{t.productDetail.benefits.hydration}</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-stone-400 mt-1">•</span>
-            <span>{t.productDetail.benefits.antiAging}</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-stone-400 mt-1">•</span>
-            <span>{t.productDetail.benefits.texture}</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-stone-400 mt-1">•</span>
-            <span>{t.productDetail.benefits.allSkinTypes}</span>
-          </li>
-        </ul>
-      </div>
+      {product.benefits && product.benefits.length > 0 && (
+        <div className="space-y-3 py-4 border-y border-stone-200">
+          <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">{t.productDetail.keyBenefits}</h3>
+          <ul className="space-y-2 text-stone-700">
+            {product.benefits.map((benefit, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <span className="text-stone-400 mt-1">•</span>
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Product Highlights - 4 Icons */}
       <div className="grid grid-cols-4 gap-3 py-4 px-4">
@@ -114,11 +132,11 @@ export function ProductInfo() {
           className="w-full h-14 text-base bg-gray-900 hover:bg-gray-800 rounded-full"
           onClick={() => {
             addItem({
-              id: "1",
-              name: t.bestSellers.products.essence.name,
-              price: 48,
-              image: "/luxury-skincare-essence-bottle-minimal-white-backg.jpg",
-              tagline: t.bestSellers.products.essence.tagline,
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+              tagline: product.tagline,
             }, quantity)
             setIsAdded(true)
             setTimeout(() => setIsAdded(false), 2000)

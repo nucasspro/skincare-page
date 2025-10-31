@@ -12,9 +12,10 @@ import { useEffect, useState } from "react"
 export interface NavigationProps {
   isTransparent?: boolean
   isHomePage?: boolean
+  disableSticky?: boolean
 }
 
-export function Navigation({ isTransparent = true, isHomePage = false }: NavigationProps) {
+export function Navigation({ isTransparent = true, isHomePage = false, disableSticky = false }: NavigationProps) {
   const { t } = useI18n()
   const { getTotalItems } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -24,8 +25,8 @@ export function Navigation({ isTransparent = true, isHomePage = false }: Navigat
   const menuLinkClass = isSticky
     ? "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
     : isTransparent
-    ? "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-    : "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+      ? "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+      : "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
 
   // Determine logo based on isHomePage and sticky state
   const logoSrc = isHomePage && !isSticky ? "/logo/logo-white.svg" : "/logo/logo-black.svg"
@@ -52,6 +53,14 @@ export function Navigation({ isTransparent = true, isHomePage = false }: Navigat
   // Sticky on scroll: make header fixed below promo banner (30px)
   useEffect(() => {
     if (!isHydrated) return
+
+    if (disableSticky) {
+      // If disableSticky, always keep it fixed with white background at top-[30px] (below promotion banner)
+      setIsSticky(true)
+      setPassedBanner(false) // false để giữ top-[30px], đặt navigation ngay dưới banner
+      return
+    }
+
     const onScroll = () => {
       const y = window.scrollY
       setIsSticky(y > 10)
@@ -60,7 +69,7 @@ export function Navigation({ isTransparent = true, isHomePage = false }: Navigat
     onScroll()
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
-  }, [isHydrated])
+  }, [isHydrated, disableSticky])
 
   return (
     <>
