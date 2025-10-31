@@ -1,0 +1,6 @@
+# Prisma files that should not be deployed
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations/
+*.db
+*.db-journal
