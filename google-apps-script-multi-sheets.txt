@@ -1,0 +1,302 @@
+// Google Apps Script để quản lý multiple sheets (mỗi bảng = 1 sheet)
+// Hướng dẫn setup:
+// 1. Tạo Google Sheet mới (hoặc dùng sheet có sẵn)
+// 2. Tạo các sheets: Products, Categories, Users, Orders, Reviews, Comments
+// 3. Mở Tools > Script editor
+// 4. Paste code này vào
+// 5. Lưu lại (File > Save)
+// 6. Chạy function testSetup() để tạo headers cho tất cả sheets
+// 7. Authorize permissions
+// 8. Deploy > New deployment > Web app
+// 9. Execute as: Me, Who has access: Anyone
+// 10. Copy Web app URL và paste vào GOOGLE_SHEETS_WEB_APP_URL
+
+// ===== CONFIGURATION =====
+const SHEETS = {
+  PRODUCTS: 'Products',
+  CATEGORIES: 'Categories',
+  USERS: 'Users',
+  ORDERS: 'Orders',
+  REVIEWS: 'Reviews',
+  COMMENTS: 'Comments'
+};
+
+// ===== HEADERS =====
+const HEADERS = {
+  PRODUCTS: ['id', 'name', 'tagline', 'price', 'originalPrice', 'discount', 'category', 'needs', 'image', 'hoverImage', 'description', 'benefits', 'ingredients', 'howToUse', 'createdAt', 'updatedAt'],
+  CATEGORIES: ['id', 'name', 'description', 'createdAt', 'updatedAt'],
+  USERS: ['id', 'email', 'name', 'phone', 'address', 'role', 'createdAt', 'updatedAt'],
+  ORDERS: ['id', 'orderNumber', 'customerName', 'customerEmail', 'customerPhone', 'userId', 'streetAddress', 'wardName', 'districtName', 'provinceName', 'status', 'paymentMethod', 'items', 'total', 'notes', 'createdAt', 'updatedAt'],
+  REVIEWS: ['id', 'productId', 'reviewerName', 'rating', 'review', 'createdAt', 'updatedAt'],
+  COMMENTS: ['id', 'productId', 'userId', 'userName', 'userEmail', 'content', 'rating', 'status', 'createdAt', 'updatedAt']
+};
+
+// ===== HELPER FUNCTIONS =====
+function getOrCreateSheet(sheetName) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    // Set headers
+    const headers = HEADERS[sheetName.toUpperCase()];
+    if (headers) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      // Format header
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setFontWeight('bold');
+      headerRange.setBackground('#4285f4');
+      headerRange.setFontColor('#ffffff');
+    }
+  }
+
+  return sheet;
+}
+
+function findRowByColumn(sheet, columnIndex, searchValue) {
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) { // Skip header
+    if (data[i][columnIndex] === searchValue) {
+      return i + 1; // Return 1-based row number
+    }
+  }
+  return -1;
+}
+
+// ===== MAIN HANDLER =====
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const { action, table, record, records } = data;
+
+    if (!action || !table) {
+      throw new Error('Missing required fields: action, table');
+    }
+
+    const sheet = getOrCreateSheet(table);
+    const tableUpper = table.toUpperCase();
+
+    switch (action) {
+      case 'create':
+        return handleCreate(sheet, tableUpper, record);
+      case 'update':
+        return handleUpdate(sheet, tableUpper, record);
+      case 'upsert':
+        return handleUpsert(sheet, tableUpper, record);
+      case 'bulk':
+        return handleBulk(sheet, tableUpper, records);
+      case 'read':
+        return handleRead(sheet, tableUpper);
+      default:
+        throw new Error(`Unknown action: ${action}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function handleCreate(sheet, tableName, record) {
+  const headers = HEADERS[tableName];
+  if (!headers) {
+    throw new Error(`Unknown table: ${tableName}`);
+  }
+
+  const row = headers.map(header => {
+    const value = record[header];
+    if (value === null || value === undefined) {
+      return '';
+    }
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    return value;
+  });
+
+  sheet.appendRow(row);
+
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    message: 'Record created',
+    row: sheet.getLastRow()
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleUpdate(sheet, tableName, record) {
+  const headers = HEADERS[tableName];
+  if (!headers) {
+    throw new Error(`Unknown table: ${tableName}`);
+  }
+
+  const idColumnIndex = headers.indexOf('id');
+  if (idColumnIndex === -1) {
+    throw new Error('ID column not found');
+  }
+
+  const rowNumber = findRowByColumn(sheet, idColumnIndex, record.id);
+  if (rowNumber === -1) {
+    throw new Error(`Record not found: ${record.id}`);
+  }
+
+  const row = headers.map(header => {
+    const value = record[header];
+    if (value === null || value === undefined) {
+      return '';
+    }
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    return value;
+  });
+
+  sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
+
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    message: 'Record updated',
+    row: rowNumber
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleUpsert(sheet, tableName, record) {
+  const headers = HEADERS[tableName];
+  if (!headers) {
+    throw new Error(`Unknown table: ${tableName}`);
+  }
+
+  const idColumnIndex = headers.indexOf('id');
+  if (idColumnIndex === -1) {
+    throw new Error('ID column not found');
+  }
+
+  const rowNumber = findRowByColumn(sheet, idColumnIndex, record.id);
+
+  if (rowNumber === -1) {
+    return handleCreate(sheet, tableName, record);
+  } else {
+    return handleUpdate(sheet, tableName, record);
+  }
+}
+
+function handleBulk(sheet, tableName, records) {
+  const headers = HEADERS[tableName];
+  if (!headers) {
+    throw new Error(`Unknown table: ${tableName}`);
+  }
+
+  const rows = records.map(record => {
+    return headers.map(header => {
+      const value = record[header];
+      if (value === null || value === undefined) {
+        return '';
+      }
+      if (typeof value === 'object') {
+        return JSON.stringify(value);
+      }
+      return value;
+    });
+  });
+
+  if (rows.length > 0) {
+    const startRow = sheet.getLastRow() + 1;
+    sheet.getRange(startRow, 1, rows.length, headers.length).setValues(rows);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    message: `${rows.length} records created`,
+    startRow: sheet.getLastRow() + 1 - rows.length
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleRead(sheet, tableName) {
+  const headers = HEADERS[tableName];
+  if (!headers) {
+    throw new Error(`Unknown table: ${tableName}`);
+  }
+
+  const data = sheet.getDataRange().getValues();
+  const records = [];
+
+  for (let i = 1; i < data.length; i++) { // Skip header
+    const record = {};
+    headers.forEach((header, index) => {
+      let value = data[i][index];
+      if (value === '' || value === null) {
+        record[header] = null;
+      } else {
+        // Try to parse JSON strings
+        if (typeof value === 'string' && (value.startsWith('[') || value.startsWith('{'))) {
+          try {
+            value = JSON.parse(value);
+          } catch (e) {
+            // Not JSON, keep as string
+          }
+        }
+        record[header] = value;
+      }
+    });
+    records.push(record);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    records: records
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// ===== TEST FUNCTIONS =====
+function testSetup() {
+  // Create all sheets with headers
+  Object.values(SHEETS).forEach(sheetName => {
+    getOrCreateSheet(sheetName);
+  });
+  Logger.log('All sheets created successfully!');
+}
+
+function testCreate() {
+  const testData = {
+    action: 'create',
+    table: 'Products',
+    record: {
+      id: 'test-1',
+      name: 'Test Product',
+      tagline: 'Test Tagline',
+      price: 100000,
+      category: 'Serum',
+      image: '/test.jpg',
+      hoverImage: '/test-hover.jpg',
+      needs: '[]',
+      createdAt: Math.floor(Date.now() / 1000),
+      updatedAt: Math.floor(Date.now() / 1000)
+    }
+  };
+
+  const mockEvent = {
+    postData: {
+      contents: JSON.stringify(testData)
+    }
+  };
+
+  const result = doPost(mockEvent);
+  Logger.log(result.getContent());
+}
+
+function testRead() {
+  const testData = {
+    action: 'read',
+    table: 'Products'
+  };
+
+  const mockEvent = {
+    postData: {
+      contents: JSON.stringify(testData)
+    }
+  };
+
+  const result = doPost(mockEvent);
+  Logger.log(result.getContent());
+}

@@ -10,7 +10,9 @@
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "sheets:export": "npx tsx scripts/export-to-sheets.ts",
+    "sheets:import": "npx tsx scripts/import-from-sheets.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
