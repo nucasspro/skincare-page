@@ -6,6 +6,7 @@ import {
   ChevronRight,
   FolderTree,
   LayoutDashboard,
+  LogOut,
   Menu,
   MessageSquare,
   Package,
@@ -14,8 +15,9 @@ import {
   X
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -34,6 +36,26 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/admin/auth/logout', {
+        method: 'POST',
+      })
+
+      if (response.ok) {
+        toast.success('Đăng xuất thành công')
+        router.push('/admin/login')
+        router.refresh()
+      } else {
+        toast.error('Đăng xuất thất bại')
+      }
+    } catch (error) {
+      console.error('Logout error:', error)
+      toast.error('Có lỗi xảy ra khi đăng xuất')
+    }
+  }
 
   // Load collapsed state from localStorage
   useEffect(() => {
@@ -143,7 +165,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </button>
             <div className="flex-1" />
             <div className="flex items-center gap-4">
-              <span className="text-xs text-neutral-500 font-medium">Admin</span>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Đăng xuất</span>
+              </button>
             </div>
           </div>
         </header>
