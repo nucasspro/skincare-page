@@ -6,7 +6,8 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { adminUserService, type User } from '@/lib/services/admin'
-import { Edit, Plus, RefreshCw, Save, Trash2, Users, X } from 'lucide-react'
+import { ActionButtons } from '@/components/admin/action-buttons'
+import { Plus, RefreshCw, Save, Users, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -128,12 +129,16 @@ export default function UsersPage() {
                 size="sm"
                 variant="outline"
                 disabled={loading}
-                className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+                className="rounded cursor-pointer h-9 px-4 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 Làm mới
               </Button>
-              <Button onClick={() => setShowForm(true)} variant="outline" className="gap-2 rounded-sm">
+              <Button
+                onClick={() => setShowForm(true)}
+                variant="outline"
+                className="gap-2 rounded-md bg-[var(--admin-beige)] hover:bg-[var(--admin-beige)]/80 text-neutral-900 border-[var(--admin-beige)]/50 font-medium"
+              >
                 <Plus className="h-4 w-4" />
                 Thêm người dùng
               </Button>
@@ -142,7 +147,7 @@ export default function UsersPage() {
         </div>
 
         {showForm && (
-          <Card className="p-6">
+          <Card className="p-6 border border-[var(--admin-neutral-gray)]/50 bg-white">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">
                 {editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}
@@ -224,74 +229,78 @@ export default function UsersPage() {
           </Card>
         )}
 
-        <Card>
+        <Card className="overflow-hidden border border-[var(--admin-neutral-gray)]/50 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[var(--admin-cool-gray)]/30 border-b-2 border-[var(--admin-neutral-gray)]/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-32">
+                    Actions
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 min-w-[250px]">
                     Email
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 min-w-[200px]">
                     Tên
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-40">
                     Số điện thoại
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-32">
                     Vai trò
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thao tác
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-[var(--admin-neutral-gray)]/30">
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                      Chưa có người dùng nào. Nhấn "Thêm người dùng" để bắt đầu.
+                    <td colSpan={5} className="px-4 py-12 text-center">
+                      <div className="p-6 w-fit mx-auto mb-4 rounded-2xl bg-[var(--admin-cool-gray)]/20">
+                        <Users className="h-12 w-12 text-[var(--admin-cool-gray)] mx-auto" />
+                      </div>
+                      <h3 className="text-base font-semibold text-neutral-900 mb-2">
+                        Chưa có người dùng nào
+                      </h3>
+                      <p className="text-sm text-neutral-500">
+                        Nhấn "Thêm người dùng" để bắt đầu
+                      </p>
                     </td>
                   </tr>
                 ) : (
                   users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {user.email}
+                    <tr
+                      key={user.id}
+                      className="border-b border-[var(--admin-neutral-gray)]/30 hover:bg-[var(--admin-hover-bg)] transition-colors"
+                    >
+                      <td className="px-4 py-4 w-32">
+                        <ActionButtons
+                          onEdit={() => handleEdit(user)}
+                          onDelete={() => handleDelete(user.id)}
+                        />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.name}
+                      <td className="px-4 py-4 min-w-[250px]">
+                        <span className="text-base font-medium text-neutral-900">
+                          {user.email}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.phone || '-'}
+                      <td className="px-4 py-4 min-w-[200px]">
+                        <span className="text-base text-neutral-900">
+                          {user.name}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      <td className="px-4 py-4 w-40">
+                        <span className="text-sm text-neutral-600">
+                          {user.phone || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 w-32">
+                        <span className={`inline-flex px-2.5 py-1 text-sm font-medium rounded-md ${
                           user.role === 'admin'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-gray-100 text-gray-800'
+                            ? 'bg-[var(--admin-beige)]/30 text-neutral-900'
+                            : 'bg-[var(--admin-cool-gray)]/30 text-neutral-700'
                         }`}>
                           {user.role === 'admin' ? 'Admin' : 'User'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleDelete(user.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
                       </td>
                     </tr>
                   ))

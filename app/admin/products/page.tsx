@@ -165,7 +165,7 @@ export default function ProductsPage() {
               size="sm"
               variant="outline"
               disabled={loading}
-              className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+              className="rounded cursor-pointer h-9 px-4 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Làm mới
@@ -173,7 +173,7 @@ export default function ProductsPage() {
             <Button
               onClick={handleAddNew}
               size="sm"
-              className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
+              className="bg-[var(--admin-beige)] hover:bg-[var(--admin-beige)]/80 text-neutral-900 rounded cursor-pointer h-9 px-4 transition-colors font-medium"
             >
               <Plus className="h-4 w-4 mr-2" />
               Thêm mới
@@ -191,8 +191,8 @@ export default function ProductsPage() {
 
         {/* Dialog for Form */}
         <Dialog open={showForm} onOpenChange={handleDialogChange}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-neutral-50">
-            <DialogHeader className="border-b border-neutral-200 pb-4">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white">
+            <DialogHeader className="border-b border-[var(--admin-neutral-gray)]/50 pb-4 bg-[var(--admin-lavender)]/20 px-6 -mx-6 -mt-6 mb-4 py-4">
               <DialogTitle className="text-lg font-semibold text-neutral-900">
                 {isViewMode ? 'Chi tiết sản phẩm' : isEditMode ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
               </DialogTitle>

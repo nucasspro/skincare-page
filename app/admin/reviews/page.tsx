@@ -1,21 +1,22 @@
 'use client'
 
+import { ActionButtons } from '@/components/admin/action-buttons'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { Pagination } from '@/components/admin/pagination'
 import { ReviewForm, type ReviewFormData } from '@/components/admin/review-form'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { usePagination } from '@/hooks/use-pagination'
 import { adminReviewService, type Review } from '@/lib/services/admin/review-service'
 import { formatDate } from '@/lib/utils'
-import { Edit, Eye, MessageSquare, Plus, RefreshCw, Search, Star, Trash2 } from 'lucide-react'
+import { MessageSquare, Plus, RefreshCw, Search, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -152,7 +153,7 @@ export default function ReviewsPage() {
               size="sm"
               variant="outline"
               disabled={loading}
-              className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+              className="rounded cursor-pointer h-9 px-4 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Làm mới
@@ -163,7 +164,7 @@ export default function ReviewsPage() {
                 setShowForm(true)
               }}
               size="sm"
-              className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
+              className="bg-[var(--admin-beige)] hover:bg-[var(--admin-beige)]/80 text-neutral-900 rounded cursor-pointer h-9 px-4 transition-colors font-medium"
             >
               <Plus className="h-4 w-4 mr-2" />
               Thêm mới
@@ -172,171 +173,156 @@ export default function ReviewsPage() {
         </div>
 
         {/* Search */}
-        <Card className="p-3 border-neutral-200 bg-white">
+        <Card className="p-4 border border-[var(--admin-neutral-gray)]/50 bg-white">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--admin-cool-gray)]" />
             <Input
               type="text"
               placeholder="Tìm kiếm review..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9 text-sm border-neutral-300 focus:border-neutral-400 focus:ring-0"
+              className="pl-9 h-10 text-sm border-[var(--admin-neutral-gray)]/50 focus:border-[var(--admin-taupe)] focus:ring-0 bg-white"
             />
           </div>
           {searchQuery && (
-            <p className="mt-2 text-xs text-neutral-500">
-              {filteredReviews.length} kết quả
-            </p>
-          )}
-        </Card>
-
-        {/* Reviews Table */}
-        <Card className="overflow-hidden border-neutral-200 bg-white">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-neutral-50 border-b border-neutral-200">
-                <tr>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500 w-28">
-                    Actions
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
-                    Reviewer
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
-                    Rating
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500 min-w-[300px]">
-                    Review
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
-                    Product
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-xs font-medium text-neutral-500">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-neutral-100">
-                {paginatedReviews.map((review) => {
-                  const product = products.find(p => p.id === review.productId)
-                  return (
-                    <tr
-                      key={review.id}
-                      className="hover:bg-neutral-50 transition-colors cursor-pointer"
-                      onClick={() => handleView(review)}
-                    >
-                      <td className="p-2.5 w-28">
-                        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleView(review)}
-                            className="rounded h-7 w-7 cursor-pointer hover:bg-neutral-100"
-                            title="Xem"
-                          >
-                            <Eye className="h-3.5 w-3.5 text-neutral-600" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEdit(review)}
-                            className="rounded h-7 w-7 cursor-pointer hover:bg-neutral-100"
-                            title="Sửa"
-                          >
-                            <Edit className="h-3.5 w-3.5 text-neutral-600" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(review.id)}
-                            className="rounded h-7 w-7 cursor-pointer hover:bg-red-50"
-                            title="Xóa"
-                          >
-                            <Trash2 className="h-3.5 w-3.5 text-red-600" />
-                          </Button>
-                        </div>
-                      </td>
-                      <td className="p-2.5">
-                        <span className="text-sm font-medium text-neutral-900">
-                          {review.reviewerName}
-                        </span>
-                      </td>
-                      <td className="p-2.5">
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: 5 }).map((_, i) => {
-                            const starNumber = i + 1
-                            const isFullyFilled = starNumber <= review.rating
-                            const isHalfFilled = starNumber - 0.5 === review.rating ||
-                                                (starNumber - 1 < review.rating && starNumber > review.rating)
-
-                            return isHalfFilled ? (
-                              <div key={i} className="relative h-3 w-3">
-                                <Star className="h-3 w-3 fill-neutral-200 text-neutral-300 absolute inset-0" />
-                                <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
-                                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                </div>
-                              </div>
-                            ) : (
-                              <Star
-                                key={i}
-                                className={`h-3 w-3 ${
-                                  isFullyFilled
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'fill-neutral-200 text-neutral-300'
-                                }`}
-                              />
-                            )
-                          })}
-                        </div>
-                      </td>
-                      <td className="p-2.5 min-w-[300px]">
-                        <p className="text-sm text-neutral-600 line-clamp-2">
-                          {review.review}
-                        </p>
-                      </td>
-                      <td className="p-2.5">
-                        <span className="text-xs text-neutral-600">
-                          {product?.name || 'Unknown'}
-                        </span>
-                      </td>
-                      <td className="p-2.5">
-                        <span className="text-xs text-neutral-500">
-                          {formatDate(review.createdAt)}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredReviews.length === 0 && (
-            <div className="p-12 text-center">
-              <MessageSquare className="h-10 w-10 text-neutral-300 mx-auto mb-3" />
-              <h3 className="text-sm font-medium text-neutral-900 mb-1">
-                {searchQuery ? 'Không tìm thấy review nào' : 'Chưa có review'}
-              </h3>
-              <p className="text-xs text-neutral-500">
-                {searchQuery ? 'Thử tìm kiếm với từ khóa khác' : 'Thêm review mới để bắt đầu'}
+            <div className="mt-3 pt-3 border-t border-[var(--admin-neutral-gray)]/30">
+              <p className="text-sm text-neutral-600">
+                <span className="font-medium text-neutral-900">{filteredReviews.length}</span> kết quả
               </p>
             </div>
           )}
         </Card>
 
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredReviews.length}
-          itemsPerPage={10}
-          onPageChange={setCurrentPage}
-        />
+        {/* Reviews Table */}
+        <Card className="overflow-hidden border border-[var(--admin-neutral-gray)]/50 bg-white">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-[var(--admin-cool-gray)]/30 border-b-2 border-[var(--admin-neutral-gray)]/50">
+                <tr>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-32">
+                    Actions
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 min-w-[180px]">
+                    Reviewer
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-32">
+                    Rating
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 min-w-[350px]">
+                    Review
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 min-w-[200px]">
+                    Product
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-neutral-800 w-40">
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-[var(--admin-neutral-gray)]/30">
+                {paginatedReviews.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-12 text-center">
+                      <div className="p-6 w-fit mx-auto mb-4 rounded-2xl bg-[var(--admin-lavender)]/20">
+                        <MessageSquare className="h-12 w-12 text-[var(--admin-lavender)] mx-auto" />
+                      </div>
+                      <h3 className="text-base font-semibold text-neutral-900 mb-2">
+                        {searchQuery ? 'Không tìm thấy review nào' : 'Chưa có review'}
+                      </h3>
+                      <p className="text-sm text-neutral-500">
+                        {searchQuery ? 'Thử tìm kiếm với từ khóa khác' : 'Thêm review mới để bắt đầu'}
+                      </p>
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedReviews.map((review) => {
+                    const product = products.find(p => p.id === review.productId)
+                    return (
+                      <tr
+                        key={review.id}
+                        className="border-b border-[var(--admin-neutral-gray)]/30 hover:bg-[var(--admin-hover-bg)] transition-colors cursor-pointer"
+                        onClick={() => handleView(review)}
+                      >
+                        <td className="px-4 py-4 w-32">
+                          <ActionButtons
+                            onView={() => handleView(review)}
+                            onEdit={() => handleEdit(review)}
+                            onDelete={() => handleDelete(review.id)}
+                          />
+                        </td>
+                        <td className="px-4 py-4 min-w-[180px]">
+                          <span className="text-base font-medium text-neutral-900">
+                            {review.reviewerName}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 w-32">
+                          <div className="flex items-center gap-1">
+                            {Array.from({ length: 5 }).map((_, i) => {
+                              const starNumber = i + 1
+                              const isFullyFilled = starNumber <= review.rating
+                              const isHalfFilled = starNumber - 0.5 === review.rating ||
+                                                  (starNumber - 1 < review.rating && starNumber > review.rating)
+
+                              return isHalfFilled ? (
+                                <div key={i} className="relative h-4 w-4">
+                                  <Star className="h-4 w-4 fill-neutral-200 text-neutral-300 absolute inset-0" />
+                                  <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
+                                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                  </div>
+                                </div>
+                              ) : (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    isFullyFilled
+                                      ? 'fill-yellow-400 text-yellow-400'
+                                      : 'fill-neutral-200 text-neutral-300'
+                                  }`}
+                                />
+                              )
+                            })}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 min-w-[350px]">
+                          <p className="text-sm text-neutral-600 line-clamp-2">
+                            {review.review}
+                          </p>
+                        </td>
+                        <td className="px-4 py-4 min-w-[200px]">
+                          <span className="text-sm text-neutral-700">
+                            {product?.name || 'Unknown'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 w-40">
+                          <span className="text-sm text-neutral-500">
+                            {formatDate(review.createdAt)}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="pt-4 px-4 pb-4">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredReviews.length}
+                itemsPerPage={10}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
+        </Card>
 
         {/* Dialog for Form */}
         <Dialog open={showForm} onOpenChange={(open) => !open && resetForm()}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-neutral-50">
-            <DialogHeader className="border-b border-neutral-200 pb-4">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
+            <DialogHeader className="border-b border-[var(--admin-neutral-gray)]/50 pb-4 bg-[var(--admin-lavender)]/20 px-6 -mx-6 -mt-6 mb-4 py-4">
               <DialogTitle className="text-lg font-semibold text-neutral-900">
                 {isViewMode ? 'Chi tiết Review' : editingReview ? 'Chỉnh sửa Review' : 'Thêm Review mới'}
               </DialogTitle>

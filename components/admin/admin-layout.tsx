@@ -78,11 +78,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const contentPadding = sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-56'
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-[var(--admin-cool-gray)]/10" data-admin>
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -90,21 +90,26 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 bg-white border-r border-neutral-200 transform transition-all duration-200 ease-in-out lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 bg-white border-r border-[var(--admin-neutral-gray)]/50 shadow-lg transform transition-all duration-300 ease-in-out lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full',
           sidebarWidth
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200">
+          {/* Logo/Brand */}
+          <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--admin-neutral-gray)]/30 bg-gradient-to-r from-[var(--admin-lavender)]/20 to-white">
             {!sidebarCollapsed && (
-              <h1 className="text-sm font-semibold text-neutral-900 tracking-tight">ADMIN</h1>
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-[var(--admin-beige)]">
+                  <LayoutDashboard className="h-4 w-4 text-neutral-700" />
+                </div>
+                <h1 className="text-base font-bold text-neutral-900 tracking-tight">Admin</h1>
+              </div>
             )}
             <div className="flex items-center gap-1">
               <button
                 onClick={toggleSidebar}
-                className="hidden lg:flex text-neutral-400 hover:text-neutral-600 p-1.5 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="hidden lg:flex text-[var(--admin-cool-gray)] hover:text-neutral-900 p-2 rounded-md hover:bg-[var(--admin-hover-bg)] transition-all cursor-pointer"
                 title={sidebarCollapsed ? 'Mở rộng' : 'Thu nhỏ'}
               >
                 {sidebarCollapsed ? (
@@ -115,7 +120,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               </button>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden text-neutral-400 hover:text-neutral-600 p-1.5 rounded hover:bg-neutral-100 cursor-pointer"
+                className="lg:hidden text-[var(--admin-cool-gray)] hover:text-neutral-900 p-2 rounded-md hover:bg-[var(--admin-hover-bg)] transition-colors cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -123,27 +128,46 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== '/admin/dashboard' && pathname.startsWith(item.href))
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded text-sm font-medium transition-all cursor-pointer',
+                    'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer',
                     isActive
-                      ? 'bg-neutral-900 text-white'
-                      : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                      ? 'text-neutral-900 bg-[var(--admin-beige)]'
+                      : 'text-neutral-700 hover:text-neutral-900 hover:bg-[var(--admin-hover-bg)]',
                     sidebarCollapsed && 'justify-center'
                   )}
                   title={sidebarCollapsed ? item.name : undefined}
                 >
-                  <item.icon className="h-4 w-4 shrink-0" />
+                  {/* Icon container */}
+                  <div
+                    className={cn(
+                      'p-1.5 rounded-md transition-colors',
+                      isActive
+                        ? 'bg-white/40'
+                        : 'bg-[var(--admin-cool-gray)]/10 group-hover:bg-[var(--admin-cool-gray)]/20'
+                    )}
+                  >
+                    <item.icon className={cn(
+                      'h-4 w-4 shrink-0 transition-colors',
+                      isActive
+                        ? 'text-neutral-900'
+                        : 'text-neutral-600 group-hover:text-neutral-900'
+                    )} />
+                  </div>
+
                   {!sidebarCollapsed && (
-                    <span className="truncate">{item.name}</span>
+                    <span className="truncate">
+                      {item.name}
+                    </span>
                   )}
                 </Link>
               )
@@ -155,22 +179,22 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main content */}
       <div className={contentPadding}>
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-neutral-200">
-          <div className="flex items-center justify-between h-14 px-6">
+        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-[var(--admin-neutral-gray)]/50 shadow-sm">
+          <div className="flex items-center justify-between h-16 px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-neutral-400 hover:text-neutral-600 cursor-pointer"
+              className="lg:hidden text-[var(--admin-cool-gray)] hover:text-neutral-900 p-2 rounded-md hover:bg-[var(--admin-hover-bg)] transition-colors cursor-pointer"
             >
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex-1" />
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors"
+                className="group flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 hover:bg-[var(--admin-hover-bg)] rounded-lg border border-[var(--admin-neutral-gray)]/30 hover:border-[var(--admin-taupe)]/50 transition-all cursor-pointer"
               >
-                <LogOut className="h-4 w-4" />
-                <span>Đăng xuất</span>
+                <LogOut className="h-4 w-4 group-hover:rotate-[-15deg] transition-transform" />
+                <span className="font-medium">Đăng xuất</span>
               </button>
             </div>
           </div>
