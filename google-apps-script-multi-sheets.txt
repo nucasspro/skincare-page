@@ -10,6 +10,21 @@
 // 8. Deploy > New deployment > Web app
 // 9. Execute as: Me, Who has access: Anyone
 // 10. Copy Web app URL và paste vào GOOGLE_SHEETS_WEB_APP_URL
+//
+// 🔄 AUTO-GENERATE ID, createdAt, updatedAt (cho người dùng nhập thủ công):
+// 11. Setup trigger: Edit > Current project's triggers > Add trigger
+//     - Function: onEdit
+//     - Event source: From spreadsheet
+//     - Event type: On edit
+//     - Save trigger
+// 12. (Tùy chọn) Nếu có nhiều rows bị thiếu ID/timestamp, chạy function fixAllMissingIds()
+//     trong Script editor để tự động fix tất cả
+// 13. (Tùy chọn) Protect auto-generated columns: Chạy protectAutoColumns(true) để
+//     bảo vệ các cột id, createdAt, updatedAt khỏi chỉnh sửa thủ công
+//     Chạy protectAutoColumns(false) để bỏ bảo vệ
+// 14. Settings ở đầu file:
+//     - AUTO_GENERATE_ENABLED: bật/tắt tự động generate (mặc định: true)
+//     - PROTECT_AUTO_COLUMNS: bật/tắt bảo vệ các cột auto-generated (mặc định: false)
 
 // ===== CONFIGURATION =====
 const SHEETS = {
@@ -20,6 +35,14 @@ const SHEETS = {
   REVIEWS: 'Reviews',
   COMMENTS: 'Comments'
 };
+
+// ===== SETTINGS =====
+// Auto-generate IDs, createdAt, updatedAt when users manually edit sheets
+const AUTO_GENERATE_ENABLED = true; // Set to false to disable auto-generation
+
+// Protect important columns from manual editing
+// Set to true to prevent users from manually editing id, createdAt, updatedAt columns
+const PROTECT_AUTO_COLUMNS = false; // Set to true to protect these columns
 
 // ===== HEADERS =====
 const HEADERS = {
@@ -67,6 +90,30 @@ function findRowByColumn(sheet, columnIndex, searchValue) {
   return -1;
 }
 
+// Generate a simple unique ID (similar to cuid format)
+// Format: c + timestamp + random string
+function generateId() {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substring(2, 15);
+  const counter = Math.floor(Math.random() * 10000).toString(36);
+  return 'c' + timestamp + random + counter;
+}
+
+// Get current Unix timestamp (seconds)
+function getCurrentTimestamp() {
+  return Math.floor(Date.now() / 1000);
+}
+
+// Validate if ID exists and is not empty
+function isValidId(id) {
+  return id && String(id).trim() !== '';
+}
+
+// Validate if timestamp exists and is valid number
+function isValidTimestamp(timestamp) {
+  return timestamp !== null && timestamp !== undefined && timestamp !== '' && !isNaN(Number(timestamp));
+}
+
 // ===== MAIN HANDLER =====
 function doPost(e) {
   try {
@@ -109,6 +156,15 @@ function handleCreate(sheet, tableName, record) {
     throw new Error(`Unknown table: ${tableName}`);
   }
 
+  const idColumnIndex = headers.indexOf('id');
+
+  // Auto-generate ID if missing or invalid
+  if (idColumnIndex !== -1) {
+    if (!isValidId(record.id)) {
+      record.id = generateId();
+    }
+  }
+
   const row = headers.map(header => {
     const value = record[header];
     if (value === null || value === undefined) {
@@ -125,7 +181,8 @@ function handleCreate(sheet, tableName, record) {
   return ContentService.createTextOutput(JSON.stringify({
     success: true,
     message: 'Record created',
-    row: sheet.getLastRow()
+    row: sheet.getLastRow(),
+    generatedId: idColumnIndex !== -1 ? record.id : null
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -191,7 +248,14 @@ function handleBulk(sheet, tableName, records) {
     throw new Error(`Unknown table: ${tableName}`);
   }
 
+  const idColumnIndex = headers.indexOf('id');
+
   const rows = records.map(record => {
+    // Auto-generate ID if missing or invalid
+    if (idColumnIndex !== -1 && !isValidId(record.id)) {
+      record.id = generateId();
+    }
+
     return headers.map(header => {
       const value = record[header];
       if (value === null || value === undefined) {
@@ -224,6 +288,8 @@ function handleRead(sheet, tableName) {
 
   const data = sheet.getDataRange().getValues();
   const records = [];
+  const idColumnIndex = headers.indexOf('id');
+  const needsFix = [];
 
   for (let i = 1; i < data.length; i++) { // Skip header
     const record = {};
@@ -243,13 +309,29 @@ function handleRead(sheet, tableName) {
         record[header] = value;
       }
     });
+
+    // Auto-generate ID if missing or invalid when reading
+    if (idColumnIndex !== -1 && !isValidId(record.id)) {
+      record.id = generateId();
+      needsFix.push({ row: i + 1, id: record.id });
+      // Update the ID in the sheet
+      sheet.getRange(i + 1, idColumnIndex + 1).setValue(record.id);
+    }
+
     records.push(record);
   }
 
-  return ContentService.createTextOutput(JSON.stringify({
+  const response = {
     success: true,
     records: records
-  })).setMimeType(ContentService.MimeType.JSON);
+  };
+
+  if (needsFix.length > 0) {
+    response.warning = `${needsFix.length} records had invalid/missing IDs and were auto-generated`;
+    response.fixedIds = needsFix;
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
 }
 
 // ===== TEST FUNCTIONS =====
@@ -322,4 +404,296 @@ function testRead() {
 
   const result = doPost(mockEvent);
   Logger.log(result.getContent());
+}
+
+// ===== TRIGGER FUNCTION =====
+// Auto-generate IDs, createdAt, updatedAt when users manually add rows in Google Sheets
+// This trigger will automatically run when users edit the sheet
+// Setup: Edit > Current project's triggers > Add trigger
+//   - Function: onEdit
+//   - Event source: From spreadsheet
+//   - Event type: On edit
+function onEdit(e) {
+  try {
+    // Skip if auto-generation is disabled
+    if (!AUTO_GENERATE_ENABLED) {
+      return;
+    }
+
+    const sheet = e.source.getActiveSheet();
+    const sheetName = sheet.getName();
+
+    // Only process known sheets
+    if (!Object.values(SHEETS).includes(sheetName)) {
+      return;
+    }
+
+    const range = e.range;
+    const startRow = range.getRow();
+    const numRows = range.getNumRows();
+    const startCol = range.getColumn();
+    const numCols = range.getNumColumns();
+
+    // Skip header row
+    if (startRow === 1) {
+      return;
+    }
+
+    const tableUpper = sheetName.toUpperCase();
+    const headers = HEADERS[tableUpper];
+    if (!headers) {
+      return;
+    }
+
+    const idColumnIndex = headers.indexOf('id');
+    const createdAtColumnIndex = headers.indexOf('createdAt');
+    const updatedAtColumnIndex = headers.indexOf('updatedAt');
+
+    if (idColumnIndex === -1) {
+      return;
+    }
+
+    const currentTimestamp = getCurrentTimestamp();
+    let hasChanges = false;
+
+    // Process all edited rows (handles paste operations with multiple rows)
+    for (let i = 0; i < numRows; i++) {
+      const currentRow = startRow + i;
+
+      // Skip if row is empty or doesn't have enough columns
+      if (currentRow > sheet.getLastRow()) {
+        continue;
+      }
+
+      // Check if user is editing protected columns
+      if (PROTECT_AUTO_COLUMNS) {
+        const editedColumns = [];
+        for (let j = 0; j < numCols; j++) {
+          const colIndex = startCol + j - 1; // Convert to 0-based index
+          if (colIndex === idColumnIndex ||
+              colIndex === createdAtColumnIndex ||
+              colIndex === updatedAtColumnIndex) {
+            editedColumns.push(headers[colIndex]);
+          }
+        }
+
+        if (editedColumns.length > 0) {
+          // Clear the protected cell and restore original value
+          range.getSheet().getActiveRange().clearContent();
+          SpreadsheetApp.getActiveSpreadsheet().toast(
+            `Columns ${editedColumns.join(', ')} are protected and auto-generated.`,
+            'Protected Column',
+            3
+          );
+          continue;
+        }
+      }
+
+      const idCell = sheet.getRange(currentRow, idColumnIndex + 1);
+      const currentId = idCell.getValue();
+
+      // Auto-generate ID if missing or invalid
+      if (!isValidId(currentId)) {
+        const newId = generateId();
+        idCell.setValue(newId);
+        hasChanges = true;
+      }
+
+      // Auto-generate createdAt if missing or invalid (only for new rows)
+      if (createdAtColumnIndex !== -1) {
+        const createdAtCell = sheet.getRange(currentRow, createdAtColumnIndex + 1);
+        const createdAtValue = createdAtCell.getValue();
+
+        // If createdAt is empty, set current timestamp (new record)
+        if (!isValidTimestamp(createdAtValue)) {
+          createdAtCell.setValue(currentTimestamp);
+          hasChanges = true;
+        }
+      }
+
+      // Auto-update updatedAt whenever row is edited (always update)
+      if (updatedAtColumnIndex !== -1) {
+        const updatedAtCell = sheet.getRange(currentRow, updatedAtColumnIndex + 1);
+        updatedAtCell.setValue(currentTimestamp);
+        hasChanges = true;
+      }
+    }
+
+    // Show notification if changes were made
+    if (hasChanges && numRows <= 5) {
+      SpreadsheetApp.getActiveSpreadsheet().toast(
+        'Auto-generated ID, createdAt, and updatedAt',
+        'Auto-Generated',
+        3
+      );
+    }
+  } catch (error) {
+    // Silently fail to avoid disrupting user workflow
+    Logger.log('onEdit error: ' + error.toString());
+  }
+}
+
+// ===== HELPER FUNCTION FOR MANUAL FIX =====
+// Users can run this function manually to fix all rows with missing/invalid IDs, createdAt, updatedAt
+// Usage: In Script editor, select this function and click Run
+function fixAllMissingIds() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let totalFixed = { ids: 0, timestamps: 0 };
+  const currentTimestamp = getCurrentTimestamp();
+
+  Object.values(SHEETS).forEach(sheetName => {
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return;
+
+    const tableUpper = sheetName.toUpperCase();
+    const headers = HEADERS[tableUpper];
+    if (!headers) return;
+
+    const idColumnIndex = headers.indexOf('id');
+    const createdAtColumnIndex = headers.indexOf('createdAt');
+    const updatedAtColumnIndex = headers.indexOf('updatedAt');
+
+    if (idColumnIndex === -1) return;
+
+    const data = sheet.getDataRange().getValues();
+    let fixedIds = 0;
+    let fixedTimestamps = 0;
+
+    // Check all rows except header
+    for (let i = 1; i < data.length; i++) {
+      const rowNum = i + 1;
+      let rowChanged = false;
+
+      // Fix ID
+      const idValue = data[i][idColumnIndex];
+      if (!isValidId(idValue)) {
+        const newId = generateId();
+        sheet.getRange(rowNum, idColumnIndex + 1).setValue(newId);
+        fixedIds++;
+        rowChanged = true;
+      }
+
+      // Fix createdAt (only if missing, preserve existing)
+      if (createdAtColumnIndex !== -1) {
+        const createdAtValue = data[i][createdAtColumnIndex];
+        if (!isValidTimestamp(createdAtValue)) {
+          sheet.getRange(rowNum, createdAtColumnIndex + 1).setValue(currentTimestamp);
+          fixedTimestamps++;
+          rowChanged = true;
+        }
+      }
+
+      // Always update updatedAt
+      if (updatedAtColumnIndex !== -1) {
+        sheet.getRange(rowNum, updatedAtColumnIndex + 1).setValue(currentTimestamp);
+        if (!rowChanged) {
+          fixedTimestamps++;
+        }
+      }
+    }
+
+    if (fixedIds > 0 || fixedTimestamps > 0) {
+      Logger.log(`Fixed ${fixedIds} IDs and ${fixedTimestamps} timestamps in ${sheetName}`);
+      totalFixed.ids += fixedIds;
+      totalFixed.timestamps += fixedTimestamps;
+    }
+  });
+
+  const totalChanges = totalFixed.ids + totalFixed.timestamps;
+  if (totalChanges > 0) {
+    ss.toast(
+      `Fixed ${totalFixed.ids} IDs and ${totalFixed.timestamps} timestamps across all sheets`,
+      'Fix Complete',
+      5
+    );
+  } else {
+    ss.toast('All IDs and timestamps are valid!', 'No Issues', 3);
+  }
+
+  return totalFixed;
+}
+
+// ===== PROTECTION FUNCTION =====
+// Protect or unprotect auto-generated columns (id, createdAt, updatedAt)
+// Usage: Call protectAutoColumns(true) to protect, protectAutoColumns(false) to unprotect
+function protectAutoColumns(protect) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let protectedCount = 0;
+
+  Object.values(SHEETS).forEach(sheetName => {
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return;
+
+    const tableUpper = sheetName.toUpperCase();
+    const headers = HEADERS[tableUpper];
+    if (!headers) return;
+
+    const idColumnIndex = headers.indexOf('id');
+    const createdAtColumnIndex = headers.indexOf('createdAt');
+    const updatedAtColumnIndex = headers.indexOf('updatedAt');
+
+    const columnsToProtect = [];
+    if (idColumnIndex !== -1) columnsToProtect.push(idColumnIndex + 1);
+    if (createdAtColumnIndex !== -1) columnsToProtect.push(createdAtColumnIndex + 1);
+    if (updatedAtColumnIndex !== -1) columnsToProtect.push(updatedAtColumnIndex + 1);
+
+    if (columnsToProtect.length === 0) return;
+
+    // Get all existing protections
+    const protections = sheet.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+
+    if (protect) {
+      // Protect columns
+      columnsToProtect.forEach(colIndex => {
+        // Check if already protected
+        const existing = protections.find(p => {
+          const range = p.getRange();
+          return range.getColumn() === colIndex && range.getNumColumns() === 1;
+        });
+
+        if (!existing) {
+          const column = sheet.getRange(1, colIndex, sheet.getLastRow(), 1);
+          const protection = column.protect().setDescription(`Auto-generated: ${headers[colIndex - 1]}`);
+
+          // Allow users to edit rows (for new data entry), but warn them
+          protection.setWarningOnly(true);
+          protectedCount++;
+        }
+      });
+
+      // Format protected columns to show they're auto-generated
+      columnsToProtect.forEach(colIndex => {
+        const headerRange = sheet.getRange(1, colIndex);
+        headerRange.setBackground('#fff3cd'); // Light yellow warning
+        headerRange.setNote('Auto-generated. Manual edits will be overridden.');
+      });
+    } else {
+      // Remove protection
+      columnsToProtect.forEach(colIndex => {
+        const existing = protections.find(p => {
+          const range = p.getRange();
+          return range.getColumn() === colIndex && range.getNumColumns() === 1;
+        });
+
+        if (existing) {
+          existing.remove();
+          protectedCount++;
+        }
+
+        // Reset formatting
+        const headerRange = sheet.getRange(1, colIndex);
+        headerRange.setBackground('#4285f4'); // Back to blue
+        headerRange.clearNote();
+      });
+    }
+  });
+
+  const message = protect
+    ? `Protected ${protectedCount} auto-generated columns`
+    : `Removed protection from ${protectedCount} columns`;
+
+  ss.toast(message, protect ? 'Protection Enabled' : 'Protection Disabled', 5);
+  Logger.log(message);
+
+  return protectedCount;
 }
