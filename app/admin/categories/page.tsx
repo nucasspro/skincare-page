@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { usePagination } from '@/hooks/use-pagination'
-import { Edit, FolderTree, Plus, Save, Trash2, X } from 'lucide-react'
+import { Edit, FolderTree, Plus, RefreshCw, Save, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -21,11 +21,14 @@ export default function CategoriesPage() {
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({ name: '', description: '' })
 
-  const fetchCategories = async () => {
+  const fetchCategories = async (showToast = false) => {
     try {
       setLoading(true)
       const categories = await adminCategoryService.getAllCategories()
       setCategories(categories)
+      if (showToast) {
+        toast.success('Đã làm mới dữ liệu')
+      }
     } catch (error) {
       toast.error('Không thể tải danh sách danh mục')
     } finally {
@@ -105,10 +108,22 @@ export default function CategoriesPage() {
             <p className="mt-2 text-gray-600">Thêm, chỉnh sửa và quản lý danh mục sản phẩm</p>
           </div>
           {!showForm && (
-            <Button onClick={() => setShowForm(true)} variant="outline" className="gap-2 rounded-sm">
-              <Plus className="h-4 w-4" />
-              Thêm danh mục
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => fetchCategories(true)}
+                size="sm"
+                variant="outline"
+                disabled={loading}
+                className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Làm mới
+              </Button>
+              <Button onClick={() => setShowForm(true)} variant="outline" className="gap-2 rounded-sm">
+                <Plus className="h-4 w-4" />
+                Thêm danh mục
+              </Button>
+            </div>
           )}
         </div>
 

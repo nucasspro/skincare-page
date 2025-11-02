@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { categoryDataService } from '@/lib/services/category-data-service'
 import { NextResponse } from 'next/server'
 
 // GET single category
@@ -8,9 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const category = await prisma.category.findUnique({
-      where: { id },
-    })
+    const category = await categoryDataService.getCategoryById(id)
 
     if (!category) {
       return NextResponse.json(
@@ -19,7 +17,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({ data: category })
+    return NextResponse.json({ data: { ...category, id: String(category.id || '') } })
   } catch (error) {
     console.error('Error fetching category:', error)
     return NextResponse.json(
@@ -39,39 +37,20 @@ export async function PUT(
     const body = await request.json()
     const { name, description } = body
 
-    const existing = await prisma.category.findUnique({
-      where: { id },
+    const category = await categoryDataService.updateCategory({
+      id,
+      name,
+      description: description || null,
     })
 
-    if (!existing) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      )
-    }
-
-    const now = Math.floor(Date.now() / 1000)
-
-    await prisma.category.update({
-      where: { id },
-      data: {
-        name,
-        description: description || null,
-        updatedAt: now,
-      },
+    return NextResponse.json({
+      message: 'Category updated successfully',
+      data: { ...category, id: String(category.id || '') }
     })
-
-    return NextResponse.json({ message: 'Category updated successfully' })
   } catch (error: any) {
-    if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
-      return NextResponse.json(
-        { error: 'Category name already exists' },
-        { status: 400 }
-      )
-    }
     console.error('Error updating category:', error)
     return NextResponse.json(
-      { error: 'Failed to update category' },
+      { error: error.message || 'Failed to update category' },
       { status: 500 }
     )
   }
@@ -84,21 +63,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const success = await categoryDataService.deleteCategory(id)
 
-    try {
-      await prisma.category.delete({
-        where: { id },
-      })
-      return NextResponse.json({ message: 'Category deleted successfully' })
-    } catch (error: any) {
-      if (error.code === 'P2025') {
-        return NextResponse.json(
-          { error: 'Category not found' },
-          { status: 404 }
-        )
-      }
-      throw error
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to delete category' },
+        { status: 500 }
+      )
     }
+
+    return NextResponse.json({ message: 'Category deleted successfully' })
   } catch (error) {
     console.error('Error deleting category:', error)
     return NextResponse.json(

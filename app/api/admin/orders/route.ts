@@ -1,24 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { orderDataService } from '@/lib/services/order-data-service'
 import { NextResponse } from 'next/server'
 
 // GET all orders
 export async function GET() {
   try {
-    const orders = await prisma.order.findMany({
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
+    const orders = await orderDataService.getAllOrders()
+    return NextResponse.json({
+      data: orders.map(o => ({ ...o, id: String(o.id || '') }))
     })
-
-    return NextResponse.json({ data: orders })
   } catch (error) {
     console.error('Error fetching orders:', error)
     return NextResponse.json(
@@ -32,39 +21,40 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { userId, status, total, items, shippingAddress, phone, notes } = body
+    const { orderNumber, customerName, customerEmail, customerPhone, userId, streetAddress, wardName, districtName, provinceName, status, paymentMethod, items, total, notes } = body
 
-    if (!userId || !total || !items || !shippingAddress || !phone) {
+    if (!orderNumber || !customerName || !customerPhone || !streetAddress || !paymentMethod || !items || !total) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    const now = Math.floor(Date.now() / 1000)
-
-    const order = await prisma.order.create({
-      data: {
-        userId,
-        status: status || 'pending',
-        total,
-        items: typeof items === 'string' ? items : JSON.stringify(items),
-        shippingAddress,
-        phone,
-        notes: notes || null,
-        createdAt: now,
-        updatedAt: now,
-      },
+    const order = await orderDataService.createOrder({
+      orderNumber,
+      customerName,
+      customerEmail: customerEmail || null,
+      customerPhone,
+      userId: userId || null,
+      streetAddress,
+      wardName: wardName || null,
+      districtName: districtName || null,
+      provinceName: provinceName || null,
+      status: status || 'pending',
+      paymentMethod,
+      items,
+      total,
+      notes: notes || null,
     })
 
     return NextResponse.json(
-      { message: 'Order created successfully', id: order.id },
+      { message: 'Order created successfully', data: { ...order, id: String(order.id || '') } },
       { status: 201 }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating order:', error)
     return NextResponse.json(
-      { error: 'Failed to create order' },
+      { error: error.message || 'Failed to create order' },
       { status: 500 }
     )
   }

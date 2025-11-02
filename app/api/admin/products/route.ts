@@ -1,16 +1,21 @@
-import { prisma } from '@/lib/prisma'
+import { productDataService } from '@/lib/services/product-data-service'
 import { NextResponse } from 'next/server'
 
 // GET all products (admin)
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+    const products = await productDataService.getAllProducts()
 
-    return NextResponse.json({ data: products })
+    // Transform for API response (parse JSON fields)
+    const transformedProducts = products.map((product) => ({
+      ...product,
+      id: String(product.id || ''), // Ensure id is always string
+      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
+      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
+      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
+    }))
+
+    return NextResponse.json({ data: transformedProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json(
@@ -38,7 +43,6 @@ export async function POST(request: Request) {
       benefits,
       ingredients,
       howToUse,
-      slug,
     } = body
 
     if (!name || !tagline || !price || !category || !image || !hoverImage) {
@@ -48,30 +52,33 @@ export async function POST(request: Request) {
       )
     }
 
-    const now = Math.floor(Date.now() / 1000)
-
-    const product = await prisma.product.create({
-      data: {
-        name,
-        tagline,
-        price,
-        originalPrice: originalPrice || null,
-        discount: discount || null,
-        category,
-        needs: typeof needs === 'string' ? needs : JSON.stringify(needs || []),
-        image,
-        hoverImage,
-        description: description || null,
-        benefits: typeof benefits === 'string' ? benefits : JSON.stringify(benefits || []),
-        ingredients: typeof ingredients === 'string' ? ingredients : JSON.stringify(ingredients || []),
-        howToUse: howToUse || null,
-        createdAt: now,
-        updatedAt: now,
-      },
+    const product = await productDataService.createProduct({
+      name,
+      tagline,
+      price,
+      originalPrice: originalPrice || null,
+      discount: discount || null,
+      category,
+      needs: needs || [],
+      image,
+      hoverImage,
+      description: description || null,
+      benefits: benefits || null,
+      ingredients: ingredients || null,
+      howToUse: howToUse || null,
     })
 
+    // Transform for API response
+    const transformedProduct = {
+      ...product,
+      id: String(product.id || ''), // Ensure id is always string
+      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
+      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
+      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
+    }
+
     return NextResponse.json(
-      { message: 'Product created successfully', data: product },
+      { message: 'Product created successfully', data: transformedProduct },
       { status: 201 }
     )
   } catch (error: any) {

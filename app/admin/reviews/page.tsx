@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { usePagination } from '@/hooks/use-pagination'
 import { adminReviewService, type Review } from '@/lib/services/admin/review-service'
 import { formatDate } from '@/lib/utils'
-import { Edit, Eye, MessageSquare, Plus, Search, Star, Trash2 } from 'lucide-react'
+import { Edit, Eye, MessageSquare, Plus, RefreshCw, Search, Star, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -29,11 +29,14 @@ export default function ReviewsPage() {
   const [isViewMode, setIsViewMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const fetchReviews = async () => {
+  const fetchReviews = async (showToast = false) => {
     try {
       setLoading(true)
       const data = await adminReviewService.getAllReviews()
       setReviews(data)
+      if (showToast) {
+        toast.success('Đã làm mới dữ liệu')
+      }
     } catch (error) {
       toast.error('Không thể tải danh sách reviews')
     } finally {
@@ -143,17 +146,29 @@ export default function ReviewsPage() {
               {reviews.length} reviews
             </p>
           </div>
-          <Button
-            onClick={() => {
-              resetForm()
-              setShowForm(true)
-            }}
-            size="sm"
-            className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm mới
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => fetchReviews(true)}
+              size="sm"
+              variant="outline"
+              disabled={loading}
+              className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Làm mới
+            </Button>
+            <Button
+              onClick={() => {
+                resetForm()
+                setShowForm(true)
+              }}
+              size="sm"
+              className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Thêm mới
+            </Button>
+          </div>
         </div>
 
         {/* Search */}

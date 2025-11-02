@@ -76,7 +76,7 @@ export function ProductItem({ product, onEdit, onDelete, onView }: ProductItemPr
       {/* ID */}
       <td className="p-2.5 w-32">
         <span className="text-neutral-400 text-xs font-mono">
-          {product.id.substring(0, 8)}
+          {String(product.id || '').substring(0, 8)}
         </span>
       </td>
 

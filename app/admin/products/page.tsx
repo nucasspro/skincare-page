@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Product } from '@/lib/product-service'
 import { adminProductService } from '@/lib/services/admin'
-import { Plus } from 'lucide-react'
+import { Plus, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -26,11 +26,14 @@ export default function ProductsPage() {
   const [isViewMode, setIsViewMode] = useState(false)
 
   // Fetch products
-  const fetchProducts = async () => {
+  const fetchProducts = async (showToast = false) => {
     try {
       setLoading(true)
       const data = await adminProductService.getAllProducts()
       setProducts(data)
+      if (showToast) {
+        toast.success('Đã làm mới dữ liệu')
+      }
     } catch (error) {
       toast.error('Không thể tải danh sách sản phẩm')
     } finally {
@@ -156,14 +159,26 @@ export default function ProductsPage() {
               {products.length} sản phẩm
             </p>
           </div>
-          <Button
-            onClick={handleAddNew}
-            size="sm"
-            className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm mới
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => fetchProducts(true)}
+              size="sm"
+              variant="outline"
+              disabled={loading}
+              className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Làm mới
+            </Button>
+            <Button
+              onClick={handleAddNew}
+              size="sm"
+              className="bg-neutral-900 hover:bg-neutral-800 text-white rounded cursor-pointer h-9 px-4"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Thêm mới
+            </Button>
+          </div>
         </div>
 
         {/* Products List */}

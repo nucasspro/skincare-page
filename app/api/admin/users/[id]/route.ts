@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { userDataService } from '@/lib/services/user-data-service'
 import { NextResponse } from 'next/server'
 
 // GET single user
@@ -8,9 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const user = await prisma.user.findUnique({
-      where: { id },
-    })
+    const user = await userDataService.getUserById(id)
 
     if (!user) {
       return NextResponse.json(
@@ -19,7 +17,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({ data: user })
+    return NextResponse.json({ data: { ...user, id: String(user.id || '') } })
   } catch (error) {
     console.error('Error fetching user:', error)
     return NextResponse.json(
@@ -39,42 +37,23 @@ export async function PUT(
     const body = await request.json()
     const { email, name, phone, address, role } = body
 
-    const existing = await prisma.user.findUnique({
-      where: { id },
+    const user = await userDataService.updateUser({
+      id,
+      email,
+      name,
+      phone: phone || null,
+      address: address || null,
+      role: role || 'user',
     })
 
-    if (!existing) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
-    }
-
-    const now = Math.floor(Date.now() / 1000)
-
-    await prisma.user.update({
-      where: { id },
-      data: {
-        email,
-        name,
-        phone: phone || null,
-        address: address || null,
-        role: role || 'user',
-        updatedAt: now,
-      },
+    return NextResponse.json({
+      message: 'User updated successfully',
+      data: { ...user, id: String(user.id || '') }
     })
-
-    return NextResponse.json({ message: 'User updated successfully' })
   } catch (error: any) {
-    if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
-      return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      )
-    }
     console.error('Error updating user:', error)
     return NextResponse.json(
-      { error: 'Failed to update user' },
+      { error: error.message || 'Failed to update user' },
       { status: 500 }
     )
   }
@@ -87,21 +66,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const success = await userDataService.deleteUser(id)
 
-    try {
-      await prisma.user.delete({
-        where: { id },
-      })
-      return NextResponse.json({ message: 'User deleted successfully' })
-    } catch (error: any) {
-      if (error.code === 'P2025') {
-        return NextResponse.json(
-          { error: 'User not found' },
-          { status: 404 }
-        )
-      }
-      throw error
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to delete user' },
+        { status: 500 }
+      )
     }
+
+    return NextResponse.json({ message: 'User deleted successfully' })
   } catch (error) {
     console.error('Error deleting user:', error)
     return NextResponse.json(

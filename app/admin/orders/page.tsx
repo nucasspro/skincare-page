@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Edit, Eye, Package, Search, ShoppingCart, Trash2 } from 'lucide-react'
+import { Edit, Eye, Package, RefreshCw, Search, ShoppingCart, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -35,11 +35,14 @@ export default function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (showToast = false) => {
     try {
       setLoading(true)
       const data = await adminOrderService.getAllOrders()
       setOrders(data)
+      if (showToast) {
+        toast.success('Đã làm mới dữ liệu')
+      }
     } catch (error) {
       toast.error('Không thể tải danh sách đơn hàng')
     } finally {
@@ -143,6 +146,16 @@ export default function OrdersPage() {
               {orders.length} đơn hàng • Tổng doanh thu: {formatVND(stats.totalRevenue)}
             </p>
           </div>
+          <Button
+            onClick={() => fetchOrders(true)}
+            size="sm"
+            variant="outline"
+            disabled={loading}
+            className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Làm mới
+          </Button>
         </div>
 
         {/* Stats Cards */}

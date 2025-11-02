@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { reviewDataService } from '@/lib/services/review-data-service'
 import { NextResponse } from 'next/server'
 
 // GET single review
@@ -8,17 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const review = await prisma.review.findUnique({
-      where: { id },
-      include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    })
+    const review = await reviewDataService.getReviewById(id)
 
     if (!review) {
       return NextResponse.json(
@@ -27,7 +17,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({ data: review })
+    return NextResponse.json({ data: { ...review, id: String(review.id || '') } })
   } catch (error) {
     console.error('Error fetching review:', error)
     return NextResponse.json(
@@ -45,29 +35,19 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
-    const {
-      productId,
-      reviewerName,
-      rating,
-      review,
-    } = body
+    const { productId, reviewerName, rating, review } = body
 
-    const now = Math.floor(Date.now() / 1000)
+    const updateData: any = { id }
+    if (productId !== undefined) updateData.productId = productId
+    if (reviewerName !== undefined) updateData.reviewerName = reviewerName
+    if (rating !== undefined) updateData.rating = rating
+    if (review !== undefined) updateData.review = review
 
-    const updatedReview = await prisma.review.update({
-      where: { id },
-      data: {
-        ...(productId !== undefined && { productId }),
-        ...(reviewerName !== undefined && { reviewerName }),
-        ...(rating !== undefined && { rating }),
-        ...(review !== undefined && { review }),
-        updatedAt: now,
-      },
-    })
+    const updatedReview = await reviewDataService.updateReview(updateData)
 
     return NextResponse.json({
       message: 'Review updated successfully',
-      data: updatedReview,
+      data: { ...updatedReview, id: String(updatedReview.id || '') },
     })
   } catch (error: any) {
     console.error('Error updating review:', error)
@@ -85,13 +65,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    await prisma.review.delete({
-      where: { id },
-    })
+    const success = await reviewDataService.deleteReview(id)
 
-    return NextResponse.json({
-      message: 'Review deleted successfully',
-    })
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to delete review' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ message: 'Review deleted successfully' })
   } catch (error: any) {
     console.error('Error deleting review:', error)
     return NextResponse.json(

@@ -4,9 +4,11 @@ import { AdminLayout } from '@/components/admin/admin-layout'
 import { Card } from '@/components/ui/card'
 import { getStatusInfo } from '@/lib/constants/order-status'
 import { formatDate, formatVND } from '@/lib/utils'
-import { DollarSign, FolderTree, MessageSquare, Package, ShoppingCart, TrendingUp, Users } from 'lucide-react'
+import { DollarSign, FolderTree, MessageSquare, Package, RefreshCw, ShoppingCart, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 
 interface Stats {
   totalProducts: number
@@ -48,27 +50,27 @@ export default function AdminDashboard() {
   const [bestSellingProducts, setBestSellingProducts] = useState<BestSellingProduct[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [productsRes, categoriesRes, usersRes, ordersRes, reviewsRes] = await Promise.all([
-          fetch('/api/products'),
-          fetch('/api/admin/categories'),
-          fetch('/api/admin/users'),
-          fetch('/api/admin/orders'),
-          fetch('/api/admin/reviews'),
-        ])
+  const fetchStats = async (showToast = false) => {
+    try {
+      setLoading(true)
+      const [productsRes, categoriesRes, usersRes, ordersRes, reviewsRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/admin/categories'),
+        fetch('/api/admin/users'),
+        fetch('/api/admin/orders'),
+        fetch('/api/admin/reviews'),
+      ])
 
-        // Check if response is JSON before parsing
-        const parseJson = async (res: Response) => {
-          const contentType = res.headers.get('content-type')
-          if (!contentType?.includes('application/json')) {
-            const text = await res.text()
-            console.error('Non-JSON response:', text.substring(0, 200))
-            throw new Error(`Expected JSON but got ${contentType}`)
-          }
-          return res.json()
+      // Check if response is JSON before parsing
+      const parseJson = async (res: Response) => {
+        const contentType = res.headers.get('content-type')
+        if (!contentType?.includes('application/json')) {
+          const text = await res.text()
+          console.error('Non-JSON response:', text.substring(0, 200))
+          throw new Error(`Expected JSON but got ${contentType}`)
         }
+        return res.json()
+      }
 
         const products = await parseJson(productsRes)
         const categories = await parseJson(categoriesRes)
@@ -161,15 +163,22 @@ export default function AdminDashboard() {
         })
         setRecentOrders(recent)
         setBestSellingProducts(bestSelling)
+        if (showToast) {
+          toast.success('Đã làm mới dữ liệu')
+        }
       } catch (error) {
         console.error('Error fetching stats:', error)
+        if (showToast) {
+          toast.error('Không thể tải dữ liệu')
+        }
       } finally {
         setLoading(false)
       }
     }
 
-    fetchStats()
-  }, [])
+    useEffect(() => {
+      fetchStats()
+    }, [])
 
   const statCards = [
     {
@@ -228,9 +237,21 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-neutral-500">Tổng quan hệ thống</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
+            <p className="mt-1 text-sm text-neutral-500">Tổng quan hệ thống</p>
+          </div>
+          <Button
+            onClick={() => fetchStats(true)}
+            size="sm"
+            variant="outline"
+            disabled={loading}
+            className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Làm mới
+          </Button>
         </div>
 
         {/* Stats Grid */}

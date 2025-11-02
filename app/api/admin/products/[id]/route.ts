@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { productDataService } from '@/lib/services/product-data-service'
 import { NextResponse } from 'next/server'
 
 // GET single product
@@ -8,9 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const product = await prisma.product.findUnique({
-      where: { id },
-    })
+    const product = await productDataService.getProductById(id)
 
     if (!product) {
       return NextResponse.json(
@@ -19,7 +17,16 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({ data: product })
+    // Transform for API response
+    const transformedProduct = {
+      ...product,
+      id: String(product.id || ''), // Ensure id is always string
+      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
+      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
+      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
+    }
+
+    return NextResponse.json({ data: transformedProduct })
   } catch (error) {
     console.error('Error fetching product:', error)
     return NextResponse.json(
@@ -51,45 +58,37 @@ export async function PUT(
       benefits,
       ingredients,
       howToUse,
-      slug,
     } = body
 
-    const existing = await prisma.product.findUnique({
-      where: { id },
+    const product = await productDataService.updateProduct({
+      id,
+      name,
+      tagline,
+      price,
+      originalPrice: originalPrice !== undefined ? originalPrice : null,
+      discount: discount !== undefined ? discount : null,
+      category,
+      needs: needs !== undefined ? needs : undefined,
+      image,
+      hoverImage,
+      description: description !== undefined ? description : null,
+      benefits: benefits !== undefined ? benefits : null,
+      ingredients: ingredients !== undefined ? ingredients : null,
+      howToUse: howToUse !== undefined ? howToUse : null,
     })
 
-    if (!existing) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+    // Transform for API response
+    const transformedProduct = {
+      ...product,
+      id: String(product.id || ''), // Ensure id is always string
+      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
+      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
+      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
     }
-
-    const now = Math.floor(Date.now() / 1000)
-
-    const product = await prisma.product.update({
-      where: { id },
-      data: {
-        name,
-        tagline,
-        price,
-        originalPrice: originalPrice !== undefined ? originalPrice : null,
-        discount: discount !== undefined ? discount : null,
-        category,
-        needs: typeof needs === 'string' ? needs : JSON.stringify(needs || []),
-        image,
-        hoverImage,
-        description: description !== undefined ? description : null,
-        benefits: typeof benefits === 'string' ? benefits : JSON.stringify(benefits || []),
-        ingredients: typeof ingredients === 'string' ? ingredients : JSON.stringify(ingredients || []),
-        howToUse: howToUse !== undefined ? howToUse : null,
-        updatedAt: now,
-      },
-    })
 
     return NextResponse.json({
       message: 'Product updated successfully',
-      data: product,
+      data: transformedProduct,
     })
   } catch (error: any) {
     console.error('Error updating product:', error)
@@ -108,20 +107,16 @@ export async function DELETE(
   try {
     const { id } = await params
 
-    try {
-      await prisma.product.delete({
-        where: { id },
-      })
-      return NextResponse.json({ message: 'Product deleted successfully' })
-    } catch (error: any) {
-      if (error.code === 'P2025') {
-        return NextResponse.json(
-          { error: 'Product not found' },
-          { status: 404 }
-        )
-      }
-      throw error
+    const success = await productDataService.deleteProduct(id)
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Product not found or delete not supported' },
+        { status: 404 }
+      )
     }
+
+    return NextResponse.json({ message: 'Product deleted successfully' })
   } catch (error) {
     console.error('Error deleting product:', error)
     return NextResponse.json(

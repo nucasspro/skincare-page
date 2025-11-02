@@ -34,11 +34,14 @@ export default function CommentsPage() {
     status: 'pending',
   })
 
-  const fetchComments = async () => {
+  const fetchComments = async (showToast = false) => {
     try {
       setLoading(true)
       const comments = await adminCommentService.getAllComments()
       setComments(comments)
+      if (showToast) {
+        toast.success('Đã làm mới dữ liệu')
+      }
     } catch (error) {
       toast.error('Không thể tải danh sách bình luận')
     } finally {
@@ -151,12 +154,24 @@ export default function CommentsPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <MessageSquare className="h-8 w-8" />
-            Quản lý Bình luận
-          </h1>
-          <p className="mt-2 text-gray-600">Xem và quản lý bình luận sản phẩm</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+              <MessageSquare className="h-8 w-8" />
+              Quản lý Bình luận
+            </h1>
+            <p className="mt-2 text-gray-600">Xem và quản lý bình luận sản phẩm</p>
+          </div>
+          <Button
+            onClick={() => fetchComments(true)}
+            size="sm"
+            variant="outline"
+            disabled={loading}
+            className="rounded cursor-pointer h-9 px-4 border-neutral-300 hover:bg-neutral-50 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Làm mới
+          </Button>
         </div>
 
         {showForm && editingComment && (

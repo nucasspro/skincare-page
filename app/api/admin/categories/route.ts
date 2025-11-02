@@ -1,14 +1,16 @@
-import { prisma } from '@/lib/prisma'
+import { categoryDataService } from '@/lib/services/category-data-service'
 import { NextResponse } from 'next/server'
 
 // GET all categories
 export async function GET() {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: { createdAt: 'desc' },
+    const categories = await categoryDataService.getAllCategories()
+    return NextResponse.json({
+      data: categories.map(c => ({
+        ...c,
+        id: String(c.id || ''), // Ensure id is always string
+      }))
     })
-
-    return NextResponse.json({ data: categories })
   } catch (error) {
     console.error('Error fetching categories:', error)
     return NextResponse.json(
@@ -31,31 +33,19 @@ export async function POST(request: Request) {
       )
     }
 
-    const now = Math.floor(Date.now() / 1000)
-
-    const category = await prisma.category.create({
-      data: {
-        name,
-        description: description || null,
-        createdAt: now,
-        updatedAt: now,
-      },
+    const category = await categoryDataService.createCategory({
+      name,
+      description: description || null,
     })
 
     return NextResponse.json(
-      { message: 'Category created successfully', id: category.id },
+      { message: 'Category created successfully', data: { ...category, id: String(category.id || '') } },
       { status: 201 }
     )
   } catch (error: any) {
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        { error: 'Category name already exists' },
-        { status: 400 }
-      )
-    }
     console.error('Error creating category:', error)
     return NextResponse.json(
-      { error: 'Failed to create category' },
+      { error: error.message || 'Failed to create category' },
       { status: 500 }
     )
   }

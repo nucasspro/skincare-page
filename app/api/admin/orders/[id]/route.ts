@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { orderDataService } from '@/lib/services/order-data-service'
 import { NextResponse } from 'next/server'
 
 // GET single order
@@ -8,17 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const order = await prisma.order.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
-    })
+    const order = await orderDataService.getOrderById(id)
 
     if (!order) {
       return NextResponse.json(
@@ -27,7 +17,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({ data: order })
+    return NextResponse.json({ data: { ...order, id: String(order.id || '') } })
   } catch (error) {
     console.error('Error fetching order:', error)
     return NextResponse.json(
@@ -56,46 +46,34 @@ export async function PUT(
       wardName,
       districtName,
       provinceName,
+      items,
+      total,
     } = body
 
-    const existing = await prisma.order.findUnique({
-      where: { id },
-    })
+    const updateData: any = { id }
+    if (status !== undefined) updateData.status = status
+    if (paymentMethod !== undefined) updateData.paymentMethod = paymentMethod
+    if (notes !== undefined) updateData.notes = notes
+    if (customerName !== undefined) updateData.customerName = customerName
+    if (customerEmail !== undefined) updateData.customerEmail = customerEmail
+    if (customerPhone !== undefined) updateData.customerPhone = customerPhone
+    if (streetAddress !== undefined) updateData.streetAddress = streetAddress
+    if (wardName !== undefined) updateData.wardName = wardName
+    if (districtName !== undefined) updateData.districtName = districtName
+    if (provinceName !== undefined) updateData.provinceName = provinceName
+    if (items !== undefined) updateData.items = items
+    if (total !== undefined) updateData.total = total
 
-    if (!existing) {
-      return NextResponse.json(
-        { error: 'Order not found' },
-        { status: 404 }
-      )
-    }
-
-    const now = Math.floor(Date.now() / 1000)
-
-    const updatedOrder = await prisma.order.update({
-      where: { id },
-      data: {
-        ...(status !== undefined && { status }),
-        ...(paymentMethod !== undefined && { paymentMethod }),
-        ...(notes !== undefined && { notes }),
-        ...(customerName !== undefined && { customerName }),
-        ...(customerEmail !== undefined && { customerEmail }),
-        ...(customerPhone !== undefined && { customerPhone }),
-        ...(streetAddress !== undefined && { streetAddress }),
-        ...(wardName !== undefined && { wardName }),
-        ...(districtName !== undefined && { districtName }),
-        ...(provinceName !== undefined && { provinceName }),
-        updatedAt: now,
-      },
-    })
+    const order = await orderDataService.updateOrder(updateData)
 
     return NextResponse.json({
       message: 'Order updated successfully',
-      data: updatedOrder,
+      data: { ...order, id: String(order.id || '') },
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating order:', error)
     return NextResponse.json(
-      { error: 'Failed to update order' },
+      { error: error.message || 'Failed to update order' },
       { status: 500 }
     )
   }
@@ -108,21 +86,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const success = await orderDataService.deleteOrder(id)
 
-    try {
-      await prisma.order.delete({
-        where: { id },
-      })
-      return NextResponse.json({ message: 'Order deleted successfully' })
-    } catch (error: any) {
-      if (error.code === 'P2025') {
-        return NextResponse.json(
-          { error: 'Order not found' },
-          { status: 404 }
-        )
-      }
-      throw error
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to delete order' },
+        { status: 500 }
+      )
     }
+
+    return NextResponse.json({ message: 'Order deleted successfully' })
   } catch (error) {
     console.error('Error deleting order:', error)
     return NextResponse.json(

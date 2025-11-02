@@ -1,24 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { reviewDataService } from '@/lib/services/review-data-service'
 import { NextResponse } from 'next/server'
 
 // GET all reviews
 export async function GET() {
   try {
-    const reviews = await prisma.review.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+    const reviews = await reviewDataService.getAllReviews()
+    return NextResponse.json({
+      data: reviews.map(r => ({ ...r, id: String(r.id || '') }))
     })
-
-    return NextResponse.json({ data: reviews })
   } catch (error) {
     console.error('Error fetching reviews:', error)
     return NextResponse.json(
@@ -32,12 +21,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const {
-      productId,
-      reviewerName,
-      rating,
-      review,
-    } = body
+    const { productId, reviewerName, rating, review } = body
 
     if (!productId || !reviewerName || !rating || !review) {
       return NextResponse.json(
@@ -46,21 +30,15 @@ export async function POST(request: Request) {
       )
     }
 
-    const now = Math.floor(Date.now() / 1000)
-
-    const newReview = await prisma.review.create({
-      data: {
-        productId,
-        reviewerName,
-        rating,
-        review,
-        createdAt: now,
-        updatedAt: now,
-      },
+    const newReview = await reviewDataService.createReview({
+      productId,
+      reviewerName,
+      rating,
+      review,
     })
 
     return NextResponse.json(
-      { message: 'Review created successfully', data: newReview },
+      { message: 'Review created successfully', data: { ...newReview, id: String(newReview.id || '') } },
       { status: 201 }
     )
   } catch (error: any) {

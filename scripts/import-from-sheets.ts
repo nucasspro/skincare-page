@@ -4,7 +4,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { googleSheetsService } from '@/lib/services/google-sheets-service'
+import { googleSheetsService } from '@/lib/services/data-sources/google-sheets'
 
 const prisma = new PrismaClient()
 

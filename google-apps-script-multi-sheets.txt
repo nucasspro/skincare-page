@@ -55,8 +55,12 @@ function getOrCreateSheet(sheetName) {
 
 function findRowByColumn(sheet, columnIndex, searchValue) {
   const data = sheet.getDataRange().getValues();
+  // Normalize search value to string for flexible comparison
+  const normalizedSearch = String(searchValue || '').trim();
   for (let i = 1; i < data.length; i++) { // Skip header
-    if (data[i][columnIndex] === searchValue) {
+    const cellValue = data[i][columnIndex];
+    // Compare both as strings for flexible matching (handles number vs string)
+    if (String(cellValue || '').trim() === normalizedSearch) {
       return i + 1; // Return 1-based row number
     }
   }
@@ -252,9 +256,28 @@ function handleRead(sheet, tableName) {
 function testSetup() {
   // Create all sheets with headers
   Object.values(SHEETS).forEach(sheetName => {
-    getOrCreateSheet(sheetName);
+    const sheet = getOrCreateSheet(sheetName);
+    const tableUpper = sheetName.toUpperCase();
+    const headers = HEADERS[tableUpper];
+
+    if (headers) {
+      // Check if header row exists and is correct
+      const existingHeaders = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+      const headersMatch = existingHeaders.length === headers.length &&
+                          existingHeaders.every((h, i) => h === headers[i]);
+
+      // If no header or header doesn't match, set it
+      if (!headersMatch || sheet.getLastRow() === 0) {
+        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        // Format header
+        const headerRange = sheet.getRange(1, 1, 1, headers.length);
+        headerRange.setFontWeight('bold');
+        headerRange.setBackground('#4285f4');
+        headerRange.setFontColor('#ffffff');
+      }
+    }
   });
-  Logger.log('All sheets created successfully!');
+  Logger.log('All sheets created successfully with headers!');
 }
 
 function testCreate() {
