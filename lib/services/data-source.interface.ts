@@ -1,7 +1,23 @@
 /**
  * Data Source Interface
- * Abstraction layer để switch giữa Google Sheets và Prisma
+ * MongoDB-only implementation with composite types support
  */
+
+// Composite types for MongoDB
+export interface NeedTag {
+  id: string
+  name: string
+}
+
+export interface Benefit {
+  title: string
+  description?: string | null
+}
+
+export interface Ingredient {
+  name: string
+  percentage?: number | null
+}
 
 export interface ProductRecord {
   id: string
@@ -11,14 +27,14 @@ export interface ProductRecord {
   originalPrice?: number | null
   discount?: number | null
   category: string
-  needs: string | string[] // String (JSON) hoặc array
+  needs: string | string[] | NeedTag[] // Support both formats for backward compatibility
   image: string
   hoverImage: string
   description?: string | null
-  benefits?: string | string[] | null
-  ingredients?: string | string[] | null
+  benefits?: string | string[] | Benefit[] | null
+  ingredients?: string | string[] | Ingredient[] | null
   howToUse?: string | null
-  createdAt: number
+  createdAt: number // Keep as number for backward compatibility with client
   updatedAt: number
 }
 
@@ -29,12 +45,12 @@ export interface CreateProductData {
   originalPrice?: number | null
   discount?: number | null
   category: string
-  needs: string | string[]
+  needs: string | string[] | NeedTag[]
   image: string
   hoverImage: string
   description?: string | null
-  benefits?: string | string[] | null
-  ingredients?: string | string[] | null
+  benefits?: string | string[] | Benefit[] | null
+  ingredients?: string | string[] | Ingredient[] | null
   howToUse?: string | null
 }
 
@@ -47,7 +63,7 @@ export interface CategoryRecord {
   id: string
   name: string
   description?: string | null
-  createdAt: number
+  createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
 
@@ -68,7 +84,7 @@ export interface UserRecord {
   phone?: string | null
   address?: string | null
   role: string
-  createdAt: number
+  createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
 
@@ -85,6 +101,22 @@ export interface UpdateUserData extends Partial<CreateUserData> {
 }
 
 // ==================== Order ====================
+export interface Address {
+  street: string
+  ward?: string | null
+  district?: string | null
+  province?: string | null
+}
+
+export interface OrderItemRecord {
+  productId: string
+  productName: string
+  quantity: number
+  price: number
+  total: number
+}
+
+// Backward compatibility - client web expects this format
 export interface OrderItem {
   id: string
   name: string
@@ -93,6 +125,8 @@ export interface OrderItem {
   image: string
 }
 
+export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
+
 export interface OrderRecord {
   id: string
   orderNumber: string
@@ -100,16 +134,18 @@ export interface OrderRecord {
   customerEmail?: string | null
   customerPhone: string
   userId?: string | null
-  streetAddress: string
+  // Support both formats: embedded Address or flat fields for backward compatibility
+  address?: Address | null
+  streetAddress?: string
   wardName?: string | null
   districtName?: string | null
   provinceName?: string | null
-  status: string
+  status: string | OrderStatus
   paymentMethod: string
-  items: string // JSON string of OrderItem[]
+  items: string | OrderItem[] | OrderItemRecord[] // Support multiple formats
   total: number
   notes?: string | null
-  createdAt: number
+  createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
 
@@ -119,20 +155,22 @@ export interface CreateOrderData {
   customerEmail?: string | null
   customerPhone: string
   userId?: string | null
-  streetAddress: string
+  // Support both formats
+  address?: Address | null
+  streetAddress?: string
   wardName?: string | null
   districtName?: string | null
   provinceName?: string | null
-  status?: string
+  status?: string | OrderStatus
   paymentMethod: string
-  items: string | OrderItem[] // JSON string or array
+  items: string | OrderItem[] | OrderItemRecord[]
   total: number
   notes?: string | null
 }
 
 export interface UpdateOrderData extends Partial<Omit<CreateOrderData, 'items'>> {
   id: string
-  items?: string | OrderItem[]
+  items?: string | OrderItem[] | OrderItemRecord[]
 }
 
 // ==================== Review ====================
@@ -142,7 +180,7 @@ export interface ReviewRecord {
   reviewerName: string
   rating: number
   review: string
-  createdAt: number
+  createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
 
@@ -157,37 +195,9 @@ export interface UpdateReviewData extends Partial<CreateReviewData> {
   id: string
 }
 
-// ==================== Comment ====================
-export interface CommentRecord {
-  id: string
-  productId: string
-  userId: string
-  userName?: string | null
-  userEmail?: string | null
-  content: string
-  rating: number
-  status: string
-  createdAt: number
-  updatedAt: number
-}
-
-export interface CreateCommentData {
-  productId: string
-  userId: string
-  userName?: string | null
-  userEmail?: string | null
-  content: string
-  rating?: number
-  status?: string
-}
-
-export interface UpdateCommentData extends Partial<CreateCommentData> {
-  id: string
-}
-
 /**
  * Data Source Interface
- * Tất cả data sources phải implement interface này
+ * MongoDB-only implementation
  */
 export interface IDataSource {
   // Products
@@ -224,11 +234,4 @@ export interface IDataSource {
   createReview(data: CreateReviewData): Promise<ReviewRecord>
   updateReview(data: UpdateReviewData): Promise<ReviewRecord>
   deleteReview(id: string): Promise<boolean>
-
-  // Comments
-  getAllComments(): Promise<CommentRecord[]>
-  getCommentById(id: string): Promise<CommentRecord | null>
-  createComment(data: CreateCommentData): Promise<CommentRecord>
-  updateComment(data: UpdateCommentData): Promise<CommentRecord>
-  deleteComment(id: string): Promise<boolean>
 }

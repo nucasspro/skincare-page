@@ -1,61 +1,65 @@
 /**
  * Comment Data Service
- * Service layer với error handling (no caching)
+ * NOTE: Comments are no longer supported in MongoDB schema.
+ * This service returns empty results to maintain backward compatibility with client web.
+ * All comment functionality should use Reviews instead.
  */
 
-import type { CreateCommentData, CommentRecord, UpdateCommentData } from '@/lib/services/data-sources'
-import { dataSource } from '@/lib/services/data-sources'
+// Legacy interfaces for backward compatibility
+export interface CommentRecord {
+  id: string
+  productId: string
+  userId: string
+  userName?: string | null
+  userEmail?: string | null
+  content: string
+  rating: number
+  status: string
+  createdAt: number
+  updatedAt: number
+}
+
+export interface CreateCommentData {
+  productId: string
+  userId: string
+  userName?: string | null
+  userEmail?: string | null
+  content: string
+  rating?: number
+  status?: string
+}
+
+export interface UpdateCommentData extends Partial<CreateCommentData> {
+  id: string
+}
 
 export class CommentDataService {
   async getAllComments(): Promise<CommentRecord[]> {
-    try {
-      console.log('📥 Fetching comments from data source...')
-      const comments = await dataSource.getAllComments()
-      return comments
-    } catch (error) {
-      console.error('Error fetching comments:', error)
-      throw error
-    }
+    // Return empty array - Comments no longer supported, use Reviews instead
+    console.warn('⚠️  Comments are no longer supported. Use Reviews instead.')
+    return []
   }
 
   async getCommentById(id: string): Promise<CommentRecord | null> {
-    try {
-      const comment = await dataSource.getCommentById(id)
-      return comment
-    } catch (error) {
-      console.error(`Error fetching comment ${id}:`, error)
-      throw error
-    }
+    console.warn('⚠️  Comments are no longer supported. Use Reviews instead.')
+    return null
   }
 
   async createComment(data: CreateCommentData): Promise<CommentRecord> {
-    try {
-      const comment = await dataSource.createComment(data)
-      return comment
-    } catch (error) {
-      console.error('Error creating comment:', error)
-      throw error
-    }
+    throw new Error(
+      'Comments are no longer supported in MongoDB schema. Please use Reviews instead.'
+    )
   }
 
   async updateComment(data: UpdateCommentData): Promise<CommentRecord> {
-    try {
-      const comment = await dataSource.updateComment(data)
-      return comment
-    } catch (error) {
-      console.error('Error updating comment:', error)
-      throw error
-    }
+    throw new Error(
+      'Comments are no longer supported in MongoDB schema. Please use Reviews instead.'
+    )
   }
 
   async deleteComment(id: string): Promise<boolean> {
-    try {
-      const result = await dataSource.deleteComment(id)
-      return result
-    } catch (error) {
-      console.error('Error deleting comment:', error)
-      throw error
-    }
+    console.warn('⚠️  Comments are no longer supported. Use Reviews instead.')
+    return false
   }
 }
 

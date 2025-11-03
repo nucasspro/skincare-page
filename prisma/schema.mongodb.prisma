@@ -1,0 +1,133 @@
+// Prisma Schema for MongoDB
+// Sử dụng schema này khi muốn dùng Prisma với MongoDB
+// Copy file này và đổi tên thành schema.prisma, hoặc dùng DATA_SOURCE=mongodb với mongoPrisma client
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model Product {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  tagline      String
+  price        Float
+  originalPrice Float?
+  discount     Float?
+  category     String
+  needs        String   // JSON array stored as string
+  image        String
+  hoverImage   String
+  description  String?
+  benefits     String?  // JSON array stored as string
+  ingredients  String?  // JSON array stored as string
+  howToUse     String?
+  createdAt    Int      @default(0)
+  updatedAt    Int      @default(0)
+
+  comments     Comment[]
+  reviews      Review[]
+
+  @@index([category])
+  @@index([createdAt])
+  @@map("products")
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  createdAt   Int      @default(0)
+  updatedAt   Int      @default(0)
+
+  @@index([name])
+  @@map("categories")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String
+  phone     String?
+  address   String?
+  role      String   @default("user")
+  createdAt Int      @default(0)
+  updatedAt Int      @default(0)
+
+  orders    Order[]
+  comments  Comment[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Order {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber     String   @unique
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  userId          String?  @db.ObjectId
+  user            User?    @relation(fields: [userId], references: [id])
+  streetAddress   String
+  wardName        String?
+  districtName    String?
+  provinceName    String?
+  status          String   @default("pending")
+  paymentMethod   String
+  items           String   // JSON array of OrderItem[]
+  total           Float
+  notes           String?
+  createdAt       Int      @default(0)
+  updatedAt       Int      @default(0)
+
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([status])
+  @@index([customerPhone])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  userId    String   @db.ObjectId
+  userName  String?
+  userEmail String?
+  content   String
+  rating    Int      @default(5)
+  status    String   @default("pending")
+  createdAt Int      @default(0)
+  updatedAt Int      @default(0)
+
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([productId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+model Review {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId    String   @db.ObjectId
+  reviewerName String
+  rating       Float    @default(5)
+  review       String
+  createdAt    Int      @default(0)
+  updatedAt    Int      @default(0)
+
+  product      Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([createdAt])
+  @@map("reviews")
+}

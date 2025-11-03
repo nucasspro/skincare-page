@@ -1,27 +1,16 @@
 /**
- * Data Source Factory
- * Switch giữa Google Sheets và Prisma dựa trên env variable
+ * Data Source - MongoDB Only
+ * Chỉ sử dụng MongoDB, không còn Prisma hay Google Sheets
  */
 
 import type { IDataSource } from '@/lib/services/data-source.interface'
-import { GoogleSheetsDataSource } from './google-sheets'
-import { PrismaDataSource } from './prisma'
-
-// Environment variable để switch data source
-// 'prisma' hoặc 'google-sheets' hoặc undefined (default: prisma)
-const DATA_SOURCE = process.env.DATA_SOURCE || 'prisma'
+import { MongoDataSource } from './mongodb'
 
 /**
- * Get data source instance
+ * Get data source instance - MongoDB only
  */
 export function getDataSource(): IDataSource {
-  switch (DATA_SOURCE) {
-    case 'google-sheets':
-      return new GoogleSheetsDataSource()
-    case 'prisma':
-    default:
-      return new PrismaDataSource()
-  }
+  return new MongoDataSource()
 }
 
 // Export for direct use
@@ -29,5 +18,30 @@ export const dataSource = getDataSource()
 
 // Export types
 export type {
-    CategoryRecord, CommentRecord, CreateCategoryData, CreateCommentData, CreateOrderData, CreateProductData, CreateReviewData, CreateUserData, IDataSource, OrderItem, OrderRecord, ProductRecord, ReviewRecord, UpdateCategoryData, UpdateCommentData, UpdateOrderData, UpdateProductData, UpdateReviewData, UpdateUserData, UserRecord
+  Address,
+  Benefit,
+  CategoryRecord,
+  CreateCategoryData,
+  CreateOrderData,
+  CreateProductData,
+  CreateReviewData,
+  CreateUserData,
+  IDataSource,
+  Ingredient,
+  NeedTag,
+  OrderItem,
+  OrderItemRecord,
+  OrderRecord,
+  OrderStatus,
+  ProductRecord,
+  ReviewRecord,
+  UpdateCategoryData,
+  UpdateOrderData,
+  UpdateProductData,
+  UpdateReviewData,
+  UpdateUserData,
+  UserRecord,
 } from '@/lib/services/data-source.interface'
+
+// Export MongoDB data source for direct use
+export { MongoDataSource } from './mongodb'

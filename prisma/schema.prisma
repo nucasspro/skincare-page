@@ -1,101 +1,125 @@
-// Prisma Schema
-// Learn more: https://pris.ly/d/prisma-schema
-
+// Prisma Schema for MongoDB - Best Practices
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
 }
 
+// ============ COMPOSITE TYPES (MongoDB) ============
+
+type Benefit {
+  title   String
+  description String?
+}
+
+type Ingredient {
+  name    String
+  percentage Float?
+}
+
+type NeedTag {
+  id    String
+  name  String
+}
+
+type OrderItem {
+  productId String @db.ObjectId
+  productName String
+  quantity  Int
+  price     Float
+  total     Float
+}
+
+// ============ MODELS ============
+
 model Product {
-  id           String   @id @default(cuid())
-  name         String
-  tagline      String
-  price        Float
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  tagline       String
+  price         Float
   originalPrice Float?
-  discount     Float?
-  category     String
-  needs        String   // JSON array stored as TEXT
-  image        String
-  hoverImage   String
-  description  String?  // Rich text HTML content
-  benefits     String?  // JSON array stored as TEXT
-  ingredients  String?  // JSON array stored as TEXT
-  howToUse     String?
-  createdAt    Int      @default(0)
-  updatedAt    Int      @default(0)
+  discount      Float?
+  category      String
 
-  comments     Comment[]
-  reviews      Review[]
+  // Array of objects thay vì String
+  needs         NeedTag[]
+  benefits      Benefit[]
+  ingredients   Ingredient[]
 
+  image         String
+  hoverImage    String
+  description   String?
+  howToUse      String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  reviews       Review[]
+
+  // Chỉ index những field thường query
+  // Note: @unique on 'name' already creates an index, no need for @@index([name])
   @@index([category])
   @@index([createdAt])
   @@map("products")
 }
 
 model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  createdAt   Int      @default(0)
-  updatedAt   Int      @default(0)
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([name])
   @@map("categories")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  phone     String?
-  address   String?
-  role      String   @default("user")
-  createdAt Int      @default(0)
-  updatedAt Int      @default(0)
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String   @unique
+  name          String
+  phone         String?
+  address       String?
+  role          String   @default("user")
 
-  orders    Order[]
-  comments  Comment[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([email])
-  @@index([role])
+  orders        Order[]
+
+  // Note: @unique on 'email' already creates an index, no need for @@index([email])
   @@map("users")
 }
 
 model Order {
-  id              String   @id @default(cuid())
-  orderNumber     String   @unique  // ORD-12345678
-
-  // Customer Info (for guest checkout)
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber     String      @unique
   customerName    String
   customerEmail   String?
   customerPhone   String
 
-  // Optional User ID (if logged in)
-  userId          String?
-  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?     @db.ObjectId
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  // Address Details
-  streetAddress   String
-  wardName        String?
-  districtName    String?
-  provinceName    String?
+  // Address as embedded object
+  address         Address?
 
-  // Order Details
-  status          String   @default("pending")  // pending, confirmed, shipping, delivered, cancelled
-  paymentMethod   String   // cod, bank
-  items           String   // JSON array of OrderItem[]
+  // Status
+  status          OrderStatus @default(pending)
+  paymentMethod   String
+
+  // Array of order items (embedded)
+  items           OrderItem[]
+
   total           Float
   notes           String?
 
-  // Timestamps
-  createdAt       Int      @default(0)
-  updatedAt       Int      @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  @@index([orderNumber])
+  // Note: @unique on 'orderNumber' already creates an index, no need for @@index([orderNumber])
   @@index([userId])
   @@index([status])
   @@index([customerPhone])
@@ -103,40 +127,36 @@ model Order {
   @@map("orders")
 }
 
-model Comment {
-  id        String   @id @default(cuid())
-  productId String
-  userId    String
-  userName  String?
-  userEmail String?
-  content   String
-  rating    Int      @default(5)
-  status    String   @default("pending")
-  createdAt Int      @default(0)
-  updatedAt Int      @default(0)
+type Address {
+  street    String
+  ward      String?
+  district  String?
+  province  String?
+}
 
-  product   Product  @relation(fields: [productId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@index([productId])
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@map("comments")
+enum OrderStatus {
+  pending
+  confirmed
+  shipped
+  delivered
+  cancelled
+  refunded
 }
 
 model Review {
-  id           String   @id @default(cuid())
-  productId    String
-  reviewerName String
-  rating       Float    @default(5)
-  review       String
-  createdAt    Int      @default(0)
-  updatedAt    Int      @default(0)
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String   @db.ObjectId
+  reviewerName  String
+  rating        Float    @default(5)
+  review        String
 
-  product      Product  @relation(fields: [productId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
+  @@index([rating])
   @@index([createdAt])
   @@map("reviews")
 }

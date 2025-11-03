@@ -115,6 +115,19 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Admin palette colors - only scoped to admin routes */
+[data-admin] {
+  --admin-taupe: #C9C6BF;
+  --admin-beige: #D7CEC9;
+  --admin-cool-gray: #D4D5D0;
+  --admin-neutral-gray: #D3D3D3;
+  --admin-lavender: #D9DCE3;
+
+  /* Admin hover colors - for interactive elements */
+  --admin-hover-bg: rgba(215, 206, 201, 0.2);
+  /* 20% opacity of beige */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -257,4 +270,10 @@ select::-webkit-scrollbar-thumb:hover {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Disable Dialog Animations */
+[data-radix-dialog-content] {
+  animation: none !important;
+  transition: none !important;
 }

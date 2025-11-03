@@ -191,10 +191,12 @@ export default function ProductsPage() {
 
         {/* Dialog for Form */}
         <Dialog open={showForm} onOpenChange={handleDialogChange}>
-          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white">
-            <DialogHeader className="border-b border-[var(--admin-neutral-gray)]/50 pb-4 bg-[var(--admin-lavender)]/20 px-6 -mx-6 -mt-6 mb-4 py-4">
-              <DialogTitle className="text-lg font-semibold text-neutral-900">
-                {isViewMode ? 'Chi tiết sản phẩm' : isEditMode ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+          <DialogContent
+            className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border-2 border-[var(--admin-neutral-gray)]/30"
+          >
+            <DialogHeader className="border-b border-[var(--admin-neutral-gray)]/50 pb-4 bg-gradient-to-r from-[var(--admin-lavender)]/20 via-[var(--admin-lavender)]/15 to-transparent px-6 -mx-6 -mt-6 mb-4 py-4 rounded-t-2xl">
+              <DialogTitle className="text-lg font-semibold text-neutral-900 flex items-center gap-2">
+                {isViewMode ? '📋 Chi tiết sản phẩm' : isEditMode ? '✏️ Chỉnh sửa sản phẩm' : '➕ Thêm sản phẩm mới'}
               </DialogTitle>
             </DialogHeader>
             <ProductForm
