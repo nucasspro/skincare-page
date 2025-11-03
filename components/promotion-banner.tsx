@@ -1,7 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
 const promotions = [
     "🎁 Nhận ngay mẫu thử miễn phí serum vitamin C - nhận tại đây",
@@ -13,13 +12,7 @@ const promotions = [
 ]
 
 export function PromotionBanner() {
-    const pathname = usePathname()
     const [currentPromotion, setCurrentPromotion] = useState(0)
-
-    // Hide banner on admin pages
-    if (pathname?.startsWith('/admin')) {
-        return null
-    }
 
     useEffect(() => {
         const interval = setInterval(() => {

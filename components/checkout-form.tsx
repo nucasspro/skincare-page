@@ -27,16 +27,16 @@ const InputField = ({
   [key: string]: any
 }) => (
   <div className="group">
-    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2.5">
+      <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-2.5">
       {Icon && (
-        <Icon className="w-4 h-4 text-gray-500 group-focus-within:text-gray-900 transition-colors duration-200" />
+        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-focus-within:text-gray-900 transition-colors duration-200 flex-shrink-0" />
       )}
       <span className="p-desc text-gray-700">{label}</span>
     </label>
     <input
       type={type}
       {...props}
-      className="w-full px-4 py-3.5 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all duration-200 bg-white hover:border-stone-300 text-gray-900 placeholder:text-stone-400 text-[15px] leading-relaxed shadow-sm focus:shadow-md"
+      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 md:py-3.5 border border-stone-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-all duration-200 bg-white hover:border-stone-300 text-gray-900 placeholder:text-stone-400 text-sm sm:text-[15px] leading-relaxed shadow-sm focus:shadow-md"
       style={{
         fontFamily: "var(--font-inter), sans-serif"
       }}
@@ -199,9 +199,9 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
 
     return (
       <div className="group">
-        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2.5">
+        <label className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-2.5">
           {Icon && (
-            <Icon className={`w-4 h-4 transition-colors duration-200 ${isDisabled ? "text-gray-300" : "text-gray-500 group-focus-within:text-gray-900"
+            <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-200 flex-shrink-0 ${isDisabled ? "text-gray-300" : "text-gray-500 group-focus-within:text-gray-900"
               }`} />
           )}
           <span className="p-desc text-gray-700">{label}</span>
@@ -211,16 +211,16 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
             {...props}
             disabled={isDisabled}
             className={`
-              w-full px-4 py-3.5 
-              border rounded-xl
+              w-full px-3 sm:px-4 py-2.5 sm:py-3 md:py-3.5 
+              border rounded-lg sm:rounded-xl
               bg-white
               text-gray-900
               appearance-none
               cursor-pointer
-              pr-11
+              pr-9 sm:pr-11
               transition-all duration-200
               font-normal
-              text-[15px]
+              text-sm sm:text-[15px]
               leading-relaxed
               ${isDisabled
                 ? "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
@@ -249,21 +249,21 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
 
           {/* Custom dropdown arrow */}
           <div className={`
-            absolute right-3 top-1/2 -translate-y-1/2 
+            absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 
             pointer-events-none
             transition-transform duration-200
             ${isDisabled ? "opacity-30" : "opacity-60"}
             group-focus-within:rotate-180
           `}>
             {fieldLoading ? (
-              <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 animate-spin" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
+              <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500" />
             )}
           </div>
 
           {/* Focus indicator */}
-          <div className="absolute inset-0 rounded-xl ring-0 ring-gray-900/20 group-focus-within:ring-2 transition-all duration-200 pointer-events-none" />
+          <div className="absolute inset-0 rounded-lg sm:rounded-xl ring-0 ring-gray-900/20 group-focus-within:ring-2 transition-all duration-200 pointer-events-none" />
         </div>
       </div>
     )
@@ -275,17 +275,17 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
       {/* Personal Information Section */}
-      <div className="bg-white rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl flex items-center justify-center shadow-sm">
-            <User className="w-5 h-5 text-white" />
+      <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-sm">
+            <User className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 h-heading">Thông tin cá nhân</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 h-heading">Thông tin cá nhân</h3>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           <InputField
             icon={User}
             label="Họ và tên *"
@@ -310,15 +310,15 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
       </div>
 
       {/* Address Information Section */}
-      <div className="bg-white rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl flex items-center justify-center shadow-sm">
-            <MapPin className="w-5 h-5 text-white" />
+      <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 border border-stone-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center shadow-sm">
+            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 h-heading">Địa chỉ giao hàng</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 h-heading">Địa chỉ giao hàng</h3>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           <InputField
             icon={Building2}
             label="Số nhà, tên đường *"
@@ -329,7 +329,7 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
             required
           />
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
             <CustomSelect
               icon={MapPin}
               label="Tỉnh/Thành phố"
@@ -386,20 +386,20 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
 
       {/* Address Preview - Animated */}
       {isAddressComplete && (
-        <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-50 border-2 border-green-200 rounded-2xl p-6 space-y-4 animate-in slide-in-from-bottom-4 fade-in duration-500">
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shadow-sm">
-              <CheckCircle2 className="w-6 h-6 text-white" />
+        <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-50 border-2 border-green-200 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4 animate-in slide-in-from-bottom-4 fade-in duration-500">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-green-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-sm">
+              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
             </div>
-            <div className="space-y-3 flex-1">
-              <p className="text-sm font-bold text-green-900 uppercase tracking-wider tag-small">
+            <div className="space-y-2 sm:space-y-3 flex-1">
+              <p className="text-xs sm:text-sm font-bold text-green-900 uppercase tracking-wider tag-small">
                 Địa chỉ giao hàng đã hoàn tất
               </p>
-              <div className="space-y-2">
-                <p className="text-base text-gray-900 font-semibold p-desc">
+              <div className="space-y-1.5 sm:space-y-2">
+                <p className="text-sm sm:text-base text-gray-900 font-semibold p-desc">
                   {formData.streetAddress}
                 </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-700 p-desc">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-x-2 sm:gap-x-4 gap-y-1 text-xs sm:text-sm text-gray-700 p-desc">
                   <span>
                     <span className="font-semibold">Phường/Xã:</span> {wards.find(w => w.code === formData.wardCode)?.name}
                   </span>
@@ -420,18 +420,18 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
       <button
         type="submit"
         disabled={loading || !isAddressComplete}
-        className="w-full py-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 group relative overflow-hidden"
+        className="w-full py-3 sm:py-3.5 md:py-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white font-bold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 group relative overflow-hidden text-sm sm:text-base"
       >
         <span className="relative z-10 flex items-center gap-2">
           {loading ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               Đang tải...
             </>
           ) : (
             <>
               Tiếp tục thanh toán
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="group-hover:translate-x-1 transition-transform text-base sm:text-lg">→</span>
             </>
           )}
         </span>

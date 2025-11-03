@@ -104,18 +104,20 @@ export function ProductFeature() {
       <div className="mx-auto w-full max-w-7xl relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 md:gap-8">
           {/* Right: Text (desktop) - 50% */}
-          <div className="space-y-4 md:order-2 md:pl-8 lg:pl-12 flex flex-col justify-center">
-            <p className="text-sm text-stone-600 tracking-wide">Bộ sưu tập nổi bật</p>
-            <h3 className="text-3xl md:text-4xl font-light text-gray-900 leading-tight">
+          <div className="space-y-3 sm:space-y-4 md:order-2 md:pl-8 lg:pl-12 flex flex-col justify-center text-center md:text-left">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 leading-tight">
               {featuredProduct.name}
             </h3>
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-              {featuredProduct.tagline}
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed px-4 md:px-0">
+              {featuredProduct.slug === "bright-matte-sunscreen"
+                ? "Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng. Phù hợp với da thường, da dầu,và da nhạy cảm."
+                : featuredProduct.tagline
+              }
             </p>
             <div className="pt-2">
               <Link
                 href={`/product/${featuredProduct.slug}`}
-                className="inline-block px-6 py-2.5 rounded-full border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                className="inline-block px-5 sm:px-6 py-2 sm:py-2.5 rounded-full border border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors text-sm sm:text-base"
               >
                 Mua ngay
               </Link>
@@ -124,7 +126,7 @@ export function ProductFeature() {
 
           {/* Left: Image Layers - parallax xếp chồng - 50% */}
           <div className="relative flex items-center justify-start md:order-1 w-full">
-            <div className="relative w-full h-[440px] md:h-[560px] lg:h-[620px]">
+            <div className="relative w-full h-[300px] sm:h-[380px] md:h-[560px] lg:h-[620px]">
               {/* Render các layer với parallax effect - di chuyển về trung tâm khi scroll */}
               {layerConfigs.map((config, index) => {
                 const { x, y } = getLayerTransform(config.layer)

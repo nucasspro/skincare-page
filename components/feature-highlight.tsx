@@ -40,16 +40,37 @@ export function FeatureHighlight({
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 z-10">
           <div className="max-w-6xl mx-auto w-full">
             <div className="grid grid-cols-3 gap-4 md:gap-8 lg:gap-12 text-center">
-              {memoizedFeatures.map((feature) => (
-                <div key={feature.title} className="flex flex-col items-center justify-center min-w-0 px-2">
-                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white uppercase tracking-wider break-words leading-tight">
-                    {feature.title}
-                  </h3>
-                  <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/95 font-light italic mt-2 break-words">
-                    {feature.value}
-                  </p>
-                </div>
-              ))}
+              {memoizedFeatures.map((feature) => {
+                // Check if value contains star rating (e.g., "5*", "4*")
+                const starMatch = feature.value.match(/(\d+)\*/)
+                const hasStarRating = starMatch !== null
+                
+                return (
+                  <div key={feature.title} className="flex flex-col items-center justify-center min-w-0 px-2">
+                    <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white uppercase tracking-wider break-words leading-tight">
+                      {feature.title}
+                    </h3>
+                    {hasStarRating ? (
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        {Array.from({ length: parseInt(starMatch[1]) }).map((_, i) => (
+                          <span key={i} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-light">
+                            ★
+                          </span>
+                        ))}
+                        {Array.from({ length: 5 - parseInt(starMatch[1]) }).map((_, i) => (
+                          <span key={`empty-${i}`} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/30 font-light">
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/95 font-light italic mt-2 break-words">
+                        {feature.value}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>

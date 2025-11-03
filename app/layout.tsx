@@ -19,9 +19,21 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
-  generator: "v0.app",
+  title: "Cellic đề cao khoa học tử tế và sự chăm sóc phù hợp cho làn da Việt.",
+  description: "Khám phá thành quả 16 năm nghiên cứu y sinh bài bản của Cellic, sản phẩm \"do người Việt, cho làn da Việt\" với công nghệ hiện đại và đảm bảo an toàn, hiệu quả.",
+  keywords: "Cellic, kem chống nắng, chăm sóc da, sản phẩm Việt Nam, skincare, SPF, da Việt",
+  authors: [{ name: "Cellic" }],
+  openGraph: {
+    title: "Cellic đề cao khoa học tử tế và sự chăm sóc phù hợp cho làn da Việt.",
+    description: "Khám phá thành quả 16 năm nghiên cứu y sinh bài bản của Cellic, sản phẩm \"do người Việt, cho làn da Việt\" với công nghệ hiện đại và đảm bảo an toàn, hiệu quả.",
+    type: "website",
+    locale: "vi_VN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cellic đề cao khoa học tử tế và sự chăm sóc phù hợp cho làn da Việt.",
+    description: "Khám phá thành quả 16 năm nghiên cứu y sinh bài bản của Cellic, sản phẩm \"do người Việt, cho làn da Việt\" với công nghệ hiện đại và đảm bảo an toàn, hiệu quả.",
+  },
 }
 
 export default function RootLayout({

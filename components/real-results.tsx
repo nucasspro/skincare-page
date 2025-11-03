@@ -232,11 +232,11 @@ export function RealResults({ productId }: { productId: string }) {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-stone-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 bg-stone-50">
+      <div className="max-w-5xl mx-auto">
 
-        <div className="mb-16 pb-8">
-          <h2 className="text-4xl text-gray-900 mb-8 text-center">
+        <div className="mb-6 sm:mb-8 md:mb-10 pb-3 sm:pb-4 md:pb-5">
+          <h2 className="text-xl sm:text-2xl md:text-3xl text-gray-900 mb-3 sm:mb-4 md:mb-5 text-center">
             {t.productDetail.realResults.customerReviews || "Customer Reviews"}
           </h2>
 
@@ -251,37 +251,37 @@ export function RealResults({ productId }: { productId: string }) {
             {/* Navigation Buttons - Positioned Outside */}
             <button
               onClick={() => { goToPrevReview(); setIsAutoPlaying(false); }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -left-20 md:-left-16 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all cursor-pointer group"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -left-12 md:-left-14 z-10 bg-white rounded-full p-2 sm:p-2.5 shadow-md hover:bg-gray-50 hover:shadow-lg transition-all cursor-pointer group"
               aria-label="Previous reviews"
             >
-              <ChevronLeft className="w-6 h-6 text-gray-900 group-hover:-translate-x-1 transition-transform" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 group-hover:-translate-x-0.5 transition-transform" />
             </button>
 
             <button
               onClick={() => { goToNextReview(); setIsAutoPlaying(false); }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 -right-20 md:-right-16 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all cursor-pointer group"
+              className="absolute right-0 top-1/2 -translate-y-1/2 -right-12 md:-right-14 z-10 bg-white rounded-full p-2 sm:p-2.5 shadow-md hover:bg-gray-50 hover:shadow-lg transition-all cursor-pointer group"
               aria-label="Next reviews"
             >
-              <ChevronRight className="w-6 h-6 text-gray-900 group-hover:translate-x-1 transition-transform" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 group-hover:translate-x-0.5 transition-transform" />
             </button>
 
             {/* Reviews Grid with Animation */}
-            <div className="overflow-hidden px-8 md:px-16 min-h-[320px]">
+            <div className="overflow-hidden px-2 sm:px-4 md:px-6 min-h-[220px] sm:min-h-[240px] md:min-h-[260px]">
               <div
-                className="grid md:grid-cols-3 gap-8 transition-all duration-700 ease-in-out items-stretch"
+                className="grid md:grid-cols-3 gap-3 sm:gap-4 md:gap-5 transition-all duration-700 ease-in-out items-stretch"
                 onMouseEnter={() => setIsAutoPlaying(false)}
                 onMouseLeave={() => setIsAutoPlaying(true)}
               >
                 {getCurrentReviews().map((review) => (
-              <div key={review.id} className={`bg-white rounded-2xl overflow-hidden shadow-sm h-full flex flex-col ${direction === 'next' ? 'animate-slideFromRight' : 'animate-slideFromLeft'}`}>
+              <div key={review.id} className={`bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-sm h-full flex flex-col ${direction === 'next' ? 'animate-slideFromRight' : 'animate-slideFromLeft'}`}>
 
 
                 {/* Review Content */}
-                <div className="p-6 space-y-3 flex flex-col flex-1">
+                <div className="p-3 sm:p-4 md:p-5 space-y-1.5 sm:space-y-2 md:space-y-2.5 flex flex-col flex-1">
                   {renderRatingStars(review.rating)}
-                  <p className="text-stone-700 leading-relaxed flex-1">{review.review}</p>
-                  <div className="flex items-center justify-between text-sm mt-auto">
-                    <span className="font-bold text-gray-900">{review.name}</span>
+                  <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed flex-1">{review.review}</p>
+                  <div className="flex items-center justify-between text-[10px] sm:text-xs md:text-sm mt-auto">
+                    <span className="font-medium sm:font-bold text-gray-900">{review.name}</span>
                     <span className="text-stone-500">{review.date}</span>
                   </div>
                 </div>
@@ -292,15 +292,15 @@ export function RealResults({ productId }: { productId: string }) {
 
             {/* Pagination Dots */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-8 mb-4">
+              <div className="flex justify-center gap-1.5 mt-3 sm:mt-4 md:mt-5 mb-1 sm:mb-2 md:mb-3">
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => { setCurrentReviewIndex(index); setIsAutoPlaying(false); }}
-                    className={`h-2 rounded-full transition-all ${
+                    className={`h-1 sm:h-1.5 rounded-full transition-all ${
                       index === currentReviewIndex
-                        ? 'w-8 bg-gray-900'
-                        : 'w-2 bg-gray-300 hover:bg-gray-400'
+                        ? 'w-4 sm:w-6 bg-gray-900'
+                        : 'w-1 sm:w-1.5 bg-gray-300 hover:bg-gray-400'
                     }`}
                     aria-label={`Go to review page ${index + 1}`}
                   />

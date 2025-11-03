@@ -68,7 +68,7 @@ export function NatureBannerSlider() {
 
   return (
     <div className="w-screen relative -ml-[calc((100vw-100%)/2)] mb-0">
-      <div className="w-full h-[300px] md:h-[400px] overflow-hidden bg-stone-200 relative group">
+      <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] overflow-hidden bg-stone-200 relative group">
         {/* Images */}
         {NATURE_IMAGES.map((image, index) => (
           <img

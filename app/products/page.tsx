@@ -6,12 +6,15 @@ import { Footer } from "@/components/footer"
 import { NatureBannerSlider } from "@/components/nature-banner-slider"
 import Navigation from "@/components/navigation"
 import { NavigationFilterBar } from "@/components/navigation-filter-bar"
-import { ProductCard } from "@/components/product-card"
 import PromoSlider from "@/components/promo-slider"
 import { useCart } from "@/lib/cart-context"
 import { getCategoriesAsObject } from "@/lib/category-service"
 import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/currency-util"
+import { ShoppingCart } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 import { useMemo, useState } from "react"
 
 export default function ProductsPage() {
@@ -32,7 +35,7 @@ export default function ProductsPage() {
     return ProductService.filterProducts({
       category: selectedCategory,
       needs: [],
-      priceRange: [0, 1000],
+      priceRange: [0, 1000000],
     })
   }, [selectedCategory])
 
@@ -103,39 +106,201 @@ export default function ProductsPage() {
         <NatureBannerSlider />
 
         {/* Main Products Section */}
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
-
-
-
+        <div className="w-full py-12">
           {/* Category Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6 lg:px-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
               {selectedCategory === "all"
                 ? "Tất cả sản phẩm"
                 : (categories[selectedCategory] || "Tất cả sản phẩm")}
             </h1>
           </div>
 
-            <NavigationFilterBar
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-      />
+          <NavigationFilterBar
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
 
-          {/* Products Grid - Full width - 4 columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16 w-full">
-            {paginatedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isHovered={hoveredId === product.id}
-                onHover={() => setHoveredId(product.id)}
-                onLeave={() => setHoveredId(null)}
-                onAddToCart={handleAddToCart}
-                addToCartLabel={t.productListing.addToCart}
-                isShowPrice={true}
-              />
-            ))}
+          {/* Products List - Mobile: 1 per row, Desktop: 4 per row with square images */}
+          <div className="space-y-0">
+            {/* Mobile: 1 product per row */}
+            <div className="md:hidden">
+              {paginatedProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="group relative"
+                  onMouseEnter={() => setHoveredId(product.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <Link
+                    href={`/product/${product.slug}`}
+                    className="block"
+                  >
+                    {/* Spacing với nền xám trên mobile */}
+                    {index > 0 && (
+                      <div className="h-[10px] bg-gray-200"></div>
+                    )}
+                    {/* Product Image - Full width, tràn lề màn hình - Ảnh dọc */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-stone-50">
+                      <Image
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-opacity duration-500"
+                        style={{ opacity: hoveredId === product.id ? 0 : 1 }}
+                      />
+                      <Image
+                        src={product.hoverImage || "/placeholder.svg"}
+                        alt={`${product.name} alternate view`}
+                        fill
+                        className="object-cover transition-opacity duration-500"
+                        style={{ opacity: hoveredId === product.id ? 1 : 0 }}
+                      />
+
+                      {/* Add to Cart Button - Shows on Hover - Inside Image Container */}
+                      <div className="absolute inset-x-4 sm:inset-x-6 bottom-4 sm:bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                        <div className="pointer-events-auto max-w-xs">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              handleAddToCart(product)
+                            }}
+                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                            {t.productListing.addToCart}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Product Info - Padding như Facebook */}
+                    <div className="space-y-2 px-4 sm:px-6 py-4 sm:py-5">
+                      <h3
+                        className="text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors"
+                        title={product.name}
+                      >
+                        {product.name}
+                      </h3>
+                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed" title={product.tagline}>
+                        {product.tagline}
+                      </p>
+                      {/* Price display */}
+                      <div className="mt-2">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base sm:text-lg font-medium text-gray-900">
+                              {formatCurrency(product.price)}
+                            </span>
+                            {product.originalPrice && product.originalPrice > product.price && (
+                              <span className="text-sm sm:text-base text-gray-500 line-through">
+                                {formatCurrency(product.originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                          {product.discount && product.discount > 0 && (
+                            <span className="text-xs sm:text-sm font-bold text-white bg-red-500 px-2 py-0.5 rounded-md inline-flex items-center justify-center leading-none">
+                              -{product.discount}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: 4 products per row, square images - Container with max-width */}
+            <div className="hidden md:block">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
+              {paginatedProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="group relative"
+                  onMouseEnter={() => setHoveredId(product.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <Link
+                    href={`/product/${product.slug}`}
+                    className="block"
+                  >
+                    {/* Product Image - Square on desktop */}
+                    <div className="relative w-full aspect-square overflow-hidden bg-stone-50">
+                      <Image
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-opacity duration-500"
+                        style={{ opacity: hoveredId === product.id ? 0 : 1 }}
+                      />
+                      <Image
+                        src={product.hoverImage || "/placeholder.svg"}
+                        alt={`${product.name} alternate view`}
+                        fill
+                        className="object-cover transition-opacity duration-500"
+                        style={{ opacity: hoveredId === product.id ? 1 : 0 }}
+                      />
+
+                      {/* Add to Cart Button - Shows on Hover - Inside Image Container */}
+                      <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                        <div className="pointer-events-auto">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              handleAddToCart(product)
+                            }}
+                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer text-sm"
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                            {t.productListing.addToCart}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="space-y-1.5 mt-4">
+                      <h3
+                        className="text-base lg:text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
+                        title={product.name}
+                      >
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
+                        {product.tagline}
+                      </p>
+                      {/* Price display */}
+                      <div className="mt-2">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm lg:text-base font-medium text-gray-900">
+                              {formatCurrency(product.price)}
+                            </span>
+                            {product.originalPrice && product.originalPrice > product.price && (
+                              <span className="text-xs lg:text-sm text-gray-500 line-through">
+                                {formatCurrency(product.originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                          {product.discount && product.discount > 0 && (
+                            <span className="text-[10px] lg:text-xs font-bold text-white bg-red-500 px-1.5 lg:px-2 py-0.5 rounded-md inline-flex items-center justify-center leading-none">
+                              -{product.discount}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    </Link>
+                  </div>
+                ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Pagination */}

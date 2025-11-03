@@ -19,7 +19,7 @@ export function VideoHero() {
   }, [])
 
   return (
-    <section className="relative w-full h-[1080px] md:h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-[60vh] sm:h-[70vh] md:h-screen overflow-hidden bg-black">
       {/* Background Video full-screen */}
       <video
         ref={videoRef}
@@ -39,18 +39,18 @@ export function VideoHero() {
       <div className="absolute inset-0 z-10">
         <div className="mx-auto h-full w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="h-full flex items-center">
-            <div className="max-w-xl text-white">
-              <h2 className="text-3xl md:text-5xl font-light tracking-tight">
-                <span className="font-air text-white drop-shadow-lg tracking-[0.15em] uppercase text-[2rem] md:text-[3rem] font-light leading-tight">
-                  "BRING BEAUTY"
+            <div className="max-w-xl text-white px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-light tracking-tight">
+                <span className="font-air text-white drop-shadow-lg tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.12em] uppercase text-xl sm:text-[2rem] md:text-[3rem] font-light leading-tight whitespace-nowrap">
+                  "BRIGHT BEAUTY"
                 </span>
               </h2>
-              <p className="mt-4 text-base md:text-lg text-white/85 leading-relaxed">
-                Vẻ đẹp sáng khỏe, tự hào thương hiệu Việt. (slogan)
+              <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/85 leading-relaxed">
+                Vẻ đẹp sáng khỏe, tự hào thương hiệu Việt.
               </p>
               <a
                 href="/products"
-                className="inline-flex items-center mt-8 px-6 py-3 rounded-full bg-white text-gray-900 text-sm md:text-base hover:bg-gray-100 transition-colors"
+                className="inline-flex items-center mt-6 sm:mt-8 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white text-gray-900 text-xs sm:text-sm md:text-base hover:bg-gray-100 transition-colors"
               >
                 Xem thêm
               </a>

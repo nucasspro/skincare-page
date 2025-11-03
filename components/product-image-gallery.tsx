@@ -78,10 +78,10 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
   }, [productImages.length, isAutoPlaying])
 
   return (
-    <div className="space-y-4">
-      {/* Main Image - Responsive ratio: 4/3 on mobile, square on desktop */}
+    <div className="space-y-3 sm:space-y-4">
+      {/* Main Image - Vuông, tràn viền, full width */}
       <div
-        className="relative bg-stone-50 overflow-hidden cursor-zoom-in aspect-[4/3] sm:aspect-square lg:aspect-square"
+        className="relative bg-stone-50 overflow-hidden cursor-zoom-in aspect-square w-full"
         onMouseEnter={() => {
           setIsZoomed(true)
           setIsAutoPlaying(false) // Pause auto-play khi hover
@@ -99,12 +99,12 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
           className={cn("object-cover transition-transform duration-500", isZoomed && "scale-150")}
           priority={selectedImage === 0}
           quality={95}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </div>
 
       {/* Thumbnail Navigation - luôn hiển thị 5 ảnh nhỏ */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-5 gap-2 sm:gap-3 px-4 sm:px-6 lg:px-0">
         {productImages.map((image, index) => (
           <button
             key={index}
@@ -124,9 +124,9 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
               }, 5000)
             }}
             className={cn(
-              "relative aspect-square bg-stone-50 overflow-hidden transition-all",
+              "relative aspect-square bg-stone-50 overflow-hidden transition-all border-2 rounded",
               selectedImage === index
-                ? "border-stone-900 ring-2 ring-stone-900 ring-offset-2"
+                ? "border-stone-900 ring-2 ring-stone-900 ring-offset-1"
                 : "border-transparent hover:border-stone-300",
             )}
           >

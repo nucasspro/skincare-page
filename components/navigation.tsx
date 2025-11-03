@@ -84,7 +84,11 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
             {/* Mobile Menu Button - Left */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 -ml-2 text-gray-700 hover:text-gray-900 transition-colors"
+              className={`md:hidden p-2 -ml-2 transition-colors ${
+                isSticky || !isTransparent
+                  ? "text-gray-700 hover:text-gray-900"
+                  : "text-white hover:text-gray-200 group-hover:text-black"
+              }`}
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
@@ -109,10 +113,6 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
             {/* Desktop Navigation - Right of Logo */}
             <div className="hidden md:flex items-center gap-8 flex-none ml-[50px]">
               <div className="flex items-center gap-8">
-                <Link href="/about" className={menuLinkClass}>
-                  Giới thiệu
-                </Link>
-
                 {/* Products Link */}
                 <Link
                   href="/products"
@@ -162,14 +162,6 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
               }`}
           >
             <div className="py-4 space-y-4 border-t border-gray-200">
-              <Link
-                href="/about"
-                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Giới thiệu
-              </Link>
-
               {/* Products Link */}
               <Link
                 href="/products"
