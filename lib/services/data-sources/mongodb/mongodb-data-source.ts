@@ -4,29 +4,30 @@
  */
 
 import type {
-    Address,
-    Benefit,
-    CategoryRecord,
-    CreateCategoryData,
-    CreateOrderData,
-    CreateProductData,
-    CreateReviewData,
-    CreateUserData,
-    IDataSource,
-    Ingredient,
-    NeedTag,
-    OrderItemRecord,
-    OrderRecord,
-    ProductRecord,
-    ReviewRecord,
-    UpdateCategoryData,
-    UpdateOrderData,
-    UpdateProductData,
-    UpdateReviewData,
-    UpdateUserData,
-    UserRecord
+  Address,
+  Benefit,
+  CategoryRecord,
+  CreateCategoryData,
+  CreateOrderData,
+  CreateProductData,
+  CreateReviewData,
+  CreateUserData,
+  IDataSource,
+  Ingredient,
+  NeedTag,
+  OrderItemRecord,
+  OrderRecord,
+  ProductRecord,
+  ReviewRecord,
+  UpdateCategoryData,
+  UpdateOrderData,
+  UpdateProductData,
+  UpdateReviewData,
+  UpdateUserData,
+  UserRecord
 } from '@/lib/services/data-source.interface'
-import { Collection, Db, MongoClient } from 'mongodb'
+import bcrypt from 'bcryptjs'
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 
 // Global MongoDB client để reuse connection
 const globalForMongo = globalThis as unknown as {
@@ -394,19 +395,73 @@ export class MongoDataSource implements IDataSource {
 
   async getUserById(id: string): Promise<UserRecord | null> {
     const collection = await getCollection<any>('users')
-    let user = await collection.findOne({ _id: id })
+
+    // Try to convert string ID to ObjectId
+    let user = null
+    try {
+      // Try with ObjectId first
+      const objectId = ObjectId.isValid(id) ? new ObjectId(id) : null
+      if (objectId) {
+        user = await collection.findOne({ _id: objectId })
+      }
+    } catch (error) {
+      // Ignore error and try other methods
+    }
+
+    // If not found, try with string _id
+    if (!user) {
+      user = await collection.findOne({ _id: id })
+    }
+
+    // If still not found, try with id field
     if (!user) {
       user = await collection.findOne({ id })
     }
+
     return user ? this.transformUser(user) : null
   }
 
+  async getUserByEmail(email: string): Promise<UserRecord | null> {
+    const collection = await getCollection<any>('users')
+    const user = await collection.findOne({ email })
+    return user ? this.transformUser(user) : null
+  }
+
+  async getUserByEmailWithPassword(email: string): Promise<(UserRecord & { password?: string | null }) | null> {
+    const collection = await getCollection<any>('users')
+    // Trim email
+    const trimmedEmail = email.trim()
+
+    // Try exact match first
+    let user = await collection.findOne({ email: trimmedEmail })
+
+    // If not found, try case-insensitive search
+    if (!user) {
+      user = await collection.findOne({
+        email: { $regex: new RegExp(`^${trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+      })
+    }
+
+    if (!user) return null
+    return {
+      ...this.transformUser(user),
+      password: user.password || null,
+    }
+  }
+
   async createUser(data: CreateUserData): Promise<UserRecord> {
+    // Hash password if provided
+    let hashedPassword: string | null = null
+    if (data.password) {
+      hashedPassword = await bcrypt.hash(data.password, 10)
+    }
+
     const user: any = {
       email: data.email,
       name: data.name,
       phone: data.phone || null,
       address: data.address || null,
+      password: hashedPassword,
       role: data.role || 'user',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -427,25 +482,91 @@ export class MongoDataSource implements IDataSource {
     if (data.address !== undefined) updateData.address = data.address
     if (data.role !== undefined) updateData.role = data.role
 
-    const collection = await getCollection<any>('users')
-    const filter: any = { $or: [{ _id: data.id }, { id: data.id }] }
-    const result = await collection.findOneAndUpdate(
-      filter,
-      { $set: updateData },
-      { returnDocument: 'after' }
-    )
+    // Hash password if provided
+    if (data.password !== undefined) {
+      if (data.password) {
+        updateData.password = await bcrypt.hash(data.password, 10)
+      } else {
+        updateData.password = null
+      }
+    }
 
-    if (!result || !result.value) {
+    const collection = await getCollection<any>('users')
+
+    // Try to convert string ID to ObjectId
+    let filter: any = null
+    try {
+      // Try with ObjectId first
+      if (ObjectId.isValid(data.id)) {
+        filter = { _id: new ObjectId(data.id) }
+        console.log(`[MongoDB] Updating user with ObjectId filter: ${data.id}`)
+      }
+    } catch (error) {
+      console.log(`[MongoDB] ObjectId conversion failed for ${data.id}:`, error)
+    }
+
+    // If ObjectId conversion failed, try with string _id
+    if (!filter) {
+      filter = { $or: [{ _id: data.id }, { id: data.id }] }
+      console.log(`[MongoDB] Updating user with string filter: ${data.id}`)
+    }
+
+    // Check if user exists before updating
+    const existingUser = await collection.findOne(filter)
+    if (!existingUser) {
+      console.log(`[MongoDB] User not found with filter:`, filter)
       throw new Error(`User with id ${data.id} not found`)
     }
 
-    return this.transformUser(result.value)
+    console.log(`[MongoDB] Found user, updating:`, existingUser._id)
+
+    // Use updateOne instead of findOneAndUpdate for better compatibility
+    const updateResult = await collection.updateOne(
+      filter,
+      { $set: updateData }
+    )
+
+    if (updateResult.matchedCount === 0) {
+      console.log(`[MongoDB] Update failed, no user matched for id: ${data.id}`)
+      throw new Error(`User with id ${data.id} not found`)
+    }
+
+    if (updateResult.modifiedCount === 0) {
+      console.log(`[MongoDB] No changes made to user: ${data.id}`)
+    }
+
+    console.log(`[MongoDB] User updated successfully: ${data.id}`)
+
+    // Fetch updated user
+    const updatedUser = await collection.findOne(filter)
+    if (!updatedUser) {
+      console.log(`[MongoDB] Failed to fetch updated user: ${data.id}`)
+      throw new Error(`User with id ${data.id} not found after update`)
+    }
+
+    return this.transformUser(updatedUser)
   }
 
   async deleteUser(id: string): Promise<boolean> {
     try {
       const collection = await getCollection<any>('users')
-      const filter: any = { $or: [{ _id: id }, { id }] }
+
+      // Try to convert string ID to ObjectId
+      let filter: any = null
+      try {
+        // Try with ObjectId first
+        if (ObjectId.isValid(id)) {
+          filter = { _id: new ObjectId(id) }
+        }
+      } catch (error) {
+        // Ignore error and try other methods
+      }
+
+      // If ObjectId conversion failed, try with string _id
+      if (!filter) {
+        filter = { $or: [{ _id: id }, { id }] }
+      }
+
       const result = await collection.deleteOne(filter)
       return result.deletedCount > 0
     } catch (error) {

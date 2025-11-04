@@ -1,4 +1,5 @@
 import { orderDataService } from '@/lib/services/order-data-service'
+import { getCurrentUser, isAdmin } from '@/lib/utils/auth'
 import { NextResponse } from 'next/server'
 
 // GET single order
@@ -7,6 +8,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Check authentication
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const order = await orderDataService.getOrderById(id)
 
@@ -33,6 +43,15 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Check authentication
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { id } = await params
     const body = await request.json()
     const {
@@ -85,6 +104,23 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Check authentication and admin role
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const isUserAdmin = await isAdmin()
+    if (!isUserAdmin) {
+      return NextResponse.json(
+        { error: 'Forbidden: Only admin can delete orders' },
+        { status: 403 }
+      )
+    }
+
     const { id } = await params
     const success = await orderDataService.deleteOrder(id)
 

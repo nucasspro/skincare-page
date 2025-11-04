@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { useCurrentUser } from '@/hooks/use-current-user'
 import { Product } from '@/lib/product-service'
 import { adminProductService } from '@/lib/services/admin'
 import { Plus, RefreshCw } from 'lucide-react'
@@ -19,6 +20,7 @@ import { toast } from 'sonner'
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const { isAdmin, canDelete } = useCurrentUser()
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
@@ -98,6 +100,12 @@ export default function ProductsPage() {
 
   // Handle delete
   const handleDelete = async (id: string) => {
+    // Check if user can delete (only admin can delete)
+    if (!canDelete) {
+      toast.error('Bạn không có quyền xóa sản phẩm')
+      return
+    }
+
     if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return
 
     try {
@@ -187,6 +195,7 @@ export default function ProductsPage() {
           onEdit={handleEdit}
           onDelete={handleDelete}
           onView={handleView}
+          canDelete={canDelete}
         />
 
         {/* Dialog for Form */}

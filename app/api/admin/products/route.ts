@@ -1,8 +1,17 @@
 import { productDataService } from '@/lib/services/product-data-service'
+import { getCurrentUser } from '@/lib/utils/auth'
 import { NextResponse } from 'next/server'
 
 // GET all products (admin)
 export async function GET() {
+  // Check authentication
+  const currentUser = await getCurrentUser()
+  if (!currentUser) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
   try {
     const products = await productDataService.getAllProducts()
 
@@ -27,6 +36,15 @@ export async function GET() {
 
 // POST create new product
 export async function POST(request: Request) {
+  // Check authentication
+  const currentUser = await getCurrentUser()
+  if (!currentUser) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
   try {
     const body = await request.json()
     const {

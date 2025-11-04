@@ -2,6 +2,7 @@
 
 import { ActionButtons } from '@/components/admin/action-buttons'
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { OrderExportDialog, type ExportFormat, type ExportReportType } from '@/components/admin/order-export-dialog'
 import { OrderForm, type OrderFormData } from '@/components/admin/order-form'
 import { Pagination } from '@/components/admin/pagination'
 import { Button } from '@/components/ui/button'
@@ -13,11 +14,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { useCurrentUser } from '@/hooks/use-current-user'
 import { usePagination } from '@/hooks/use-pagination'
 import { ORDER_STATUS_OPTIONS, PAYMENT_METHOD_LABELS_SHORT, getStatusInfo } from '@/lib/constants/order-status'
 import { adminOrderService, type Order } from '@/lib/services/admin/order-service'
 import { formatDate, formatVND } from '@/lib/utils'
-import { Package, RefreshCw, Search, ShoppingCart } from 'lucide-react'
+import { Download, Package, RefreshCw, Search, ShoppingCart } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -29,12 +31,15 @@ const STATUS_OPTIONS = [
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+  const { isAdmin, canDelete } = useCurrentUser()
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [isViewMode, setIsViewMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [exporting, setExporting] = useState(false)
+  const [showExportDialog, setShowExportDialog] = useState(false)
 
   const fetchOrders = async (showToast = false) => {
     try {
@@ -83,6 +88,12 @@ export default function OrdersPage() {
   }
 
   const handleDelete = async (id: string) => {
+    // Check if user can delete (only admin can delete)
+    if (!canDelete) {
+      toast.error('Bạn không có quyền xóa đơn hàng')
+      return
+    }
+
     if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) return
 
     try {
@@ -99,6 +110,75 @@ export default function OrdersPage() {
     setEditingOrder(null)
     setViewingOrder(null)
     setIsViewMode(false)
+  }
+
+  const handleExport = async (params: {
+    reportType: ExportReportType
+    format: ExportFormat
+    startDate?: string
+    endDate?: string
+    status?: string
+  }) => {
+    try {
+      setExporting(true)
+
+      // Build query parameters
+      const queryParams = new URLSearchParams({
+        format: params.format,
+        reportType: params.reportType,
+      })
+
+      // Add date filters if provided
+      if (params.startDate) {
+        queryParams.append('startDate', params.startDate)
+      }
+      if (params.endDate) {
+        queryParams.append('endDate', params.endDate)
+      }
+
+      // Add status filter if provided
+      if (params.status && params.status !== 'all') {
+        queryParams.append('status', params.status)
+      }
+
+      // Fetch export data
+      const response = await fetch(`/api/admin/orders/export?${queryParams.toString()}`)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Export thất bại')
+      }
+
+      // Get filename from Content-Disposition header or generate one
+      const contentDisposition = response.headers.get('Content-Disposition')
+      let filename = `orders-export-${Date.now()}.${params.format === 'json' ? 'json' : params.format === 'xlsx' ? 'xlsx' : 'csv'}`
+
+      if (contentDisposition) {
+        const decodedFilename = decodeURIComponent(contentDisposition.split('filename=')[1]?.replace(/"/g, '') || '')
+        if (decodedFilename) {
+          filename = decodedFilename
+        }
+      }
+
+      // Create blob and download
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+
+      toast.success('Export thành công')
+      setShowExportDialog(false)
+    } catch (error) {
+      console.error('Export error:', error)
+      toast.error(error instanceof Error ? error.message : 'Export thất bại')
+    } finally {
+      setExporting(false)
+    }
   }
 
   const filteredOrders = orders.filter(order => {
@@ -147,16 +227,28 @@ export default function OrdersPage() {
               {orders.length} đơn hàng • Tổng doanh thu: {formatVND(stats.totalRevenue)}
             </p>
           </div>
-          <Button
-            onClick={() => fetchOrders(true)}
-            size="sm"
-            variant="outline"
-            disabled={loading}
-            className="rounded cursor-pointer h-9 px-4 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Làm mới
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowExportDialog(true)}
+              disabled={exporting || loading}
+              className="rounded cursor-pointer h-9 px-4 border-2 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
+            >
+              <Download className={`h-4 w-4 mr-2 ${exporting ? 'animate-spin' : ''}`} />
+              {exporting ? 'Đang xuất...' : 'Xuất báo cáo'}
+            </Button>
+            <Button
+              onClick={() => fetchOrders(true)}
+              size="sm"
+              variant="outline"
+              disabled={loading}
+              className="rounded cursor-pointer h-9 px-4 border-[var(--admin-neutral-gray)]/50 hover:bg-[var(--admin-hover-bg)] disabled:opacity-50 transition-colors"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Làm mới
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -287,7 +379,10 @@ export default function OrdersPage() {
                           <ActionButtons
                             onView={() => handleView(order)}
                             onEdit={() => handleEdit(order)}
-                            onDelete={() => handleDelete(order.id)}
+                            onDelete={canDelete ? () => handleDelete(order.id) : undefined}
+                            disabled={{
+                              delete: !canDelete,
+                            }}
                           />
                         </td>
                         <td className="px-4 py-4 min-w-[150px]">
@@ -363,6 +458,15 @@ export default function OrdersPage() {
             />
           </DialogContent>
         </Dialog>
+
+        {/* Export Dialog */}
+        <OrderExportDialog
+          open={showExportDialog}
+          onOpenChange={setShowExportDialog}
+          onExport={handleExport}
+          exporting={exporting}
+          statusFilter={statusFilter}
+        />
       </div>
     </AdminLayout>
   )

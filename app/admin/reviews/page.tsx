@@ -48,10 +48,14 @@ export default function ReviewsPage() {
   const fetchProducts = async () => {
     try {
       const response = await fetch('/api/products')
+      if (!response.ok) {
+        throw new Error('Không thể tải danh sách sản phẩm')
+      }
       const data = await response.json()
       setProducts(data.data || [])
     } catch (error) {
       console.error('Error fetching products:', error)
+      toast.error(error instanceof Error ? error.message : 'Không thể tải danh sách sản phẩm')
     }
   }
 

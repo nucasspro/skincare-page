@@ -1,9 +1,19 @@
 import { orderDataService } from '@/lib/services/order-data-service'
+import { getCurrentUser, isAdmin } from '@/lib/utils/auth'
 import { NextResponse } from 'next/server'
 
 // GET all orders
 export async function GET() {
   try {
+    // Check authentication
+    const user = await getCurrentUser()
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const orders = await orderDataService.getAllOrders()
     return NextResponse.json({
       data: orders.map(o => ({ ...o, id: String(o.id || '') }))
@@ -20,6 +30,23 @@ export async function GET() {
 // POST create new order
 export async function POST(request: Request) {
   try {
+    // Check authentication and admin role
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const isUserAdmin = await isAdmin()
+    if (!isUserAdmin) {
+      return NextResponse.json(
+        { error: 'Forbidden: Only admin can create orders' },
+        { status: 403 }
+      )
+    }
+
     const body = await request.json()
     const { orderNumber, customerName, customerEmail, customerPhone, userId, streetAddress, wardName, districtName, provinceName, status, paymentMethod, items, total, notes } = body
 

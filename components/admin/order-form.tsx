@@ -294,12 +294,18 @@ export function OrderForm({ order, onSubmit, onCancel, readOnly = false }: Order
                 className="group flex gap-5 p-5 rounded-xl border-2 border-[var(--admin-neutral-gray)]/50 bg-gradient-to-r from-white to-[var(--admin-lavender)]/5 hover:from-[var(--admin-lavender)]/10 hover:to-[var(--admin-beige)]/10 hover:border-[var(--admin-beige)]/70 hover:shadow-md transition-all duration-300"
               >
                 <div className="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden bg-[var(--admin-cool-gray)]/20 border-2 border-[var(--admin-neutral-gray)]/40 group-hover:border-[var(--admin-beige)]/70 transition-all shadow-sm group-hover:shadow-md">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Package2 className="h-8 w-8 text-[var(--admin-cool-gray)]" />
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <p className="text-lg font-bold text-neutral-900 mb-2.5 group-hover:text-neutral-950 transition-colors line-clamp-2">

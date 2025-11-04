@@ -1,12 +1,13 @@
 'use client'
 
+import { ActionButtons } from '@/components/admin/action-buttons'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useCurrentUser } from '@/hooks/use-current-user'
 import { adminUserService, type User } from '@/lib/services/admin'
-import { ActionButtons } from '@/components/admin/action-buttons'
 import { Plus, RefreshCw, Save, Users, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -14,6 +15,7 @@ import { toast } from 'sonner'
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const { currentUser, isAdmin, canCreate, canDelete, refresh: refreshCurrentUser } = useCurrentUser()
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
@@ -21,6 +23,7 @@ export default function UsersPage() {
     name: '',
     phone: '',
     address: '',
+    password: '',
     role: 'user',
   })
 
@@ -50,9 +53,23 @@ export default function UsersPage() {
       return
     }
 
+    // Check if user can create (only admin can create)
+    if (!editingUser && !canCreate) {
+      toast.error('Bạn không có quyền tạo người dùng mới')
+      return
+    }
+
+    // Check if user can edit this profile
+    if (editingUser && !isAdmin && editingUser.id !== currentUser?.id) {
+      toast.error('Bạn chỉ có thể chỉnh sửa thông tin của chính mình')
+      return
+    }
+
     try {
       if (editingUser) {
-        await adminUserService.updateUser(editingUser.id, formData)
+        // For regular users editing themselves, don't send role field
+        const updateData = isAdmin ? formData : { ...formData, role: undefined }
+        await adminUserService.updateUser(editingUser.id, updateData)
         toast.success('Cập nhật người dùng thành công')
       } else {
         await adminUserService.createUser(formData)
@@ -60,18 +77,26 @@ export default function UsersPage() {
       }
       resetForm()
       fetchUsers()
+      refreshCurrentUser() // Refresh current user info in case it was updated
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Không thể lưu người dùng')
     }
   }
 
   const handleEdit = (user: User) => {
+    // Check if user can edit this profile
+    if (!isAdmin && currentUser?.id !== user.id) {
+      toast.error('Bạn chỉ có thể chỉnh sửa thông tin của chính mình')
+      return
+    }
+
     setEditingUser(user)
     setFormData({
       email: user.email,
       name: user.name,
       phone: user.phone || '',
       address: user.address || '',
+      password: '', // Don't populate password for security
       role: user.role,
     })
     setShowForm(true)
@@ -97,6 +122,7 @@ export default function UsersPage() {
       name: '',
       phone: '',
       address: '',
+      password: '',
       role: 'user',
     })
   }
@@ -134,14 +160,16 @@ export default function UsersPage() {
                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 Làm mới
               </Button>
-              <Button
-                onClick={() => setShowForm(true)}
-                variant="outline"
-                className="gap-2 rounded-md bg-[var(--admin-beige)] hover:bg-[var(--admin-beige)]/80 text-neutral-900 border-[var(--admin-beige)]/50 font-medium"
-              >
-                <Plus className="h-4 w-4" />
-                Thêm người dùng
-              </Button>
+              {canCreate && (
+                <Button
+                  onClick={() => setShowForm(true)}
+                  variant="outline"
+                  className="gap-2 rounded-md bg-[var(--admin-beige)] hover:bg-[var(--admin-beige)]/80 text-neutral-900 border-[var(--admin-beige)]/50 font-medium"
+                >
+                  <Plus className="h-4 w-4" />
+                  Thêm người dùng
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -168,6 +196,8 @@ export default function UsersPage() {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="mt-1"
                     required
+                    disabled={!!(editingUser && !isAdmin && editingUser.id === currentUser?.id)}
+                    title={editingUser && !isAdmin && editingUser.id === currentUser?.id ? 'Không thể thay đổi email' : undefined}
                   />
                 </div>
 
@@ -193,17 +223,35 @@ export default function UsersPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="role">Vai trò</Label>
-                  <select
-                    id="role"
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="mt-1 h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
-                  >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
+                  <Label htmlFor="password">
+                    {editingUser ? 'Mật khẩu mới (để trống nếu không đổi)' : 'Mật khẩu'}
+                    {!editingUser && ' *'}
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="mt-1"
+                    required={!editingUser}
+                    placeholder={editingUser ? 'Để trống nếu không đổi mật khẩu' : ''}
+                  />
                 </div>
+
+                {isAdmin && (
+                  <div>
+                    <Label htmlFor="role">Vai trò</Label>
+                    <select
+                      id="role"
+                      value={formData.role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      className="mt-1 h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                )}
 
                 <div className="md:col-span-2">
                   <Label htmlFor="address">Địa chỉ</Label>
@@ -276,6 +324,10 @@ export default function UsersPage() {
                         <ActionButtons
                           onEdit={() => handleEdit(user)}
                           onDelete={() => handleDelete(user.id)}
+                          disabled={{
+                            edit: !isAdmin && currentUser?.id !== user.id,
+                            delete: !canDelete || currentUser?.id === user.id,
+                          }}
                         />
                       </td>
                       <td className="px-4 py-4 min-w-[250px]">

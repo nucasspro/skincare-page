@@ -25,9 +25,10 @@ interface ProductTableItemProps {
   onEdit: (product: Product) => void
   onDelete: (id: string) => void
   onView: (product: Product) => void
+  canDelete?: boolean
 }
 
-function ProductTableItem({ product, onEdit, onDelete, onView }: ProductTableItemProps) {
+function ProductTableItem({ product, onEdit, onDelete, onView, canDelete = true }: ProductTableItemProps) {
   const productData = product as Product & { createdAt?: number }
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
@@ -73,8 +74,9 @@ function ProductTableItem({ product, onEdit, onDelete, onView }: ProductTableIte
             variant="ghost"
             size="icon"
             onClick={(e) => handleButtonClick(e, () => onDelete(product.id))}
-            className="rounded-md h-9 w-9 cursor-pointer bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 transition-all shadow-sm hover:shadow-md"
-            title="Xóa"
+            disabled={!canDelete}
+            className="rounded-md h-9 w-9 cursor-pointer bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-50"
+            title={canDelete ? 'Xóa' : 'Không có quyền xóa'}
           >
             <Trash2 className="h-4 w-4 text-red-600" />
           </Button>
@@ -205,9 +207,13 @@ function ProductCard({ product, onEdit, onDelete, onView }: ProductCardProps) {
                     onClick={(e) => {
                       e.stopPropagation()
                       setShowActions(false)
-                      onDelete(product.id)
+                      if (canDelete) {
+                        onDelete(product.id)
+                      }
                     }}
-                    className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 border-t border-[var(--admin-neutral-gray)]/30"
+                    disabled={!canDelete}
+                    className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 border-t border-[var(--admin-neutral-gray)]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                    title={canDelete ? 'Xóa' : 'Không có quyền xóa'}
                   >
                     <Trash2 className="h-4 w-4" />
                     Xóa
@@ -276,9 +282,10 @@ interface ProductListProps {
   onEdit: (product: Product) => void
   onDelete: (id: string) => void
   onView: (product: Product) => void
+  canDelete?: boolean
 }
 
-export function ProductList({ products, onEdit, onDelete, onView }: ProductListProps) {
+export function ProductList({ products, onEdit, onDelete, onView, canDelete = true }: ProductListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [viewMode, setViewMode] = useState<ViewMode>('table')
@@ -462,6 +469,7 @@ export function ProductList({ products, onEdit, onDelete, onView }: ProductListP
                       onEdit={onEdit}
                       onDelete={onDelete}
                       onView={onView}
+                      canDelete={canDelete}
                     />
                   ))}
                 </tbody>
@@ -493,6 +501,7 @@ export function ProductList({ products, onEdit, onDelete, onView }: ProductListP
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onView={onView}
+                canDelete={canDelete}
               />
             ))}
           </div>

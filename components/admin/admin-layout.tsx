@@ -18,7 +18,7 @@ import {
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { toast, Toaster } from 'sonner'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -212,6 +212,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* Toast notifications */}
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+      />
     </div>
   )
 }

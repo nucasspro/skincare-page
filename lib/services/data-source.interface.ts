@@ -93,6 +93,7 @@ export interface CreateUserData {
   name: string
   phone?: string | null
   address?: string | null
+  password?: string | null // Plain password, will be hashed
   role?: string
 }
 
