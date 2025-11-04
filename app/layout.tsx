@@ -1,5 +1,5 @@
 import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
-import { PromotionBanner } from "@/components/promotion-banner"
+import { PromotionBannerWrapper } from "@/components/promotion-banner-wrapper"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
@@ -46,7 +46,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${Air.variable} ${Fragment.variable} antialiased`} suppressHydrationWarning>
         <ParallaxProviderWrapper>
           <CartProvider>
-            <PromotionBanner />
+            <PromotionBannerWrapper />
             <I18nProvider>{children}</I18nProvider>
             <ScrollToTop />
             {/* <Analytics /> */}

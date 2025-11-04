@@ -60,7 +60,7 @@ function getMongoClient(): MongoClient {
 /**
  * Get MongoDB database instance
  */
-async function getDb(): Promise<Db> {
+export async function getDb(): Promise<Db> {
   const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || globalForMongo.mongoDbName || 'cellic_vn'
 
   if (globalForMongo.mongoDb && globalForMongo.mongoDbName === MONGODB_DB_NAME) {

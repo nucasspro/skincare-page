@@ -10,6 +10,7 @@ import {
   Menu,
   MessageSquare,
   Package,
+  Settings,
   ShoppingCart,
   Users,
   X
@@ -26,6 +27,7 @@ const navigation = [
   { name: 'Người dùng', href: '/admin/users', icon: Users },
   { name: 'Đơn hàng', href: '/admin/orders', icon: ShoppingCart },
   { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
+  { name: 'Cài đặt', href: '/admin/settings', icon: Settings },
 ]
 
 interface AdminLayoutProps {
@@ -46,7 +48,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
       if (response.ok) {
         toast.success('Đăng xuất thành công')
-        router.push('/admin/login')
+        router.push('/admin')
         router.refresh()
       } else {
         toast.error('Đăng xuất thất bại')
@@ -173,32 +175,37 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               )
             })}
           </nav>
+
+          {/* Logout button at bottom */}
+          <div className="px-3 py-4 border-t border-[var(--admin-neutral-gray)]/30">
+            <button
+              onClick={handleLogout}
+              className={cn(
+                'group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-[var(--admin-hover-bg)] transition-colors duration-200 cursor-pointer',
+                sidebarCollapsed && 'justify-center'
+              )}
+              title={sidebarCollapsed ? 'Đăng xuất' : undefined}
+            >
+              <div className="p-1.5 rounded-md bg-red-100 group-hover:bg-red-200 transition-colors">
+                <LogOut className="h-4 w-4 shrink-0 text-red-600 group-hover:text-red-700 transition-colors" />
+              </div>
+              {!sidebarCollapsed && (
+                <span className="truncate">Đăng xuất</span>
+              )}
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main content */}
       <div className={contentPadding}>
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-[var(--admin-neutral-gray)]/50 shadow-sm">
-          <div className="flex items-center justify-between h-16 px-6">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-[var(--admin-cool-gray)] hover:text-neutral-900 p-2 rounded-md hover:bg-[var(--admin-hover-bg)] transition-colors cursor-pointer"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            <div className="flex-1" />
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleLogout}
-                className="group flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:text-neutral-900 hover:bg-[var(--admin-hover-bg)] rounded-lg border border-[var(--admin-neutral-gray)]/30 hover:border-[var(--admin-taupe)]/50 transition-all cursor-pointer"
-              >
-                <LogOut className="h-4 w-4 group-hover:rotate-[-15deg] transition-transform" />
-                <span className="font-medium">Đăng xuất</span>
-              </button>
-            </div>
-          </div>
-        </header>
+        {/* Mobile menu button - floating */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-40 text-[var(--admin-cool-gray)] hover:text-neutral-900 p-2 rounded-md hover:bg-[var(--admin-hover-bg)] transition-colors cursor-pointer bg-white shadow-md"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
 
         {/* Page content */}
         <main className="p-6">

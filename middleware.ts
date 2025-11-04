@@ -26,14 +26,19 @@ function isValidSession(sessionToken: string | undefined): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Protect admin routes
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+  // Allow /admin (login page) - no protection needed
+  if (pathname === '/admin') {
+    return NextResponse.next()
+  }
+
+  // Protect other admin routes (dashboard, products, etc.)
+  if (pathname.startsWith('/admin/') && pathname !== '/admin/login') {
     const sessionToken = request.cookies.get('admin_session')?.value
 
     // Check if session exists and is valid (not expired)
     if (!isValidSession(sessionToken)) {
-      // Redirect to login if no session or expired
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      // Redirect to /admin if no session or expired
+      return NextResponse.redirect(new URL('/admin', request.url))
     }
   }
 

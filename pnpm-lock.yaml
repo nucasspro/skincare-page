@@ -107,6 +107,9 @@ importers:
       '@vercel/analytics':
         specifier: latest
         version: 1.5.0(next@16.0.0(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+      admin-lte:
+        specifier: 4.0.0-rc4
+        version: 4.0.0-rc4
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.0)
@@ -2584,6 +2587,9 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  admin-lte@4.0.0-rc4:
+    resolution: {integrity: sha512-k+ILDKHO6Tn77nMqvQ+wmQoes0Eky/s23jp2P07nUbbILk+7RMnLkCW2jFgiXaO9eFQ2fhmes0LAXJmQbdfpjA==}
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -7803,6 +7809,8 @@ snapshots:
 
   acorn@8.15.0:
     optional: true
+
+  admin-lte@4.0.0-rc4: {}
 
   agent-base@7.1.4:
     optional: true
