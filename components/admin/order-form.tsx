@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ORDER_STATUS_OPTIONS, PAYMENT_METHOD_LABELS, getStatusInfo } from '@/lib/constants/order-status'
 import { Order } from '@/lib/services/admin/order-service'
 import { formatDate, formatVND } from '@/lib/utils'
-import { Calendar, CreditCard, Mail, MapPin, Package2, Phone, Save, ShoppingBag, User, X } from 'lucide-react'
+import { Calendar, CreditCard, Edit, Mail, MapPin, Package2, Phone, Save, ShoppingBag, User, X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
@@ -185,7 +185,7 @@ export function OrderForm({ order, onSubmit, onCancel, readOnly = false }: Order
     order.provinceName
   ].filter(Boolean).join(', ')
 
-  const statusInfo = getStatusInfo(order.status)
+  const statusInfo = getStatusInfo(formData.status)
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" data-admin>
@@ -203,9 +203,29 @@ export function OrderForm({ order, onSubmit, onCancel, readOnly = false }: Order
                 <p className="text-sm text-neutral-600 font-medium">Đơn hàng • {formatDate(order.createdAt)}</p>
               </div>
             </div>
-            <div className={`px-4 py-2 rounded-lg text-sm font-bold shadow-sm ${statusInfo.color} backdrop-blur-sm bg-white/60 border-2 border-white/40`}>
-              {statusInfo.label}
-            </div>
+            {!readOnly ? (
+              <div className="flex items-center gap-2">
+                <Edit className="h-4 w-4 text-neutral-600" />
+                <div className={`relative rounded-lg shadow-sm border-2 border-white/40 ${statusInfo.color}`}>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="px-4 py-2 rounded-lg text-sm font-bold backdrop-blur-sm bg-transparent cursor-pointer transition-all appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 pr-8"
+                    style={{ backgroundColor: 'transparent' }}
+                  >
+                    {ORDER_STATUS_OPTIONS.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            ) : (
+              <div className={`px-4 py-2 rounded-lg text-sm font-bold shadow-sm ${statusInfo.color} backdrop-blur-sm bg-white/60 border-2 border-white/40`}>
+                {statusInfo.label}
+              </div>
+            )}
           </div>
         </div>
 
@@ -352,7 +372,10 @@ export function OrderForm({ order, onSubmit, onCancel, readOnly = false }: Order
             {/* Status */}
             <div>
               <Label htmlFor="status" className="text-sm font-bold text-neutral-900 mb-3 block uppercase tracking-wide">
-                Trạng thái đơn hàng <span className="text-red-500">*</span>
+                <div className="flex items-center gap-2">
+                  <span>Trạng thái đơn hàng <span className="text-red-500">*</span></span>
+                  <Edit className="h-4 w-4 text-neutral-500" />
+                </div>
               </Label>
               <select
                 id="status"
@@ -395,7 +418,8 @@ export function OrderForm({ order, onSubmit, onCancel, readOnly = false }: Order
               </Button>
               <Button
                 type="submit"
-                className="flex-1 gap-2 rounded-xl bg-gradient-to-r from-[var(--admin-beige)] to-[var(--admin-taupe)] hover:from-[var(--admin-beige)]/90 hover:to-[var(--admin-taupe)]/90 text-neutral-900 border-0 shadow-md hover:shadow-lg h-12 text-sm font-bold cursor-pointer transition-all"
+                variant="outline"
+                className="flex-1 rounded-xl border-2 border-[var(--admin-neutral-gray)]/60 text-neutral-700 hover:bg-[var(--admin-hover-bg)] hover:border-[var(--admin-cool-gray)]/70 shadow-sm hover:shadow-md h-12 text-sm font-bold cursor-pointer transition-all"
               >
                 <Save className="h-4 w-4" />
                 Cập nhật đơn hàng

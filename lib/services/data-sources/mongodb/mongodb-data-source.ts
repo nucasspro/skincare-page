@@ -141,6 +141,58 @@ function ingredientsToClientFormat(ingredients: any): string | string[] | null {
 }
 
 export class MongoDataSource implements IDataSource {
+  // ==================== Private Helper Methods ====================
+
+  /**
+   * Build MongoDB filter for ID queries, handling ObjectId conversion
+   * Tries ObjectId first, then falls back to string _id and id field
+   */
+  private buildIdFilter(id: string): any {
+    try {
+      if (ObjectId.isValid(id)) {
+        return { _id: new ObjectId(id) }
+      }
+    } catch (error) {
+      // Ignore error and try other methods
+    }
+    return { $or: [{ _id: id }, { id }] }
+  }
+
+  /**
+   * Update entity and fetch updated document
+   * Handles ObjectId conversion and ensures document is found
+   */
+  private async updateAndFetch<T>(
+    collection: Collection<any>,
+    id: string,
+    updateData: any,
+    transformFn: (doc: any) => T,
+    entityName: string
+  ): Promise<T> {
+    const filter = this.buildIdFilter(id)
+
+    // Check if entity exists before updating
+    const existing = await collection.findOne(filter)
+    if (!existing) {
+      throw new Error(`${entityName} with id ${id} not found`)
+    }
+
+    // Update the document
+    const updateResult = await collection.updateOne(filter, { $set: updateData })
+
+    if (updateResult.matchedCount === 0) {
+      throw new Error(`${entityName} with id ${id} not found`)
+    }
+
+    // Fetch updated document
+    const updated = await collection.findOne(filter)
+    if (!updated) {
+      throw new Error(`${entityName} with id ${id} not found after update`)
+    }
+
+    return transformFn(updated)
+  }
+
   // ==================== Products ====================
   async getAllProducts(): Promise<ProductRecord[]> {
     const collection = await getCollection<any>('products')
@@ -266,18 +318,7 @@ export class MongoDataSource implements IDataSource {
     if (data.howToUse !== undefined) updateData.howToUse = data.howToUse
 
     const collection = await getCollection<any>('products')
-    const filter: any = { $or: [{ _id: data.id }, { id: data.id }] }
-    const result = await collection.findOneAndUpdate(
-      filter,
-      { $set: updateData },
-      { returnDocument: 'after' }
-    )
-
-    if (!result || !result.value) {
-      throw new Error(`Product with id ${data.id} not found`)
-    }
-
-    return this.transformProduct(result.value)
+    return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformProduct(doc), 'Product')
   }
 
   async deleteProduct(id: string): Promise<boolean> {
@@ -350,18 +391,7 @@ export class MongoDataSource implements IDataSource {
     if (data.description !== undefined) updateData.description = data.description
 
     const collection = await getCollection<any>('categories')
-    const filter: any = { $or: [{ _id: data.id }, { id: data.id }] }
-    const result = await collection.findOneAndUpdate(
-      filter,
-      { $set: updateData },
-      { returnDocument: 'after' }
-    )
-
-    if (!result || !result.value) {
-      throw new Error(`Category with id ${data.id} not found`)
-    }
-
-    return this.transformCategory(result.value)
+    return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformCategory(doc), 'Category')
   }
 
   async deleteCategory(id: string): Promise<boolean> {
@@ -597,10 +627,29 @@ export class MongoDataSource implements IDataSource {
 
   async getOrderById(id: string): Promise<OrderRecord | null> {
     const collection = await getCollection<any>('orders')
-    let order = await collection.findOne({ _id: id })
+
+    // Try to convert string ID to ObjectId
+    let order = null
+    try {
+      // Try with ObjectId first
+      const objectId = ObjectId.isValid(id) ? new ObjectId(id) : null
+      if (objectId) {
+        order = await collection.findOne({ _id: objectId })
+      }
+    } catch (error) {
+      // Ignore error and try other methods
+    }
+
+    // If not found, try with string _id
+    if (!order) {
+      order = await collection.findOne({ _id: id })
+    }
+
+    // If still not found, try with id field
     if (!order) {
       order = await collection.findOne({ id })
     }
+
     return order ? this.transformOrder(order) : null
   }
 
@@ -746,18 +795,7 @@ export class MongoDataSource implements IDataSource {
     if (data.notes !== undefined) updateData.notes = data.notes
 
     const collection = await getCollection<any>('orders')
-    const filter: any = { $or: [{ _id: data.id }, { id: data.id }] }
-    const result = await collection.findOneAndUpdate(
-      filter,
-      { $set: updateData },
-      { returnDocument: 'after' }
-    )
-
-    if (!result || !result.value) {
-      throw new Error(`Order with id ${data.id} not found`)
-    }
-
-    return this.transformOrder(result.value)
+    return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformOrder(doc), 'Order')
   }
 
   async deleteOrder(id: string): Promise<boolean> {
@@ -853,18 +891,7 @@ export class MongoDataSource implements IDataSource {
     if (data.review !== undefined) updateData.review = data.review
 
     const collection = await getCollection<any>('reviews')
-    const filter: any = { $or: [{ _id: data.id }, { id: data.id }] }
-    const result = await collection.findOneAndUpdate(
-      filter,
-      { $set: updateData },
-      { returnDocument: 'after' }
-    )
-
-    if (!result || !result.value) {
-      throw new Error(`Review with id ${data.id} not found`)
-    }
-
-    return this.transformReview(result.value)
+    return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformReview(doc), 'Review')
   }
 
   async deleteReview(id: string): Promise<boolean> {

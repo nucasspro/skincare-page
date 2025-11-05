@@ -1,11 +1,11 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { getStatusInfo } from '@/lib/constants/order-status'
 import { formatDate, formatVND } from '@/lib/utils'
 import { RefreshCw, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 interface RecentOrder {
   id: string
@@ -60,17 +60,7 @@ export function RecentOrders({ orders, loading, onRefresh }: RecentOrdersProps) 
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-medium text-neutral-900">{order.orderNumber}</span>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            statusInfo.badgeClass === 'bg-success'
-                              ? 'bg-green-100 text-green-700'
-                              : statusInfo.badgeClass === 'bg-warning'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : statusInfo.badgeClass === 'bg-danger'
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}
-                        >
+                        <span className={`text-xs px-2 py-1 rounded-full ${statusInfo.color}`}>
                           {statusInfo.label}
                         </span>
                       </div>
@@ -101,4 +91,3 @@ export function RecentOrders({ orders, loading, onRefresh }: RecentOrdersProps) 
     </Card>
   )
 }
-
