@@ -1,11 +1,11 @@
 "use client"
 
-import { CheckCircle2, Package, MapPin, CreditCard, Calendar, Mail, Phone, Copy, Check, User } from "lucide-react"
 import { CartItem, useCart } from "@/lib/cart-context"
 import { formatCurrency } from "@/lib/currency-util"
+import { Calendar, Check, CheckCircle2, Copy, CreditCard, MapPin, Package, Phone, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useMemo, useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 interface OrderConfirmationProps {
     orderData: {
@@ -42,7 +42,7 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
             removeItems(itemIdsToRemove)
             hasClearedCart.current = true
 
-            // Lưu đơn hàng vào Google Sheets
+            // Lưu đơn hàng vào Google Sheets và Database
             const saveOrderToSheets = async () => {
                 try {
                     const orderPayload = {
@@ -60,7 +60,8 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
                         createdAt: new Date().toISOString()
                     }
 
-                    const response = await fetch("/api/orders/save-to-sheets", {
+                    // Save to Google Sheets (existing)
+                    const sheetsResponse = await fetch("/api/orders/save-to-sheets", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -68,12 +69,12 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
                         body: JSON.stringify(orderPayload),
                     })
 
-                    const result = await response.json()
-                    
-                    if (result.success) {
-                        console.log("Order saved to Google Sheets:", result)
+                    const sheetsResult = await sheetsResponse.json()
+
+                    if (sheetsResult.success) {
+                        console.log("Order saved to Google Sheets:", sheetsResult)
                     } else {
-                        console.warn("Failed to save order to Google Sheets:", result)
+                        console.warn("Failed to save order to Google Sheets:", sheetsResult)
                     }
                 } catch (error) {
                     console.error("Error saving order to Google Sheets:", error)
@@ -81,7 +82,48 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
                 }
             }
 
-            saveOrderToSheets()
+            const saveOrderToDb = async () => {
+                try {
+                    const orderPayload = {
+                        orderNumber,
+                        name: orderData.name,
+                        phone: orderData.phone,
+                        streetAddress: orderData.streetAddress,
+                        provinceName: orderData.provinceName,
+                        districtName: orderData.districtName,
+                        wardName: orderData.wardName,
+                        paymentMethod: orderData.paymentMethod,
+                        items: orderedItems,
+                        totalPrice: getTotalPrice,
+                        totalItems: getTotalItems,
+                        createdAt: new Date().toISOString()
+                    }
+
+                    // Save to Database (new)
+                    const dbResponse = await fetch("/api/orders/save-to-db", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(orderPayload),
+                    })
+
+                    const dbResult = await dbResponse.json()
+
+                    if (dbResult.success) {
+                        console.log("Order saved to Database:", dbResult)
+                    } else {
+                        console.warn("Failed to save order to Database:", dbResult)
+                    }
+                } catch (error) {
+                    console.error("Error saving order to Database:", error)
+                    // Không hiển thị lỗi cho user để không làm gián đoạn checkout flow
+                }
+            }
+
+            // Save to both places in parallel
+            // Promise.all([saveOrderToSheets(), saveOrderToDb()])
+            Promise.all([saveOrderToDb()])
         }
     }, [orderedItems, removeItems, orderNumber, orderData, getTotalPrice, getTotalItems])
 
@@ -325,4 +367,3 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
         </div>
     )
 }
-

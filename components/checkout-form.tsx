@@ -1,7 +1,7 @@
 "use client"
 
 import { getDistricts, getProvinces, getWards, type District, type Province, type Ward } from "@/lib/location-service"
-import { Building2, ChevronDown, Loader2, MapPin, Phone, User, CheckCircle2 } from "lucide-react"
+import { Building2, CheckCircle2, ChevronDown, Loader2, MapPin, Phone, User } from "lucide-react"
 import { useEffect, useState } from "react"
 import { CustomSelect } from "./custom-select"
 
@@ -144,6 +144,10 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
     const { name, value } = e.target
     if (["provinceCode", "districtCode", "wardCode"].includes(name)) {
       setFormData((prev) => ({ ...prev, [name]: value ? parseInt(value) : null }))
+    } else if (name === "phone") {
+      // Only allow numbers for phone
+      const numbersOnly = value.replace(/\D/g, "")
+      setFormData((prev) => ({ ...prev, [name]: numbersOnly }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -211,7 +215,7 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
             {...props}
             disabled={isDisabled}
             className={`
-              w-full px-3 sm:px-4 py-2.5 sm:py-3 md:py-3.5 
+              w-full px-3 sm:px-4 py-2.5 sm:py-3 md:py-3.5
               border rounded-lg sm:rounded-xl
               bg-white
               text-gray-900
@@ -249,7 +253,7 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
 
           {/* Custom dropdown arrow */}
           <div className={`
-            absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 
+            absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2
             pointer-events-none
             transition-transform duration-200
             ${isDisabled ? "opacity-30" : "opacity-60"}
@@ -304,6 +308,9 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
             value={formData.phone}
             onChange={handleChange}
             placeholder="0912345678"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={11}
             required
           />
         </div>
