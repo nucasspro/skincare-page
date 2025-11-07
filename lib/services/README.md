@@ -90,6 +90,6 @@ Service tự động handle errors và throw với message rõ ràng.
 ## 💡 Best Practices
 
 1. **Luôn dùng `productDataService`** thay vì truy cập trực tiếp data source
-2. **MongoDB Native Driver**: Sử dụng native MongoDB driver để tối ưu performance
+2. **MongoDB Native Driver**: Sử dụng thư viện `mongodb` chính thức (không qua ORM như Prisma/Mongoose) để giao tiếp trực tiếp với MongoDB, giúp tối ưu performance và giảm overhead
 3. **Error Handling**: Service layer tự động handle errors và throw với message rõ ràng
 4. **Type Safety**: Sử dụng TypeScript interfaces để đảm bảo type safety

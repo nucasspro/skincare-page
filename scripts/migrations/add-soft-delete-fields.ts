@@ -31,7 +31,6 @@ async function migrate() {
       { name: 'categories', description: 'Categories' },
       { name: 'orders', description: 'Orders' },
       { name: 'reviews', description: 'Reviews' },
-      { name: 'comments', description: 'Comments' },
     ]
 
     for (const { name, description } of collections) {
@@ -85,4 +84,3 @@ async function migrate() {
 }
 
 migrate()
-
