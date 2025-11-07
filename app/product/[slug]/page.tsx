@@ -7,8 +7,7 @@ import { ProductInfo } from "@/components/product-info"
 import { ProductQA } from "@/components/product-qa"
 import { RealResults } from "@/components/real-results"
 import { SimilarProducts } from "@/components/similar-products"
-import { getProductBySlugFromDB } from "@/lib/product-db-utils"
-import { getProductBySlug } from "@/lib/product-service"
+import { ProductService } from "@/lib/product-service"
 
 // Stable reference để tránh lỗi React children
 const DEFAULT_FEATURE_ITEMS = [
@@ -27,12 +26,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   // Await params in Next.js 15+
   const { slug } = await params
 
-  // Try to fetch from database first, fallback to mock if not found
-  let product = await getProductBySlugFromDB(slug)
-  if (!product) {
-    // Fallback to mock products for comparison
-    product = getProductBySlug(slug) || null
-  }
+  // Fetch product from database
+  const product = await ProductService.getProductBySlug(slug)
   console.log("product", product)
 
   // Chọn feature items dựa trên slug

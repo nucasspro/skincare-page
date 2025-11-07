@@ -34,18 +34,30 @@ export default function ProductsPage() {
   // Get products from database
   const { products: dbProducts, loading: productsLoading } = useProducts()
 
-  // Get all products (from database, fallback to mock for comparison)
+  // Get all products (from database)
   const filteredAndSortedProducts = useMemo(() => {
-    // Use database products if available, otherwise fallback to mock
-    const productsToFilter = dbProducts.length > 0 ? dbProducts : undefined
-    return ProductService.filterProducts(
-      {
-        category: selectedCategory,
-        needs: [],
-        priceRange: [0, 1000000],
-      },
-      productsToFilter
-    )
+    // Use database products if available
+    if (dbProducts.length === 0) return []
+
+    let filtered = dbProducts
+
+    // Filter by category
+    if (selectedCategory && selectedCategory !== "all") {
+      const categoryFilter = ProductService.CATEGORY_FILTER_MAP[selectedCategory]
+
+      if (categoryFilter) {
+        // Use mapped filter logic for known category slugs
+        filtered = filtered.filter(categoryFilter)
+      } else {
+        // Standard category filter for other categories
+        filtered = filtered.filter((p) => p.category === selectedCategory)
+      }
+    }
+
+    // Filter by needs (empty array, so no filtering)
+    // Filter by price range (0 to 1000000, so no filtering)
+
+    return filtered
   }, [selectedCategory, dbProducts])
 
   // Pagination

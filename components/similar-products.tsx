@@ -3,7 +3,7 @@
 import { useProduct, useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { formatCurrency } from "@/lib/currency-util"
-import { ProductService } from "@/lib/product-service"
+import type { Product } from "@/lib/product-service"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -14,14 +14,55 @@ interface SimilarProductsProps {
 }
 
 export function SimilarProducts({ productId }: SimilarProductsProps) {
-  const { items, isHydrated, addItem } = useCart()
   const router = useRouter()
+  const { items, isHydrated, addItem } = useCart()
   const { products: allProducts, loading: productsLoading } = useProducts()
   const { product, loading: productLoading } = useProduct(productId)
 
-  // Calculate related products from database using ProductService
+  // Calculate related products from database
   const similarProducts = useMemo(() => {
-    return ProductService.getRelatedProducts(productId, 4, allProducts, product)
+    if (!product || allProducts.length === 0) return []
+
+    const otherProducts = allProducts.filter(p => p.id !== productId)
+
+    if (otherProducts.length === 0) return []
+
+    // Helper function to calculate similarity score
+    const calculateScore = (p: Product): number => {
+      let score = 0
+
+      // Priority 1: Same category and shared needs (highest priority)
+      if (p.category === product.category) {
+        score += 100
+        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        score += sharedNeeds.length * 20 // Each shared need adds 20 points
+      }
+
+      // Priority 3: Different category but shared needs
+      if (p.category !== product.category) {
+        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        score += sharedNeeds.length * 10 // Each shared need adds 10 points
+      }
+
+      return score
+    }
+
+    // Sort by score (highest first) and take limit
+    const sortedProducts = otherProducts
+      .map(p => ({ product: p, score: calculateScore(p) }))
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.product)
+      .slice(0, 4)
+
+    // If we don't have enough products, fill with any remaining products
+    if (sortedProducts.length < 4) {
+      const remaining = otherProducts.filter(
+        p => !sortedProducts.some(sp => sp.id === p.id)
+      )
+      sortedProducts.push(...remaining.slice(0, 4 - sortedProducts.length))
+    }
+
+    return sortedProducts
   }, [product, allProducts, productId])
 
   const loading = productsLoading || productLoading
@@ -59,7 +100,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-        {similarProducts.map((product) => (
+        {similarProducts.map((product: Product) => (
           <div key={product.id} className="group space-y-2 sm:space-y-3 md:space-y-4 w-full flex flex-col">
             <Link href={`/product/${product.slug}`} className="block w-full flex flex-col">
               <div className="relative aspect-square bg-stone-50 rounded-lg sm:rounded-xl overflow-hidden w-full">

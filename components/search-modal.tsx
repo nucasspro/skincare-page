@@ -2,7 +2,8 @@
 
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
-import { searchProducts, type Product } from "@/lib/product-service"
+import { useProducts } from "@/hooks/use-products"
+import type { Product } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/currency-util"
 import { Search, ShoppingCart, X } from "lucide-react"
 import Image from "next/image"
@@ -14,12 +15,17 @@ export function SearchModal() {
     const [searchQuery, setSearchQuery] = useState("")
     const { t } = useI18n()
     const { addItem, items, isHydrated } = useCart()
+    const { products, loading: productsLoading } = useProducts()
 
-    // Search products in real-time
+    // Search products in real-time from database products
     const searchResults = useMemo(() => {
-        if (!searchQuery.trim()) return []
-        return searchProducts(searchQuery)
-    }, [searchQuery])
+        if (!searchQuery.trim() || productsLoading) return []
+        const lowerQuery = searchQuery.toLowerCase()
+        return products.filter(product =>
+            product.name.toLowerCase().includes(lowerQuery) ||
+            product.tagline.toLowerCase().includes(lowerQuery)
+        )
+    }, [searchQuery, products, productsLoading])
 
     // Close modal when pressing Escape
     useEffect(() => {
