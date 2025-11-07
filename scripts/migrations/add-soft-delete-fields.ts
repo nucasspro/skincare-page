@@ -6,7 +6,7 @@
  */
 
 import 'dotenv/config'
-import { MongoClient, ObjectId } from 'mongodb'
+import { MongoClient } from 'mongodb'
 
 const MONGODB_URI = process.env.MONGODB_URI || ''
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || process.env.MONGODB_URI?.split('/').pop() || ''
