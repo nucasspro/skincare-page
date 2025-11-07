@@ -1,6 +1,6 @@
 # Services Directory Structure
 
-Tổ chức lại thư mục services để tách biệt admin, Prisma và Google Sheets.
+Tổ chức lại thư mục services để tách biệt admin và MongoDB data source.
 
 ## 📁 Cấu trúc
 
@@ -17,15 +17,11 @@ lib/services/
 │
 ├── data-sources/                   # Data source abstraction
 │   ├── data-source.interface.ts    # Interface cho data sources
-│   ├── index.ts                    # Factory để switch data source
+│   ├── index.ts                    # MongoDB data source factory
 │   │
-│   ├── prisma/                     # Prisma implementation
-│   │   ├── prisma-data-source.ts
-│   │   └── index.ts
-│   │
-│   └── google-sheets/              # Google Sheets implementation
-│       ├── google-sheets-service.ts      # Low-level Google Sheets API
-│       ├── google-sheets-data-source.ts  # Data source implementation
+│   └── mongodb/                    # MongoDB implementation
+│       ├── mongodb-client.ts       # MongoDB Prisma client (optional)
+│       ├── mongodb-data-source.ts  # MongoDB native driver implementation
 │       └── index.ts
 │
 ├── product-data-service.ts         # Product service layer (abstraction)
@@ -35,30 +31,17 @@ lib/services/
 ## 🎯 Mục đích
 
 1. **Admin services** (`admin/`): Services cho admin panel
-2. **Data sources** (`data-sources/`): Abstraction layer để switch giữa Prisma và Google Sheets
-3. **Prisma** (`data-sources/prisma/`): Prisma implementation - tất cả code liên quan Prisma
-4. **Google Sheets** (`data-sources/google-sheets/`): Google Sheets implementation - tất cả code liên quan Google Sheets
+2. **Data sources** (`data-sources/`): MongoDB data source abstraction
+3. **MongoDB** (`data-sources/mongodb/`): MongoDB implementation sử dụng native MongoDB driver
 
 ## 🚀 Cách sử dụng
 
-### 1. Switch Data Source
-
-Thêm vào `.env.local`:
-
-```env
-# Sử dụng Prisma (default)
-DATA_SOURCE=prisma
-
-# Hoặc sử dụng Google Sheets
-DATA_SOURCE=google-sheets
-```
-
-### 2. Sử dụng Product Data Service
+### 1. Sử dụng Product Data Service
 
 ```typescript
 import { productDataService } from '@/lib/services/product-data-service'
 
-// Get all products (tự động dùng Prisma hoặc Google Sheets)
+// Get all products (tự động dùng MongoDB)
 const products = await productDataService.getAllProducts()
 
 // Get product by ID
@@ -74,55 +57,31 @@ const updated = await productDataService.updateProduct({...})
 await productDataService.deleteProduct('product-id')
 ```
 
-### 3. Direct Data Source Access
+### 2. Direct Data Source Access
 
 Nếu cần truy cập trực tiếp:
 
 ```typescript
 import { dataSource } from '@/lib/services/data-sources'
 
-// dataSource sẽ tự động chọn Prisma hoặc Google Sheets
-// dựa trên DATA_SOURCE env variable
+// dataSource sử dụng MongoDB
 const products = await dataSource.getAllProducts()
 ```
 
-### 4. Access Prisma hoặc Google Sheets riêng
+### 3. Access MongoDB Data Source trực tiếp
 
 ```typescript
-// Prisma only
-import { PrismaDataSource } from '@/lib/services/data-sources/prisma'
-const prismaSource = new PrismaDataSource()
-const products = await prismaSource.getAllProducts()
-
-// Google Sheets only
-import { GoogleSheetsDataSource } from '@/lib/services/data-sources/google-sheets'
-import { googleSheetsService } from '@/lib/services/data-sources/google-sheets'
-const sheetsSource = new GoogleSheetsDataSource()
-const products = await sheetsSource.getAllProducts()
+import { MongoDataSource } from '@/lib/services/data-sources/mongodb'
+const mongoSource = new MongoDataSource()
+const products = await mongoSource.getAllProducts()
 ```
 
 ## 🔄 Cách hoạt động
 
-1. **Factory Pattern**: `data-sources/index.ts` sẽ tạo instance dựa trên `DATA_SOURCE` env
+1. **MongoDB Only**: `data-sources/index.ts` luôn trả về MongoDB data source
 2. **Service Layer**: `product-data-service.ts` wrap data source với error handling
-3. **Interface**: Tất cả data sources implement `IDataSource` interface
-
-## 📝 Thêm Data Source mới
-
-1. Tạo folder mới trong `data-sources/` (ví dụ: `data-sources/mongodb/`)
-2. Tạo class implement `IDataSource` interface
-3. Thêm vào factory trong `data-sources/index.ts`
-
-```typescript
-// lib/services/data-sources/mongodb/mongodb-data-source.ts
-export class MongoDataSource implements IDataSource {
-  // Implementation
-}
-
-// lib/services/data-sources/index.ts
-case 'mongodb':
-  return new MongoDataSource()
-```
+3. **Interface**: MongoDB data source implement `IDataSource` interface
+4. **Native Driver**: Sử dụng MongoDB native driver để tối ưu performance
 
 ## ⚙️ Error Handling
 
@@ -131,6 +90,6 @@ Service tự động handle errors và throw với message rõ ràng.
 ## 💡 Best Practices
 
 1. **Luôn dùng `productDataService`** thay vì truy cập trực tiếp data source
-2. **Không hardcode data source** trong code, dùng env variable
-3. **Tách biệt Prisma và Google Sheets** vào folders riêng để dễ maintain
-4. **Test với cả hai data sources** trước khi deploy
+2. **MongoDB Native Driver**: Sử dụng native MongoDB driver để tối ưu performance
+3. **Error Handling**: Service layer tự động handle errors và throw với message rõ ràng
+4. **Type Safety**: Sử dụng TypeScript interfaces để đảm bảo type safety
