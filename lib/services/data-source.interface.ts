@@ -183,6 +183,7 @@ export interface ReviewRecord {
   reviewerName: string
   rating: number
   review: string
+  reviewDate: string // Fake date for display (e.g., "2 tuần trước")
   createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
@@ -192,6 +193,7 @@ export interface CreateReviewData {
   reviewerName: string
   rating: number
   review: string
+  reviewDate: string // Fake date for display (e.g., "2 tuần trước")
 }
 
 export interface UpdateReviewData extends Partial<CreateReviewData> {

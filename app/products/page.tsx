@@ -7,11 +7,12 @@ import { NatureBannerSlider } from "@/components/nature-banner-slider"
 import Navigation from "@/components/navigation"
 import { NavigationFilterBar } from "@/components/navigation-filter-bar"
 import PromoSlider from "@/components/promo-slider"
-import { useCart } from "@/lib/cart-context"
 import { useCategoriesAsObject } from "@/hooks/use-categories"
+import { useProducts } from "@/hooks/use-products"
+import { useCart } from "@/lib/cart-context"
+import { formatCurrency } from "@/lib/currency-util"
 import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
-import { formatCurrency } from "@/lib/currency-util"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -30,14 +31,22 @@ export default function ProductsPage() {
   // Get categories from admin service
   const { categories, loading: categoriesLoading } = useCategoriesAsObject()
 
-  // Get all products (no filters)
+  // Get products from database
+  const { products: dbProducts, loading: productsLoading } = useProducts()
+
+  // Get all products (from database, fallback to mock for comparison)
   const filteredAndSortedProducts = useMemo(() => {
-    return ProductService.filterProducts({
-      category: selectedCategory,
-      needs: [],
-      priceRange: [0, 1000000],
-    })
-  }, [selectedCategory])
+    // Use database products if available, otherwise fallback to mock
+    const productsToFilter = dbProducts.length > 0 ? dbProducts : undefined
+    return ProductService.filterProducts(
+      {
+        category: selectedCategory,
+        needs: [],
+        priceRange: [0, 1000000],
+      },
+      productsToFilter
+    )
+  }, [selectedCategory, dbProducts])
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedProducts.length / productsPerPage)

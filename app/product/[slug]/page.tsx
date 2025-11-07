@@ -7,6 +7,7 @@ import { ProductInfo } from "@/components/product-info"
 import { ProductQA } from "@/components/product-qa"
 import { RealResults } from "@/components/real-results"
 import { SimilarProducts } from "@/components/similar-products"
+import { getProductBySlugFromDB } from "@/lib/product-db-utils"
 import { getProductBySlug } from "@/lib/product-service"
 
 // Stable reference để tránh lỗi React children
@@ -25,8 +26,15 @@ const BRIGHT_MATTE_FEATURE_ITEMS = [
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   // Await params in Next.js 15+
   const { slug } = await params
-  const product = getProductBySlug(slug)
-  
+
+  // Try to fetch from database first, fallback to mock if not found
+  let product = await getProductBySlugFromDB(slug)
+  if (!product) {
+    // Fallback to mock products for comparison
+    product = getProductBySlug(slug) || null
+  }
+  console.log("product", product)
+
   // Chọn feature items dựa trên slug
   const featureItems = slug === "bright-matte-sunscreen" ? BRIGHT_MATTE_FEATURE_ITEMS : DEFAULT_FEATURE_ITEMS
 
@@ -62,7 +70,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
           </div>
-          
+
           {/* Desktop: Container with max-width, nhỏ gọn hơn */}
           <div className="hidden lg:block">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,4 +117,3 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     </div>
   )
 }
-

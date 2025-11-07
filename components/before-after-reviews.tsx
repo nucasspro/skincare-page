@@ -1,6 +1,6 @@
 "use client"
 
-import { getReviewsByProductId } from "@/lib/review-service";
+import { useReviewsByProductId } from "@/hooks/use-reviews";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -36,8 +36,8 @@ interface BeforeAfterReviewsProps {
 }
 
 export function BeforeAfterReviews({ productId = "1" }: BeforeAfterReviewsProps) {
-  // Get reviews from service
-  const reviews = getReviewsByProductId(productId)
+  // Get reviews from database
+  const { reviews, loading: reviewsLoading } = useReviewsByProductId(productId)
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);

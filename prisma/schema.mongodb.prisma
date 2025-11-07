@@ -18,8 +18,7 @@ model Product {
   price        Float
   originalPrice Float?
   discount     Float?
-  categoryId   String   @db.ObjectId
-  category     Category @relation(fields: [categoryId], references: [id])
+  category     String   // Category as string (e.g., "oily", "dry", "normal")
   needs        String   // JSON array stored as string
   image        String
   hoverImage   String
@@ -34,7 +33,7 @@ model Product {
 
   reviews      Review[]
 
-  @@index([categoryId])
+  @@index([category])
   @@index([isDeleted])
   @@index([createdAt])
   @@map("products")
@@ -49,8 +48,6 @@ model Category {
   deletedAt   Int?     // Unix timestamp when deleted
   createdAt   Int      @default(0)
   updatedAt   Int      @default(0)
-
-  products    Product[]
 
   @@index([slug])
   @@index([isDeleted])
@@ -111,6 +108,7 @@ model Review {
   reviewerName String
   rating       Float    @default(5)
   review       String
+  reviewDate   String   // Fake date for display (e.g., "2 tuần trước")
   isDeleted    Boolean  @default(false)
   deletedAt    Int?     // Unix timestamp when deleted
   createdAt    Int      @default(0)

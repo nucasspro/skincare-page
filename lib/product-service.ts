@@ -197,59 +197,75 @@ export class ProductService {
   }
 
   /**
-   * Filter products with multiple criteria
+   * Category filter mapping
+   * Maps category slug to filter logic
    */
-  static filterProducts(filters: {
-    category?: string
-    needs?: string[]
-    priceRange?: [number, number]
-  }): Product[] {
-    let filtered = MOCK_PRODUCTS
+  private static readonly CATEGORY_FILTER_MAP: Record<
+    string,
+    (product: Product) => boolean
+  > = {
+    "da-mun-nhay-cam": (p) =>
+      // Filter for products suitable for sensitive/acne skin
+      p.needs.includes("sensitive") ||
+      p.needs.includes("acne") ||
+      p.tagline.toLowerCase().includes("mụn") ||
+      (p.description?.toLowerCase().includes("mụn") ?? false) ||
+      (p.description?.toLowerCase().includes("nhạy cảm") ?? false),
+
+    "ngan-ngua-lao-hoa": (p) =>
+      // Filter for anti-aging products
+      p.needs.includes("antiAging") ||
+      p.tagline.toLowerCase().includes("lão") ||
+      (p.description?.toLowerCase().includes("lão") ?? false),
+
+    "da-dau": (p) =>
+      // Filter for oily skin products
+      p.category === "oily" || p.needs.includes("oily"),
+
+    "da-kho": (p) =>
+      // Filter for dry skin products
+      p.category === "dry" || p.needs.includes("dry"),
+  }
+
+  /**
+   * Filter products with multiple criteria
+   * @param filters - Filter criteria
+   * @param products - Optional products array to filter. If not provided, uses MOCK_PRODUCTS
+   */
+  static filterProducts(
+    filters: {
+      category?: string
+      needs?: string[]
+      priceRange?: [number, number]
+    },
+    products?: Product[]
+  ): Product[] {
+    let filtered = products || MOCK_PRODUCTS
 
     // Filter by category
     if (filters.category && filters.category !== "all") {
-      if (filters.category === "da-mun-nhay-cam") {
-        // Filter for products that are suitable for sensitive/acne skin
-        filtered = filtered.filter(p => 
-          (p.needs.includes("sensitive") || p.needs.includes("acne")) ||
-          p.tagline.toLowerCase().includes("mụn") ||
-          p.description?.toLowerCase().includes("mụn") ||
-          p.description?.toLowerCase().includes("nhạy cảm")
-        )
-      } else if (filters.category === "ngan-ngua-lao-hoa") {
-        // Filter for anti-aging products
-        filtered = filtered.filter(p => 
-          p.needs.includes("antiAging") ||
-          p.tagline.toLowerCase().includes("lão") ||
-          p.description?.toLowerCase().includes("lão")
-        )
-      } else if (filters.category === "da-dau") {
-        // Filter for oily skin products
-        filtered = filtered.filter(p => 
-          p.category === "oily" || p.needs.includes("oily")
-        )
-      } else if (filters.category === "da-kho") {
-        // Filter for dry skin products
-        filtered = filtered.filter(p => 
-          p.category === "dry" || p.needs.includes("dry")
-        )
+      const categoryFilter = this.CATEGORY_FILTER_MAP[filters.category]
+
+      if (categoryFilter) {
+        // Use mapped filter logic for known category slugs
+        filtered = filtered.filter(categoryFilter)
       } else {
-        // Standard category filter
-        filtered = filtered.filter(p => p.category === filters.category)
+        // Standard category filter for other categories
+        filtered = filtered.filter((p) => p.category === filters.category)
       }
     }
 
     // Filter by needs
     if (filters.needs && filters.needs.length > 0) {
-      filtered = filtered.filter(p =>
-        filters.needs!.some(need => p.needs.includes(need))
+      filtered = filtered.filter((p) =>
+        filters.needs!.some((need) => p.needs.includes(need))
       )
     }
 
     // Filter by price range
     if (filters.priceRange) {
       const [min, max] = filters.priceRange
-      filtered = filtered.filter(p => p.price >= min && p.price <= max)
+      filtered = filtered.filter((p) => p.price >= min && p.price <= max)
     }
 
     return filtered
@@ -296,37 +312,44 @@ export class ProductService {
   /**
    * Get related products with smart matching algorithm
    * Priority: 1) Same category + same needs, 2) Same category, 3) Same needs, 4) Other products
+   * @param productId - ID of the product to find related products for
+   * @param limit - Maximum number of related products to return
+   * @param products - Optional products array to search in. If not provided, uses MOCK_PRODUCTS
+   * @param product - Optional product object. If not provided, will look up by productId
    */
-  static getRelatedProducts(productId: string, limit: number = 4): Product[] {
-    const product = this.getProductById(productId)
-    if (!product) return []
+  static getRelatedProducts(
+    productId: string,
+    limit: number = 4,
+    products?: Product[],
+    product?: Product | null
+  ): Product[] {
+    // Use provided product or look it up
+    const targetProduct = product || this.getProductById(productId)
+    if (!targetProduct) return []
 
-    const otherProducts = MOCK_PRODUCTS.filter(p => p.id !== productId)
-    
+    // Use provided products array or fallback to mock
+    const allProducts = products || MOCK_PRODUCTS
+    const otherProducts = allProducts.filter(p => p.id !== productId)
+
     if (otherProducts.length === 0) return []
 
     // Helper function to calculate similarity score
     const calculateScore = (p: Product): number => {
       let score = 0
-      
+
       // Priority 1: Same category and shared needs (highest priority)
-      if (p.category === product.category) {
+      if (p.category === targetProduct.category) {
         score += 100
-        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        const sharedNeeds = p.needs.filter(need => targetProduct.needs.includes(need))
         score += sharedNeeds.length * 20 // Each shared need adds 20 points
       }
-      
-      // Priority 2: Same category but different needs
-      if (p.category === product.category) {
-        // Already added above, but ensure we have base score
-      }
-      
+
       // Priority 3: Different category but shared needs
-      if (p.category !== product.category) {
-        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+      if (p.category !== targetProduct.category) {
+        const sharedNeeds = p.needs.filter(need => targetProduct.needs.includes(need))
         score += sharedNeeds.length * 10 // Each shared need adds 10 points
       }
-      
+
       return score
     }
 

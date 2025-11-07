@@ -247,8 +247,7 @@ export class MongoDataSource implements IDataSource {
       price: data.price,
       originalPrice: data.originalPrice || null,
       discount: data.discount || null,
-      categoryId: data.category, // Store categoryId (ObjectId string)
-      category: data.category, // Keep for backward compatibility during migration
+      category: data.category, // Store category as string
       needs: needsArray,
       benefits: benefitsArray,
       ingredients: ingredientsArray,
@@ -277,8 +276,7 @@ export class MongoDataSource implements IDataSource {
     if (data.originalPrice !== undefined) updateData.originalPrice = data.originalPrice
     if (data.discount !== undefined) updateData.discount = data.discount
     if (data.category !== undefined) {
-      updateData.categoryId = data.category // Store categoryId
-      updateData.category = data.category // Keep for backward compatibility
+      updateData.category = data.category // Category is a string
     }
     if (data.needs !== undefined) {
       const needsArray = Array.isArray(data.needs)
@@ -350,7 +348,7 @@ export class MongoDataSource implements IDataSource {
       price: product.price,
       originalPrice: product.originalPrice,
       discount: product.discount,
-      category: product.categoryId || product.category, // Use categoryId if available, fallback to category for backward compatibility
+      category: product.category || '', // Category is a string
       needs: needsToClientFormat(product.needs),
       image: product.image,
       hoverImage: product.hoverImage,
@@ -895,6 +893,7 @@ export class MongoDataSource implements IDataSource {
       reviewerName: data.reviewerName,
       rating: data.rating,
       review: data.review,
+      reviewDate: data.reviewDate, // Required field
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -912,6 +911,7 @@ export class MongoDataSource implements IDataSource {
     if (data.reviewerName !== undefined) updateData.reviewerName = data.reviewerName
     if (data.rating !== undefined) updateData.rating = data.rating
     if (data.review !== undefined) updateData.review = data.review
+    if (data.reviewDate !== undefined) updateData.reviewDate = data.reviewDate
 
     const collection = await getCollection<any>('reviews')
     return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformReview(doc), 'Review')
@@ -941,6 +941,7 @@ export class MongoDataSource implements IDataSource {
       reviewerName: review.reviewerName,
       rating: review.rating,
       review: review.review,
+      reviewDate: review.reviewDate || '', // Required field, fallback to empty string for backward compatibility
       createdAt: dateTimeToUnix(review.createdAt),
       updatedAt: dateTimeToUnix(review.updatedAt),
     }

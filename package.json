@@ -23,6 +23,7 @@
     "setup:db": "tsx scripts/setup-database.ts",
     "migrate:soft-delete": "tsx scripts/migrations/add-soft-delete-fields.ts",
     "migrate:category": "tsx scripts/migrations/migrate-category-to-categoryid.ts",
+    "migrate:review-date": "tsx scripts/migrations/add-review-date-field.ts",
     "migrate:all": "pnpm migrate:soft-delete && pnpm migrate:category"
   },
   "dependencies": {

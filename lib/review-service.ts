@@ -20,7 +20,65 @@ export interface VideoTestimonial {
   title?: string
 }
 
-// Mock review data
+// Cache for reviews fetched from database
+let cachedReviews: Review[] | null = null
+let reviewsCachePromise: Promise<Review[]> | null = null
+
+/**
+ * Fetch reviews from database API and transform to Review interface
+ */
+async function fetchReviewsFromDB(): Promise<Review[]> {
+  try {
+    const response = await fetch('/api/reviews')
+    if (!response.ok) {
+      throw new Error('Failed to fetch reviews')
+    }
+    const data = await response.json()
+    const reviewRecords = data.data || []
+
+    // Transform ReviewRecord to Review interface
+    return reviewRecords.map((record: any) => ({
+      id: String(record.id || ''),
+      productId: String(record.productId || ''),
+      name: record.reviewerName || '',
+      rating: record.rating || 0,
+      review: record.review || '',
+      date: record.reviewDate || '',
+      beforeImage: '', // Not stored in DB, set empty string
+      afterImage: '', // Not stored in DB, set empty string
+      verified: true, // Default to true for all reviews from DB
+      helpful: 0, // Not stored in DB, set default to 0
+    }))
+  } catch (error) {
+    console.error('Error fetching reviews from database:', error)
+    // Fallback to empty array if fetch fails
+    return []
+  }
+}
+
+/**
+ * Get reviews from cache or fetch from database
+ */
+async function getReviews(): Promise<Review[]> {
+  // Return cached reviews if available
+  if (cachedReviews !== null) {
+    return cachedReviews
+  }
+
+  // If a fetch is already in progress, wait for it
+  if (reviewsCachePromise) {
+    return reviewsCachePromise
+  }
+
+  // Fetch reviews and cache them
+  reviewsCachePromise = fetchReviewsFromDB()
+  cachedReviews = await reviewsCachePromise
+  reviewsCachePromise = null
+
+  return cachedReviews
+}
+
+// Mock review data (kept for backward compatibility, but not used)
 const MOCK_REVIEWS: Review[] = [
   {
     id: "r1",
@@ -420,61 +478,70 @@ const MOCK_VIDEO_TESTIMONIALS: VideoTestimonial[] = [
 // Review Service
 export class ReviewService {
   /**
-   * Get all reviews
+   * Get all reviews (from database)
    */
-  static getAllReviews(): Review[] {
-    return MOCK_REVIEWS
+  static async getAllReviews(): Promise<Review[]> {
+    return await getReviews()
   }
 
   /**
-   * Get review by ID
+   * Get review by ID (from database)
    */
-  static getReviewById(id: string): Review | undefined {
-    return MOCK_REVIEWS.find(review => review.id === id)
+  static async getReviewById(id: string): Promise<Review | undefined> {
+    const reviews = await getReviews()
+    return reviews.find(review => review.id === id)
   }
 
   /**
-   * Get reviews by product ID
+   * Get reviews by product ID (from database)
+   * Note: productId can be MongoDB ObjectId or legacy string ID
    */
-  static getReviewsByProductId(productId: string): Review[] {
-    return MOCK_REVIEWS.filter(review => review.productId === productId)
+  static async getReviewsByProductId(productId: string): Promise<Review[]> {
+    const reviews = await getReviews()
+    return reviews.filter(review => review.productId === productId)
   }
 
   /**
-   * Get reviews by rating
+   * Get reviews by rating (from database)
    */
-  static getReviewsByRating(rating: number): Review[] {
-    return MOCK_REVIEWS.filter(review => review.rating === rating)
+  static async getReviewsByRating(rating: number): Promise<Review[]> {
+    const reviews = await getReviews()
+    return reviews.filter(review => review.rating === rating)
   }
 
   /**
-   * Get verified reviews only
+   * Get verified reviews only (from database)
    */
-  static getVerifiedReviews(): Review[] {
-    return MOCK_REVIEWS.filter(review => review.verified === true)
+  static async getVerifiedReviews(): Promise<Review[]> {
+    const reviews = await getReviews()
+    return reviews.filter(review => review.verified === true)
   }
 
   /**
-   * Get top helpful reviews
+   * Get top helpful reviews (from database)
    */
-  static getTopHelpfulReviews(limit: number = 5): Review[] {
-    return [...MOCK_REVIEWS]
+  static async getTopHelpfulReviews(limit: number = 5): Promise<Review[]> {
+    const reviews = await getReviews()
+    return [...reviews]
       .sort((a, b) => (b.helpful || 0) - (a.helpful || 0))
       .slice(0, limit)
   }
 
   /**
-   * Get recent reviews
+   * Get recent reviews (from database)
+   * Sorted by createdAt descending
    */
-  static getRecentReviews(limit: number = 6): Review[] {
-    return MOCK_REVIEWS.slice(0, limit)
+  static async getRecentReviews(limit: number = 6): Promise<Review[]> {
+    const reviews = await getReviews()
+    // Sort by date (most recent first) - reviews are already sorted by createdAt from DB
+    return reviews.slice(0, limit)
   }
 
   /**
-   * Get average rating for a product
+   * Get average rating for a product (from database)
    */
-  static getAverageRating(productId: string): number {
-    const reviews = this.getReviewsByProductId(productId)
+  static async getAverageRating(productId: string): Promise<number> {
+    const reviews = await this.getReviewsByProductId(productId)
     if (reviews.length === 0) return 0
 
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
@@ -482,28 +549,31 @@ export class ReviewService {
   }
 
   /**
-   * Get rating distribution for a product
+   * Get rating distribution for a product (from database)
    */
-  static getRatingDistribution(productId: string): Record<number, number> {
-    const reviews = this.getReviewsByProductId(productId)
+  static async getRatingDistribution(productId: string): Promise<Record<number, number>> {
+    const reviews = await this.getReviewsByProductId(productId)
     const distribution: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
 
     reviews.forEach(review => {
-      distribution[review.rating] = (distribution[review.rating] || 0) + 1
+      const rating = Math.floor(review.rating) // Round down to nearest integer
+      distribution[rating] = (distribution[rating] || 0) + 1
     })
 
     return distribution
   }
 
   /**
-   * Get total review count for a product
+   * Get total review count for a product (from database)
    */
-  static getReviewCount(productId: string): number {
-    return this.getReviewsByProductId(productId).length
+  static async getReviewCount(productId: string): Promise<number> {
+    const reviews = await this.getReviewsByProductId(productId)
+    return reviews.length
   }
 
   /**
    * Get video testimonials by product ID
+   * Note: Still using mock data as video testimonials are not in database yet
    */
   static getVideoTestimonials(productId: string): VideoTestimonial[] {
     return MOCK_VIDEO_TESTIMONIALS.filter(video => video.productId === productId)
@@ -519,7 +589,12 @@ export class ReviewService {
       case "helpful":
         return sorted.sort((a, b) => (b.helpful || 0) - (a.helpful || 0))
       case "recent":
-        return sorted // Already sorted by recent in mock data
+        // Sort by date (most recent first) - assuming date is in format like "2 tuần trước"
+        return sorted.sort((a, b) => {
+          // Simple sort - newer reviews come first (this is approximate)
+          // For more accurate sorting, would need to parse date strings
+          return 0 // Keep original order from DB (already sorted by createdAt)
+        })
       case "highestRating":
         return sorted.sort((a, b) => b.rating - a.rating)
       case "lowestRating":
@@ -532,12 +607,12 @@ export class ReviewService {
   /**
    * Filter reviews
    */
-  static filterReviews(filters: {
+  static async filterReviews(filters: {
     productId?: string
     rating?: number
     verifiedOnly?: boolean
-  }): Review[] {
-    let filtered = MOCK_REVIEWS
+  }): Promise<Review[]> {
+    let filtered = await getReviews()
 
     if (filters.productId) {
       filtered = filtered.filter(r => r.productId === filters.productId)
@@ -555,7 +630,8 @@ export class ReviewService {
   }
 }
 
-// Export convenience functions (bind to maintain 'this' context)
+// Export convenience functions
+// Note: These are now async functions that fetch from database
 export const getAllReviews = ReviewService.getAllReviews.bind(ReviewService)
 export const getReviewById = ReviewService.getReviewById.bind(ReviewService)
 export const getReviewsByProductId = ReviewService.getReviewsByProductId.bind(ReviewService)
