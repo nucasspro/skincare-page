@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { getAllCategories, getAllSkinNeeds } from '@/lib/category-service'
 import { Product } from '@/lib/product-service'
-import { formatVND } from '@/lib/utils'
+import { getAllSkinNeeds } from '@/lib/skin-need-service'
+import { formatVND } from '@/lib/utils/currency-utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BookOpen, FileText, FlaskConical, Image as ImageIcon, Package, Plus, Save, Sparkles, Tag, Trash2, X } from 'lucide-react'
 import Image from 'next/image'
@@ -102,7 +102,6 @@ export function ProductForm({ product, onSubmit, onCancel, readOnly = false }: P
   const watchedOriginalPrice = watch('originalPrice')
   const watchedImage = watch('image')
   const watchedHoverImage = watch('hoverImage')
-  const watchedCategory = watch('category')
 
   // Load product data when editing
   useEffect(() => {
@@ -253,7 +252,6 @@ export function ProductForm({ product, onSubmit, onCancel, readOnly = false }: P
     setArray(newArray as T[])
   }
 
-  const categories = getAllCategories().filter(cat => cat.id !== 'all')
   const skinNeeds = getAllSkinNeeds()
 
   return (
@@ -384,22 +382,13 @@ export function ProductForm({ product, onSubmit, onCancel, readOnly = false }: P
               <Label htmlFor="category" className="text-sm font-bold text-neutral-900 mb-2.5 block uppercase tracking-wide">
                 Danh mục <span className="text-red-500">*</span>
               </Label>
-              <select
+              <Input
                 id="category"
                 {...register('category')}
-                value={watchedCategory || ''}
-                onChange={(e) => {
-                  if (readOnly) return
-                  setValue('category', e.target.value, { shouldValidate: true })
-                }}
+                placeholder="Nhập danh mục (VD: oily, dry, sensitive)"
                 disabled={readOnly}
-                className="h-12 w-full rounded-xl border-2 border-[var(--admin-neutral-gray)]/60 bg-white px-4 text-sm focus:border-[var(--admin-cool-gray)] focus:ring-2 focus:ring-[var(--admin-cool-gray)]/20 cursor-pointer transition-all font-medium shadow-sm hover:shadow-md"
-              >
-                <option value="">Chọn danh mục</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
+                className="h-12 rounded-xl border-2 border-[var(--admin-neutral-gray)]/60 bg-white px-4 text-sm focus:border-[var(--admin-cool-gray)] focus:ring-2 focus:ring-[var(--admin-cool-gray)]/20 cursor-pointer transition-all font-medium shadow-sm hover:shadow-md"
+              />
               {errors.category && (
                 <p className="mt-2 text-sm text-red-600 font-medium">{errors.category.message}</p>
               )}

@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatVND } from '@/lib/utils'
+import { formatVND } from '@/lib/utils/currency-utils'
 import { Package } from 'lucide-react'
 import Link from 'next/link'
 
@@ -79,4 +79,3 @@ export function BestSellingProducts({ products }: BestSellingProductsProps) {
     </Card>
   )
 }
-

@@ -42,7 +42,8 @@ model Product {
   price         Float
   originalPrice Float?
   discount      Float?
-  category      String
+  categoryId    String   @db.ObjectId
+  category      Category @relation(fields: [categoryId], references: [id])
 
   // Array of objects thay vì String
   needs         NeedTag[]
@@ -61,7 +62,7 @@ model Product {
 
   // Chỉ index những field thường query
   // Note: @unique on 'name' already creates an index, no need for @@index([name])
-  @@index([category])
+  @@index([categoryId])
   @@index([createdAt])
   @@map("products")
 }
@@ -69,10 +70,14 @@ model Product {
 model Category {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String   @unique
+  slug          String?  // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
   description   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  products      Product[]
+
+  @@index([slug])
   @@map("categories")
 }
 

@@ -3,7 +3,8 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { getStatusInfo } from '@/lib/constants/order-status'
-import { formatDate, formatVND } from '@/lib/utils'
+import { formatDate } from '@/lib/utils/date-utils'
+import { formatVND } from '@/lib/utils/currency-utils'
 import { RefreshCw, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 

@@ -1,13 +1,16 @@
 "use client"
 
-import { getFeaturedProducts } from "@/lib/product-service"
+import { useProducts } from "@/hooks/use-products"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 
 export function ProductFeature() {
-  // Lấy sản phẩm đầu tiên để hiển thị
-  const featuredProduct = getFeaturedProducts(1)[0]
+  // Get products from database
+  const { products, loading: productsLoading } = useProducts()
+
+  // Get first product as featured product
+  const featuredProduct = products.length > 0 ? products[0] : null
   const sectionRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
 
@@ -43,6 +46,10 @@ export function ProductFeature() {
 
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  if (productsLoading) {
+    return null
+  }
 
   if (!featuredProduct) {
     return null

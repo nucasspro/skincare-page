@@ -1,7 +1,8 @@
 /**
  * Seed Categories for MongoDB
- * Based on CATEGORIES from category-service.ts
  * Usage: npx tsx scripts/seeds/seed-mongodb-categories.ts
+ *
+ * Note: Categories are created with slug field to match filter logic in product-service.ts
  */
 
 import { MongoDataSource } from '@/lib/services/data-sources/mongodb'
@@ -12,13 +13,12 @@ import { resolve } from 'path'
 config({ path: resolve(process.cwd(), '.env.local') })
 config({ path: resolve(process.cwd(), '.env') })
 
-// Categories data from category-service.ts
+// Categories data with slug field matching filter logic
 const CATEGORIES = [
-  { id: "all", name: "Tất cả" },
-  { id: "da-mun-nhay-cam", name: "Da mụn nhạy cảm" },
-  { id: "da-dau", name: "Da dầu" },
-  { id: "da-kho", name: "Da khô" },
-  { id: "ngan-ngua-lao-hoa", name: "Ngăn ngừa lão hoá" },
+  { name: "Da mụn nhạy cảm", slug: "da-mun-nhay-cam" },
+  { name: "Da dầu", slug: "da-dau" },
+  { name: "Da khô", slug: "da-kho" },
+  { name: "Ngăn ngừa lão hoá", slug: "ngan-ngua-lao-hoa" },
 ]
 
 async function main() {
@@ -32,13 +32,14 @@ async function main() {
     try {
       await mongoDataSource.createCategory({
         name: category.name,
+        slug: category.slug,
         description: null,
       })
-      console.log(`✅ Created category: ${category.name}`)
+      console.log(`✅ Created category: ${category.name} (slug: ${category.slug})`)
       created++
     } catch (error: any) {
-      if (error.message?.includes('already exists') || error.message?.includes('duplicate') || error.message?.includes('unique')) {
-        console.log(`⚠️  Category already exists: ${category.name}`)
+      if (error.message?.includes('already exists') || error.message?.includes('duplicate') || error.message?.includes('unique') || error.code === 11000) {
+        console.log(`⚠️  Category already exists: ${category.name} (slug: ${category.slug})`)
         skipped++
       } else {
         console.error(`❌ Error creating category ${category.name}:`, error.message)
@@ -51,6 +52,9 @@ async function main() {
 }
 
 main()
+  .then(() => {
+    process.exit(0)
+  })
   .catch((e) => {
     console.error('❌ Fatal error:', e)
     process.exit(1)

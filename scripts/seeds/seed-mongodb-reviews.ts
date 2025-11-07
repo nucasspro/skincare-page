@@ -6,9 +6,9 @@
  * Note: This requires products to be seeded first!
  */
 
+import { MongoDataSource } from '@/lib/services/data-sources/mongodb'
 import { config } from 'dotenv'
 import { resolve } from 'path'
-import { MongoDataSource } from '@/lib/services/data-sources/mongodb'
 
 // Load environment variables
 config({ path: resolve(process.cwd(), '.env.local') })
@@ -318,24 +318,8 @@ const MOCK_REVIEWS = [
   },
 ]
 
-// Helper function to convert date string to timestamp (relative)
-function parseRelativeDate(dateStr: string): number {
-  const now = Date.now()
-  const weekAgo = now - 7 * 24 * 60 * 60 * 1000
-  const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000
-  const threeWeeksAgo = now - 21 * 24 * 60 * 60 * 1000
-  const monthAgo = now - 30 * 24 * 60 * 60 * 1000
-  const twoMonthsAgo = now - 60 * 24 * 60 * 60 * 1000
-
-  if (dateStr.includes("1 tuần")) return Math.floor(weekAgo / 1000)
-  if (dateStr.includes("2 tuần")) return Math.floor(twoWeeksAgo / 1000)
-  if (dateStr.includes("3 tuần")) return Math.floor(threeWeeksAgo / 1000)
-  if (dateStr.includes("1 tháng")) return Math.floor(monthAgo / 1000)
-  if (dateStr.includes("2 tháng")) return Math.floor(twoMonthsAgo / 1000)
-  if (dateStr.includes("3 tháng")) return Math.floor(twoMonthsAgo / 1000)
-
-  return Math.floor(now / 1000)
-}
+// Note: reviewDate is stored as string (e.g., "2 tuần trước") and displayed as-is
+// No conversion needed - MongoDB will auto-generate ObjectId for id field
 
 async function main() {
   console.log('🌱 Seeding reviews to MongoDB...\n')
@@ -393,7 +377,7 @@ async function main() {
       const mongoProductId = productIdMap.get(review.productId)
 
       if (!mongoProductId) {
-        console.log(`⚠️  Product not found for review ${review.id} (productId: ${review.productId}), skipping...`)
+        console.log(`⚠️  Product not found for review (productId: ${review.productId}), skipping...`)
         skipped++
         continue
       }
@@ -403,6 +387,7 @@ async function main() {
         reviewerName: review.name,
         rating: review.rating,
         review: review.review,
+        reviewDate: review.date, // Pass review date as string (e.g., "2 tuần trước")
       })
 
       console.log(`✅ Created review by ${review.name} (rating: ${review.rating})`)
@@ -423,6 +408,9 @@ async function main() {
 }
 
 main()
+  .then(() => {
+    process.exit(0)
+  })
   .catch((e) => {
     console.error('❌ Fatal error:', e)
     process.exit(1)

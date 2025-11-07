@@ -62,6 +62,7 @@ export interface UpdateProductData extends Partial<CreateProductData> {
 export interface CategoryRecord {
   id: string
   name: string
+  slug?: string | null // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
   description?: string | null
   createdAt: number // Keep as number for backward compatibility
   updatedAt: number
@@ -69,6 +70,7 @@ export interface CategoryRecord {
 
 export interface CreateCategoryData {
   name: string
+  slug?: string | null // Optional slug for filtering
   description?: string | null
 }
 
@@ -181,6 +183,7 @@ export interface ReviewRecord {
   reviewerName: string
   rating: number
   review: string
+  reviewDate: string // Fake date for display (e.g., "2 tuần trước")
   createdAt: number // Keep as number for backward compatibility
   updatedAt: number
 }
@@ -190,6 +193,7 @@ export interface CreateReviewData {
   reviewerName: string
   rating: number
   review: string
+  reviewDate: string // Fake date for display (e.g., "2 tuần trước")
 }
 
 export interface UpdateReviewData extends Partial<CreateReviewData> {

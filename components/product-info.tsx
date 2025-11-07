@@ -1,13 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { useProduct } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
-import { getProductById } from "@/lib/product-service"
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import { Check, Minus, Plus } from "lucide-react"
-import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 interface ProductInfoProps {
   productId: string
@@ -15,13 +15,22 @@ interface ProductInfoProps {
 
 export function ProductInfo({ productId }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1)
-  const [isFavorite, setIsFavorite] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
   const { t } = useI18n()
   const { addItem, items, isHydrated } = useCart()
   const router = useRouter()
 
-  const product = useMemo(() => getProductById(productId), [productId])
+  // Fetch product from database
+  const { product, loading: productLoading } = useProduct(productId)
+
+  if (productLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-6 h-6 border-2 border-gray-500 border-t-white rounded-full animate-spin mx-auto mb-2" />
+        <p className="text-gray-600">Đang tải sản phẩm...</p>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -48,7 +57,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
         </div>
         {product.tagline && (
           <p className="text-xs sm:text-sm md:text-base lg:text-base text-stone-600">
-            {isBrightMatte 
+            {isBrightMatte
               ? "Bảo vệ và kiểm soát dầu hiệu quả"
               : product.tagline
             }
@@ -80,7 +89,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
                   Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng.
                 </p>
               </div>
-              
+
               <div className="space-y-1.5 sm:space-y-2">
                 <h3 className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wide">Lợi ích:</h3>
                 <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed">
@@ -106,7 +115,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
             <>
               <h3 className="text-xs sm:text-sm font-medium text-gray-900 uppercase tracking-wide">{t.productDetail.keyBenefits}</h3>
               <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm md:text-base text-stone-700">
-                {product.benefits.map((benefit, index) => (
+                {product.benefits.map((benefit: string, index: number) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-stone-400 mt-1 flex-shrink-0">•</span>
                     <span>{benefit}</span>
@@ -241,33 +250,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
             )}
           </Button>
         )}
-        {/* <div className="flex gap-3">
-          <Button
-            variant="outline"
-            size="lg"
-            className="flex-1 h-12 rounded-full bg-transparent"
-            onClick={() => setIsFavorite(!isFavorite)}
-          >
-            <Heart className={cn("w-5 h-5 mr-2", isFavorite && "fill-current")} />
-            {isFavorite ? t.productDetail.saved : t.productDetail.save}
-          </Button>
-          <Button variant="outline" size="lg" className="flex-1 h-12 rounded-full bg-transparent">
-            <Share2 className="w-5 h-5 mr-2" />
-            {t.productDetail.share}
-          </Button>
-        </div> */}
       </div>
-
-      {/* Additional Info */}
-      {/* <div className="space-y-2 pt-4 text-sm text-stone-600">
-        <p className="flex items-center gap-2">
-          <span className="font-medium text-gray-900">{t.productDetail.freeShipping}</span>{" "}
-          {t.productDetail.freeShippingText}
-        </p>
-        <p className="flex items-center gap-2">
-          <span className="font-medium text-gray-900">{t.productDetail.returns}</span> {t.productDetail.returnsText}
-        </p>
-      </div> */}
     </div>
   )
 }

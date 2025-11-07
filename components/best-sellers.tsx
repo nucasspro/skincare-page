@@ -1,22 +1,23 @@
 "use client"
 
+import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
-import { getFeaturedProducts } from "@/lib/product-service"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function BestSellers() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const { t } = useI18n()
   const { addItem, items, isHydrated } = useCart()
   const router = useRouter()
+  const { products, loading: productsLoading } = useProducts()
 
-  // Get featured products from service
-  const products = getFeaturedProducts(4)
+  // Get featured products from database (first 4 products)
+  const featuredProducts = products.slice(0, 4)
 
   return (
     <section className="py-12 sm:py-16 md:py-20 bg-white">
@@ -26,11 +27,18 @@ export function BestSellers() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">Tất cả sản phẩm</h2>
         </div>
 
-        {/* Product List - Mobile: 1 per row, Desktop: 4 per row with square images */}
-        <div className="space-y-0 md:space-y-0">
-          {/* Mobile: 1 product per row */}
-          <div className="md:hidden">
-            {products.map((product, index) => (
+        {productsLoading ? (
+          <div className="text-center py-12">
+            <div className="w-6 h-6 border-2 border-gray-500 border-t-white rounded-full animate-spin mx-auto mb-2" />
+            <p className="text-gray-600">Đang tải sản phẩm...</p>
+          </div>
+        ) : (
+          <>
+            {/* Product List - Mobile: 1 per row, Desktop: 4 per row with square images */}
+            <div className="space-y-0 md:space-y-0">
+              {/* Mobile: 1 product per row */}
+              <div className="md:hidden">
+                {featuredProducts.map((product, index) => (
               <div
                 key={product.id}
                 className="group relative"
@@ -119,11 +127,11 @@ export function BestSellers() {
             ))}
           </div>
 
-          {/* Desktop: 4 products per row, square images - Container with max-width */}
-          <div className="hidden md:block">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
-            {products.map((product) => (
+              {/* Desktop: 4 products per row, square images - Container with max-width */}
+              <div className="hidden md:block">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
+                {featuredProducts.map((product) => (
               <div
                 key={product.id}
                 className="group relative"
@@ -210,6 +218,8 @@ export function BestSellers() {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </section>
   )

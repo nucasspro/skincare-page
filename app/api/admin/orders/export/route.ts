@@ -4,7 +4,7 @@
  */
 
 import { orderDataService } from '@/lib/services/order-data-service'
-import { formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils/date-utils'
 import ExcelJS from 'exceljs'
 import { NextResponse } from 'next/server'
 

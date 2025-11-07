@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card'
 import { DollarSign, FolderTree, MessageSquare, Package, ShoppingCart, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
-import { formatVND } from '@/lib/utils'
+import { formatVND } from '@/lib/utils/currency-utils'
 
 interface Stats {
   totalProducts: number
@@ -120,4 +120,3 @@ export function StatsCards({ stats }: StatsCardsProps) {
     </div>
   )
 }
-

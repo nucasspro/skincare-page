@@ -196,7 +196,7 @@ export class MongoDataSource implements IDataSource {
   // ==================== Products ====================
   async getAllProducts(): Promise<ProductRecord[]> {
     const collection = await getCollection<any>('products')
-    const products = await collection.find({}).sort({ createdAt: -1 }).toArray()
+    const products = await collection.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 }).toArray()
     return products.map(this.transformProduct)
   }
 
@@ -247,7 +247,7 @@ export class MongoDataSource implements IDataSource {
       price: data.price,
       originalPrice: data.originalPrice || null,
       discount: data.discount || null,
-      category: data.category,
+      category: data.category, // Store category as string
       needs: needsArray,
       benefits: benefitsArray,
       ingredients: ingredientsArray,
@@ -275,7 +275,9 @@ export class MongoDataSource implements IDataSource {
     if (data.price !== undefined) updateData.price = data.price
     if (data.originalPrice !== undefined) updateData.originalPrice = data.originalPrice
     if (data.discount !== undefined) updateData.discount = data.discount
-    if (data.category !== undefined) updateData.category = data.category
+    if (data.category !== undefined) {
+      updateData.category = data.category // Category is a string
+    }
     if (data.needs !== undefined) {
       const needsArray = Array.isArray(data.needs)
         ? data.needs.map((n: any) =>
@@ -324,9 +326,14 @@ export class MongoDataSource implements IDataSource {
   async deleteProduct(id: string): Promise<boolean> {
     try {
       const collection = await getCollection<any>('products')
-      const filter: any = { $or: [{ _id: id }, { id }] }
-      const result = await collection.deleteOne(filter)
-      return result.deletedCount > 0
+      const filter = this.buildIdFilter(id)
+      const updateData = {
+        isDeleted: true,
+        deletedAt: Math.floor(Date.now() / 1000),
+        updatedAt: new Date(),
+      }
+      const result = await collection.updateOne(filter, { $set: updateData })
+      return result.matchedCount > 0
     } catch (error) {
       console.error('Error deleting product:', error)
       return false
@@ -341,7 +348,7 @@ export class MongoDataSource implements IDataSource {
       price: product.price,
       originalPrice: product.originalPrice,
       discount: product.discount,
-      category: product.category,
+      category: product.category || '', // Category is a string
       needs: needsToClientFormat(product.needs),
       image: product.image,
       hoverImage: product.hoverImage,
@@ -357,7 +364,7 @@ export class MongoDataSource implements IDataSource {
   // ==================== Categories ====================
   async getAllCategories(): Promise<CategoryRecord[]> {
     const collection = await getCollection<any>('categories')
-    const categories = await collection.find({}).sort({ createdAt: -1 }).toArray()
+    const categories = await collection.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 }).toArray()
     return categories.map(this.transformCategory)
   }
 
@@ -373,6 +380,7 @@ export class MongoDataSource implements IDataSource {
   async createCategory(data: CreateCategoryData): Promise<CategoryRecord> {
     const category: any = {
       name: data.name,
+      slug: data.slug || null,
       description: data.description || null,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -388,6 +396,7 @@ export class MongoDataSource implements IDataSource {
     const updateData: any = { updatedAt: new Date() }
 
     if (data.name !== undefined) updateData.name = data.name
+    if (data.slug !== undefined) updateData.slug = data.slug
     if (data.description !== undefined) updateData.description = data.description
 
     const collection = await getCollection<any>('categories')
@@ -397,9 +406,14 @@ export class MongoDataSource implements IDataSource {
   async deleteCategory(id: string): Promise<boolean> {
     try {
       const collection = await getCollection<any>('categories')
-      const filter: any = { $or: [{ _id: id }, { id }] }
-      const result = await collection.deleteOne(filter)
-      return result.deletedCount > 0
+      const filter = this.buildIdFilter(id)
+      const updateData = {
+        isDeleted: true,
+        deletedAt: Math.floor(Date.now() / 1000),
+        updatedAt: new Date(),
+      }
+      const result = await collection.updateOne(filter, { $set: updateData })
+      return result.matchedCount > 0
     } catch (error) {
       console.error('Error deleting category:', error)
       return false
@@ -408,8 +422,10 @@ export class MongoDataSource implements IDataSource {
 
   private transformCategory(category: any): CategoryRecord {
     return {
-      id: category._id ? String(category._id) : category.id,
+      // Prioritize custom id field, then _id, then id field
+      id: category._id ? String(category._id) : category.id || '',
       name: category.name,
+      slug: category.slug || null,
       description: category.description,
       createdAt: dateTimeToUnix(category.createdAt),
       updatedAt: dateTimeToUnix(category.updatedAt),
@@ -621,7 +637,7 @@ export class MongoDataSource implements IDataSource {
   // ==================== Orders ====================
   async getAllOrders(): Promise<OrderRecord[]> {
     const collection = await getCollection<any>('orders')
-    const orders = await collection.find({}).sort({ createdAt: -1 }).toArray()
+    const orders = await collection.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 }).toArray()
     return orders.map(this.transformOrder)
   }
 
@@ -801,9 +817,14 @@ export class MongoDataSource implements IDataSource {
   async deleteOrder(id: string): Promise<boolean> {
     try {
       const collection = await getCollection<any>('orders')
-      const filter: any = { $or: [{ _id: id }, { id }] }
-      const result = await collection.deleteOne(filter)
-      return result.deletedCount > 0
+      const filter = this.buildIdFilter(id)
+      const updateData = {
+        isDeleted: true,
+        deletedAt: Math.floor(Date.now() / 1000),
+        updatedAt: new Date(),
+      }
+      const result = await collection.updateOne(filter, { $set: updateData })
+      return result.matchedCount > 0
     } catch (error) {
       console.error('Error deleting order:', error)
       return false
@@ -853,7 +874,7 @@ export class MongoDataSource implements IDataSource {
   // ==================== Reviews ====================
   async getAllReviews(): Promise<ReviewRecord[]> {
     const collection = await getCollection<any>('reviews')
-    const reviews = await collection.find({}).sort({ createdAt: -1 }).toArray()
+    const reviews = await collection.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 }).toArray()
     return reviews.map(this.transformReview)
   }
 
@@ -872,6 +893,7 @@ export class MongoDataSource implements IDataSource {
       reviewerName: data.reviewerName,
       rating: data.rating,
       review: data.review,
+      reviewDate: data.reviewDate, // Required field
       createdAt: new Date(),
       updatedAt: new Date(),
     }
@@ -889,6 +911,7 @@ export class MongoDataSource implements IDataSource {
     if (data.reviewerName !== undefined) updateData.reviewerName = data.reviewerName
     if (data.rating !== undefined) updateData.rating = data.rating
     if (data.review !== undefined) updateData.review = data.review
+    if (data.reviewDate !== undefined) updateData.reviewDate = data.reviewDate
 
     const collection = await getCollection<any>('reviews')
     return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformReview(doc), 'Review')
@@ -897,9 +920,14 @@ export class MongoDataSource implements IDataSource {
   async deleteReview(id: string): Promise<boolean> {
     try {
       const collection = await getCollection<any>('reviews')
-      const filter: any = { $or: [{ _id: id }, { id }] }
-      const result = await collection.deleteOne(filter)
-      return result.deletedCount > 0
+      const filter = this.buildIdFilter(id)
+      const updateData = {
+        isDeleted: true,
+        deletedAt: Math.floor(Date.now() / 1000),
+        updatedAt: new Date(),
+      }
+      const result = await collection.updateOne(filter, { $set: updateData })
+      return result.matchedCount > 0
     } catch (error) {
       console.error('Error deleting review:', error)
       return false
@@ -913,6 +941,7 @@ export class MongoDataSource implements IDataSource {
       reviewerName: review.reviewerName,
       rating: review.rating,
       review: review.review,
+      reviewDate: review.reviewDate || '', // Required field, fallback to empty string for backward compatibility
       createdAt: dateTimeToUnix(review.createdAt),
       updatedAt: dateTimeToUnix(review.updatedAt),
     }

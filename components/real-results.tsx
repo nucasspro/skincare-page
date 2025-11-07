@@ -3,8 +3,8 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 
+import { useReviewsByProductId } from "@/hooks/use-reviews"
 import { useI18n } from "@/lib/i18n-context"
-import { getReviewsByProductId } from "@/lib/review-service"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import Image from "next/image"
 
@@ -176,8 +176,8 @@ export function RealResults({ productId }: { productId: string }) {
     },
   ]
 
-  // Get reviews from service
-  const reviews = getReviewsByProductId(productId)
+  // Get reviews from database
+  const { reviews, loading: reviewsLoading } = useReviewsByProductId(productId)
 
   const currentResult = resultsData.find((r) => r.productId === productId) || resultsData[0]
 

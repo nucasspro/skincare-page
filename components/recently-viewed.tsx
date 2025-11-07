@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import Image from "next/image"
 import Link from "next/link"
 
