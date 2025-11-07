@@ -1,7 +1,7 @@
 "use client"
 
 import { useCart } from "@/lib/cart-context"
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import { ShoppingCart, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"

@@ -27,7 +27,7 @@ let reviewsCachePromise: Promise<Review[]> | null = null
 /**
  * Fetch reviews from database API and transform to Review interface
  */
-async function fetchReviewsFromDB(): Promise<Review[]> {
+async function fetchReviews(): Promise<Review[]> {
   try {
     const response = await fetch('/api/reviews')
     if (!response.ok) {
@@ -71,7 +71,7 @@ async function getReviews(): Promise<Review[]> {
   }
 
   // Fetch reviews and cache them
-  reviewsCachePromise = fetchReviewsFromDB()
+  reviewsCachePromise = fetchReviews()
   cachedReviews = await reviewsCachePromise
   reviewsCachePromise = null
 

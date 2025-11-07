@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils/class-name-utils"
 import Image from "next/image"
 import { useState, useMemo, useEffect, useRef } from "react"
 import type { Product } from "@/lib/product-service"

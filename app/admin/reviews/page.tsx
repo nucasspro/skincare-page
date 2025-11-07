@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { usePagination } from '@/hooks/use-pagination'
 import { adminReviewService, type Review } from '@/lib/services/admin/review-service'
-import { formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils/date-utils'
 import { MessageSquare, Plus, RefreshCw, Search, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'

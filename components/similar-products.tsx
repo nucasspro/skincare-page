@@ -2,7 +2,7 @@
 
 import { useProduct, useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import type { Product } from "@/lib/product-service"
 import Image from "next/image"
 import Link from "next/link"

@@ -1,6 +1,6 @@
 "use client"
 
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import { type Product } from "@/lib/product-service"
 import { useCart } from "@/lib/cart-context"
 import { ShoppingCart } from "lucide-react"
@@ -58,7 +58,7 @@ export function ProductCard({
             className="object-cover transition-opacity duration-500"
             style={{ opacity: isHovered ? 1 : 0 }}
           />
-          
+
           {/* Add to Cart / Go to Cart Button - Inside Image - Shows on Hover */}
           <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
             <div className="pointer-events-auto">

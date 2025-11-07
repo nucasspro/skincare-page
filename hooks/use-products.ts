@@ -7,21 +7,8 @@
 'use client'
 
 import type { Product } from '@/lib/product-service'
+import { generateSlug } from '@/lib/utils/slug-util'
 import { useEffect, useState } from 'react'
-
-/**
- * Generate URL-friendly slug from product name
- */
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD') // Decompose characters with diacritics
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
-    .trim()
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-}
 
 /**
  * Transform ProductRecord from API to Product interface

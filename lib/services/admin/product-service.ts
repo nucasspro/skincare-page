@@ -1,18 +1,5 @@
 import { Product } from '@/lib/product-service'
-
-/**
- * Generate URL-friendly slug from product name
- */
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-}
+import { generateSlug } from '@/lib/utils/slug-util'
 
 interface ProductData {
   name: string

@@ -1,3 +1,5 @@
+import { generateSlug } from '@/lib/utils/slug-util'
+
 // Product types
 export interface Product {
   id: string
@@ -16,20 +18,6 @@ export interface Product {
   benefits?: string[]
   ingredients?: string[]
   howToUse?: string
-}
-
-/**
- * Generate URL-friendly slug from product name
- */
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD") // Decompose characters with diacritics
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
-    .trim()
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
 }
 
 /**
@@ -80,7 +68,7 @@ function transformProduct(record: any): Product {
  * Server-side: fetches directly from DB
  * Client-side: fetches from API endpoint
  */
-async function fetchAllProductsFromDB(): Promise<Product[]> {
+async function fetchAllProducts(): Promise<Product[]> {
   // Check if we're in a browser environment
   if (typeof window !== 'undefined') {
     // Client-side: fetch from API
@@ -105,14 +93,14 @@ export class ProductService {
    * Get all products from database
    */
   static async getAllProducts(): Promise<Product[]> {
-    return await fetchAllProductsFromDB()
+    return await fetchAllProducts()
   }
 
   /**
    * Get product by ID from database
    */
   static async getProductById(id: string): Promise<Product | null> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     return products.find(product => product.id === id) || null
   }
 
@@ -120,7 +108,7 @@ export class ProductService {
    * Get product by slug from database
    */
   static async getProductBySlug(slug: string): Promise<Product | null> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     return products.find(product => product.slug === slug) || null
   }
 
@@ -128,7 +116,7 @@ export class ProductService {
    * Get products by category from database
    */
   static async getProductsByCategory(category: string): Promise<Product[]> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     if (category === "all") return products
     return products.filter(product => product.category === category)
   }
@@ -137,7 +125,7 @@ export class ProductService {
    * Get products by needs from database
    */
   static async getProductsByNeeds(needs: string[]): Promise<Product[]> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     if (needs.length === 0) return products
     return products.filter(product =>
       needs.some(need => product.needs.includes(need))
@@ -148,7 +136,7 @@ export class ProductService {
    * Get products by price range from database
    */
   static async getProductsByPriceRange(min: number, max: number): Promise<Product[]> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     return products.filter(product =>
       product.price >= min && product.price <= max
     )
@@ -198,7 +186,7 @@ export class ProductService {
     },
     products?: Product[]
   ): Promise<Product[]> {
-    let filtered = products || await fetchAllProductsFromDB()
+    let filtered = products || await fetchAllProducts()
 
     // Filter by category
     if (filters.category && filters.category !== "all") {
@@ -253,7 +241,7 @@ export class ProductService {
    * Search products by name or tagline from database
    */
   static async searchProducts(query: string): Promise<Product[]> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     const lowerQuery = query.toLowerCase()
     return products.filter(product =>
       product.name.toLowerCase().includes(lowerQuery) ||
@@ -265,7 +253,7 @@ export class ProductService {
    * Get featured/best-selling products from database
    */
   static async getFeaturedProducts(limit: number = 3): Promise<Product[]> {
-    const products = await fetchAllProductsFromDB()
+    const products = await fetchAllProducts()
     return products.slice(0, limit)
   }
 
@@ -288,7 +276,7 @@ export class ProductService {
     if (!targetProduct) return []
 
     // Use provided products array or fetch from database
-    const allProducts = products || await fetchAllProductsFromDB()
+    const allProducts = products || await fetchAllProducts()
     const otherProducts = allProducts.filter(p => p.id !== productId)
 
     if (otherProducts.length === 0) return []
