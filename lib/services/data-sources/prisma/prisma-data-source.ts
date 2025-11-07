@@ -161,6 +161,7 @@ export class PrismaDataSource implements IDataSource {
     const category = await prisma.category.create({
       data: {
         name: data.name,
+        slug: data.slug || null,
         description: data.description || null,
         createdAt: now,
         updatedAt: now,
@@ -173,6 +174,7 @@ export class PrismaDataSource implements IDataSource {
     const now = Math.floor(Date.now() / 1000)
     const updateData: any = { updatedAt: now }
     if (data.name !== undefined) updateData.name = data.name
+    if (data.slug !== undefined) updateData.slug = data.slug
     if (data.description !== undefined) updateData.description = data.description
     const category = await prisma.category.update({
       where: { id: data.id },
@@ -195,6 +197,7 @@ export class PrismaDataSource implements IDataSource {
     return {
       id: category.id,
       name: category.name,
+      slug: category.slug || null,
       description: category.description,
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,

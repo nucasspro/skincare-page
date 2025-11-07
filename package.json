@@ -19,7 +19,10 @@
     "seed:reviews": "tsx scripts/seeds/seed-mongodb-reviews.ts",
     "seed:orders": "tsx scripts/seeds/seed-mongodb-orders.ts",
     "seed:admin": "tsx scripts/seeds/seed-admin-user.ts",
-    "seed:all": "pnpm seed:categories && pnpm seed:products && pnpm seed:reviews && pnpm seed:orders"
+    "seed:all": "pnpm seed:categories && pnpm seed:products && pnpm seed:reviews && pnpm seed:orders",
+    "migrate:soft-delete": "tsx scripts/migrations/add-soft-delete-fields.ts",
+    "migrate:category": "tsx scripts/migrations/migrate-category-to-categoryid.ts",
+    "migrate:all": "pnpm migrate:soft-delete && pnpm migrate:category"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

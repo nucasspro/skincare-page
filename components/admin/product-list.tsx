@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { usePagination } from '@/hooks/use-pagination'
-import { CategoryService } from '@/lib/category-service'
+import { useCategories } from '@/hooks/use-categories'
 import { Product } from '@/lib/product-service'
 import { formatDate, formatVND } from '@/lib/utils'
 import { Edit, Eye, Image as ImageIcon, LayoutGrid, MoreVertical, Package, Search, Table, Trash2 } from 'lucide-react'
@@ -18,6 +18,7 @@ interface ProductCardProps {
   onEdit: (product: Product) => void
   onDelete: (id: string) => void
   onView: (product: Product) => void
+  getCategoryName: (categoryId: string) => string
 }
 
 interface ProductTableItemProps {
@@ -26,9 +27,10 @@ interface ProductTableItemProps {
   onDelete: (id: string) => void
   onView: (product: Product) => void
   canDelete?: boolean
+  getCategoryName: (categoryId: string) => string
 }
 
-function ProductTableItem({ product, onEdit, onDelete, onView, canDelete = true }: ProductTableItemProps) {
+function ProductTableItem({ product, onEdit, onDelete, onView, canDelete = true, getCategoryName }: ProductTableItemProps) {
   const productData = product as Product & { createdAt?: number }
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
@@ -100,7 +102,7 @@ function ProductTableItem({ product, onEdit, onDelete, onView, canDelete = true 
       {/* Category */}
       <td className="px-4 py-4 w-48">
         <span className="text-sm text-neutral-600">
-          {CategoryService.getCategoryName(product.category)}
+          {getCategoryName(product.category)}
         </span>
       </td>
 
@@ -133,7 +135,7 @@ function ProductTableItem({ product, onEdit, onDelete, onView, canDelete = true 
   )
 }
 
-function ProductCard({ product, onEdit, onDelete, onView }: ProductCardProps) {
+function ProductCard({ product, onEdit, onDelete, onView, getCategoryName }: ProductCardProps) {
   const productData = product as Product & { createdAt?: number }
   const [showActions, setShowActions] = useState(false)
 
@@ -227,7 +229,7 @@ function ProductCard({ product, onEdit, onDelete, onView }: ProductCardProps) {
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-neutral-700 shadow-sm">
-            {CategoryService.getCategoryName(product.category)}
+            {getCategoryName(product.category)}
           </span>
         </div>
 
@@ -289,6 +291,12 @@ export function ProductList({ products, onEdit, onDelete, onView, canDelete = tr
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [viewMode, setViewMode] = useState<ViewMode>('table')
+  const { categories: allCategories, categoriesAsObject } = useCategories()
+
+  // Helper function to get category name
+  const getCategoryName = (categoryId: string): string => {
+    return categoriesAsObject[categoryId] || categoryId
+  }
 
   const filteredProducts = products.filter(product => {
     const matchesSearch =
@@ -361,7 +369,7 @@ export function ProductList({ products, onEdit, onDelete, onView, canDelete = tr
               <option value="all">Tất cả danh mục</option>
               {categories.map(cat => (
                 <option key={cat} value={cat}>
-                  {CategoryService.getCategoryName(cat)}
+                  {getCategoryName(cat)}
                 </option>
               ))}
             </select>
@@ -470,6 +478,7 @@ export function ProductList({ products, onEdit, onDelete, onView, canDelete = tr
                       onDelete={onDelete}
                       onView={onView}
                       canDelete={canDelete}
+                      getCategoryName={getCategoryName}
                     />
                   ))}
                 </tbody>
@@ -501,7 +510,7 @@ export function ProductList({ products, onEdit, onDelete, onView, canDelete = tr
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onView={onView}
-                canDelete={canDelete}
+                getCategoryName={getCategoryName}
               />
             ))}
           </div>

@@ -173,6 +173,7 @@ export class GoogleSheetsDataSource implements IDataSource {
     const categoryData: any = {
       id: cuid(),
       name: data.name,
+      slug: data.slug || null,
       description: data.description || null,
       createdAt: now,
       updatedAt: now,
@@ -194,6 +195,7 @@ export class GoogleSheetsDataSource implements IDataSource {
     const updateData: any = {
       id: normalizedId,
       name: data.name ?? existing.name,
+      slug: data.slug !== undefined ? data.slug : existing.slug,
       description: data.description ?? existing.description,
       createdAt: existing.createdAt,
       updatedAt: now,
@@ -211,6 +213,7 @@ export class GoogleSheetsDataSource implements IDataSource {
     return {
       id: String(category.id || ''),
       name: category.name,
+      slug: category.slug || null,
       description: category.description || null,
       createdAt: parseInt(category.createdAt) || 0,
       updatedAt: parseInt(category.updatedAt) || 0,

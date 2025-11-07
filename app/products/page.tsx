@@ -8,7 +8,7 @@ import Navigation from "@/components/navigation"
 import { NavigationFilterBar } from "@/components/navigation-filter-bar"
 import PromoSlider from "@/components/promo-slider"
 import { useCart } from "@/lib/cart-context"
-import { getCategoriesAsObject } from "@/lib/category-service"
+import { useCategoriesAsObject } from "@/hooks/use-categories"
 import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/currency-util"
@@ -27,8 +27,8 @@ export default function ProductsPage() {
 
   const productsPerPage = 12
 
-  // Get categories from service
-  const categories = getCategoriesAsObject()
+  // Get categories from admin service
+  const { categories, loading: categoriesLoading } = useCategoriesAsObject()
 
   // Get all products (no filters)
   const filteredAndSortedProducts = useMemo(() => {
@@ -110,17 +110,21 @@ export default function ProductsPage() {
           {/* Category Title */}
           <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
-              {selectedCategory === "all"
+              {categoriesLoading
+                ? "Đang tải..."
+                : selectedCategory === "all"
                 ? "Tất cả sản phẩm"
                 : (categories[selectedCategory] || "Tất cả sản phẩm")}
             </h1>
           </div>
 
-          <NavigationFilterBar
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
+          {!categoriesLoading && (
+            <NavigationFilterBar
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+          )}
 
           {/* Products List - Mobile: 1 per row, Desktop: 4 per row with square images */}
           <div className="space-y-0">

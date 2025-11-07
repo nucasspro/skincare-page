@@ -1,0 +1,80 @@
+/**
+ * Public Category Service
+ * Read-only service for client-side components
+ * Does NOT expose admin functions (create, update, delete)
+ */
+
+export interface Category {
+  id: string
+  name: string
+  slug?: string | null // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
+  description?: string
+  createdAt: number
+  updatedAt: number
+}
+
+class CategoryService {
+  /**
+   * Get all categories (public endpoint)
+   */
+  async getAllCategories(): Promise<Category[]> {
+    const response = await fetch('/api/categories')
+    if (!response.ok) {
+      throw new Error('Failed to fetch categories')
+    }
+    const data = await response.json()
+    return data.data || []
+  }
+
+  /**
+   * Get category by ID
+   */
+  async getCategoryById(id: string): Promise<Category | undefined> {
+    const categories = await this.getAllCategories()
+    return categories.find(cat => cat.id === id)
+  }
+
+  /**
+   * Get category name by ID
+   */
+  async getCategoryName(categoryId: string): Promise<string> {
+    const category = await this.getCategoryById(categoryId)
+    return category?.name || categoryId
+  }
+
+  /**
+   * Get categories as object (Record<slug, name>)
+   * Uses slug as key for filtering compatibility
+   * Helper method for easy access in components
+   */
+  async getCategoriesAsObject(): Promise<Record<string, string>> {
+    const categories = await this.getAllCategories()
+    const result: Record<string, string> = {}
+    categories.forEach(cat => {
+      // Use slug as key if available, fallback to id
+      const key = cat.slug || cat.id
+      result[key] = cat.name
+    })
+    // Always include "all" option
+    result['all'] = 'Tất cả'
+    return result
+  }
+
+  /**
+   * Get categories for filter (excluding "all")
+   */
+  async getFilterCategories(): Promise<Category[]> {
+    const categories = await this.getAllCategories()
+    return categories.filter(cat => cat.id !== 'all')
+  }
+
+  /**
+   * Check if category exists
+   */
+  async categoryExists(categoryId: string): Promise<boolean> {
+    const category = await this.getCategoryById(categoryId)
+    return !!category
+  }
+}
+
+export const categoryService = new CategoryService()

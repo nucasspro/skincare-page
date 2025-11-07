@@ -18,7 +18,8 @@ model Product {
   price        Float
   originalPrice Float?
   discount     Float?
-  category     String
+  categoryId   String   @db.ObjectId
+  category     Category @relation(fields: [categoryId], references: [id])
   needs        String   // JSON array stored as string
   image        String
   hoverImage   String
@@ -26,13 +27,16 @@ model Product {
   benefits     String?  // JSON array stored as string
   ingredients  String?  // JSON array stored as string
   howToUse     String?
+  isDeleted    Boolean  @default(false)
+  deletedAt    Int?     // Unix timestamp when deleted
   createdAt    Int      @default(0)
   updatedAt    Int      @default(0)
 
   comments     Comment[]
   reviews      Review[]
 
-  @@index([category])
+  @@index([categoryId])
+  @@index([isDeleted])
   @@index([createdAt])
   @@map("products")
 }
@@ -40,11 +44,17 @@ model Product {
 model Category {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique
+  slug        String?  // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
   description String?
+  isDeleted   Boolean  @default(false)
+  deletedAt   Int?     // Unix timestamp when deleted
   createdAt   Int      @default(0)
   updatedAt   Int      @default(0)
 
-  @@index([name])
+  products    Product[]
+
+  @@index([slug])
+  @@index([isDeleted])
   @@map("categories")
 }
 
@@ -83,12 +93,15 @@ model Order {
   items           String   // JSON array of OrderItem[]
   total           Float
   notes           String?
+  isDeleted       Boolean  @default(false)
+  deletedAt       Int?     // Unix timestamp when deleted
   createdAt       Int      @default(0)
   updatedAt       Int      @default(0)
 
   @@index([orderNumber])
   @@index([userId])
   @@index([status])
+  @@index([isDeleted])
   @@index([customerPhone])
   @@index([createdAt])
   @@map("orders")
@@ -103,6 +116,8 @@ model Comment {
   content   String
   rating    Int      @default(5)
   status    String   @default("pending")
+  isDeleted Boolean  @default(false)
+  deletedAt Int?     // Unix timestamp when deleted
   createdAt Int      @default(0)
   updatedAt Int      @default(0)
 
@@ -112,6 +127,7 @@ model Comment {
   @@index([productId])
   @@index([userId])
   @@index([status])
+  @@index([isDeleted])
   @@index([createdAt])
   @@map("comments")
 }
@@ -122,12 +138,15 @@ model Review {
   reviewerName String
   rating       Float    @default(5)
   review       String
+  isDeleted    Boolean  @default(false)
+  deletedAt    Int?     // Unix timestamp when deleted
   createdAt    Int      @default(0)
   updatedAt    Int      @default(0)
 
   product      Product  @relation(fields: [productId], references: [id])
 
   @@index([productId])
+  @@index([isDeleted])
   @@index([createdAt])
   @@map("reviews")
 }

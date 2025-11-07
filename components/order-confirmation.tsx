@@ -122,8 +122,8 @@ export function OrderConfirmation({ orderData, orderedItems }: OrderConfirmation
             }
 
             // Save to both places in parallel
-            // Promise.all([saveOrderToSheets(), saveOrderToDb()])
-            Promise.all([saveOrderToDb()])
+            Promise.all([saveOrderToSheets(), saveOrderToDb()])
+            // Promise.all([saveOrderToDb()])
         }
     }, [orderedItems, removeItems, orderNumber, orderData, getTotalPrice, getTotalItems])
 

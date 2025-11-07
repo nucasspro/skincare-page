@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { getAllCategories, getAllSkinNeeds } from '@/lib/category-service'
+import { getAllSkinNeeds } from '@/lib/skin-need-service'
+import { useCategories } from '@/hooks/use-categories'
 import { Product } from '@/lib/product-service'
 import { formatVND } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -253,7 +254,8 @@ export function ProductForm({ product, onSubmit, onCancel, readOnly = false }: P
     setArray(newArray as T[])
   }
 
-  const categories = getAllCategories().filter(cat => cat.id !== 'all')
+  const { categories: allCategories, loading: categoriesLoading } = useCategories()
+  const categories = allCategories.filter(cat => cat.id !== 'all')
   const skinNeeds = getAllSkinNeeds()
 
   return (
