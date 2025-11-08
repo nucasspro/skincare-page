@@ -27,36 +27,58 @@ export interface Ward {
 // Cache để tránh gọi API nhiều lần
 const cache: Record<string, any> = {}
 
+// Promise cache để tránh concurrent requests
+const pendingRequests: Record<string, Promise<any>> = {}
+
 /**
  * Lấy danh sách tất cả tỉnh/thành phố
  */
 export async function getProvinces(): Promise<Province[]> {
+  // Return cached data if available
   if (cache["provinces"]) {
     return cache["provinces"]
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/provinces`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch provinces: ${response.status} ${response.statusText}`)
-    }
-
-    const data = await response.json()
-
-    // Handle both { data: [...] } and just [...]
-    const provinces = data.data || data || []
-    cache["provinces"] = provinces
-    return provinces
-  } catch (error) {
-    console.error("Error fetching provinces:", error)
-    return []
+  // Return pending request if one is already in progress
+  if (pendingRequests["provinces"]) {
+    return pendingRequests["provinces"]
   }
+
+  // Create new request
+  const requestPromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/provinces`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch provinces: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      // Handle both { data: [...] } and just [...]
+      const provinces = data.data || data || []
+      cache["provinces"] = provinces
+      return provinces
+    } catch (error) {
+      console.error("Error fetching provinces:", error)
+      // Remove from pending on error so we can retry
+      delete pendingRequests["provinces"]
+      return []
+    } finally {
+      // Clean up pending request after completion
+      delete pendingRequests["provinces"]
+    }
+  })()
+
+  // Store pending request
+  pendingRequests["provinces"] = requestPromise
+
+  return requestPromise
 }
 
 /**
@@ -64,32 +86,52 @@ export async function getProvinces(): Promise<Province[]> {
  */
 export async function getDistricts(provinceCode: number): Promise<District[]> {
   const cacheKey = `districts-${provinceCode}`
+
+  // Return cached data if available
   if (cache[cacheKey]) {
     return cache[cacheKey]
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/districts?code=${provinceCode}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch districts: ${response.status} ${response.statusText}`)
-    }
-
-    const data = await response.json()
-
-    // Handle { data: [...] } format - districts is an array
-    const districts = data.data || []
-    cache[cacheKey] = districts
-    return districts
-  } catch (error) {
-    console.error(`Error fetching districts for province ${provinceCode}:`, error)
-    return []
+  // Return pending request if one is already in progress
+  if (pendingRequests[cacheKey]) {
+    return pendingRequests[cacheKey]
   }
+
+  // Create new request
+  const requestPromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/districts?code=${provinceCode}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch districts: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      // Handle { data: [...] } format - districts is an array
+      const districts = data.data || []
+      cache[cacheKey] = districts
+      return districts
+    } catch (error) {
+      console.error(`Error fetching districts for province ${provinceCode}:`, error)
+      // Remove from pending on error so we can retry
+      delete pendingRequests[cacheKey]
+      return []
+    } finally {
+      // Clean up pending request after completion
+      delete pendingRequests[cacheKey]
+    }
+  })()
+
+  // Store pending request
+  pendingRequests[cacheKey] = requestPromise
+
+  return requestPromise
 }
 
 /**
@@ -97,32 +139,52 @@ export async function getDistricts(provinceCode: number): Promise<District[]> {
  */
 export async function getWards(districtCode: number): Promise<Ward[]> {
   const cacheKey = `wards-${districtCode}`
+
+  // Return cached data if available
   if (cache[cacheKey]) {
     return cache[cacheKey]
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/wards?code=${districtCode}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch wards: ${response.status} ${response.statusText}`)
-    }
-
-    const data = await response.json()
-
-    // Handle { data: [...] } format - wards is an array
-    const wards = data.data || []
-    cache[cacheKey] = wards
-    return wards
-  } catch (error) {
-    console.error(`Error fetching wards for district ${districtCode}:`, error)
-    return []
+  // Return pending request if one is already in progress
+  if (pendingRequests[cacheKey]) {
+    return pendingRequests[cacheKey]
   }
+
+  // Create new request
+  const requestPromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/wards?code=${districtCode}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch wards: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      // Handle { data: [...] } format - wards is an array
+      const wards = data.data || []
+      cache[cacheKey] = wards
+      return wards
+    } catch (error) {
+      console.error(`Error fetching wards for district ${districtCode}:`, error)
+      // Remove from pending on error so we can retry
+      delete pendingRequests[cacheKey]
+      return []
+    } finally {
+      // Clean up pending request after completion
+      delete pendingRequests[cacheKey]
+    }
+  })()
+
+  // Store pending request
+  pendingRequests[cacheKey] = requestPromise
+
+  return requestPromise
 }
 
 /**
@@ -173,4 +235,5 @@ export async function formatAddress(
  */
 export function clearLocationCache() {
   Object.keys(cache).forEach((key) => delete cache[key])
+  Object.keys(pendingRequests).forEach((key) => delete pendingRequests[key])
 }

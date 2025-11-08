@@ -1,5 +1,5 @@
 import { reviewDataService } from '@/lib/services/review-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
 
 /**
  * Public Reviews API
@@ -9,17 +9,12 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const reviews = await reviewDataService.getAllReviews()
-    return NextResponse.json({
-      data: reviews.map(r => ({
-        ...r,
-        id: String(r.id || ''), // Ensure id is always string
-      }))
-    })
+    const transformedReviews = reviews.map(transformRecordForResponse)
+    return successResponse(transformedReviews)
   } catch (error) {
-    console.error('Error fetching reviews:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch reviews' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch reviews',
+    })
   }
 }

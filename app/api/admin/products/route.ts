@@ -1,109 +1,56 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { productDataService } from '@/lib/services/product-data-service'
-import { getCurrentUser } from '@/lib/utils/auth'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformProductForResponse } from '@/lib/utils/api-response'
+import { createProductSchema } from '@/lib/validations/product-schemas'
 
 // GET all products (admin)
-export async function GET() {
-  // Check authentication
-  const currentUser = await getCurrentUser()
-  if (!currentUser) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
+export const GET = withAuth(async () => {
   try {
     const products = await productDataService.getAllProducts()
-
-    // Transform for API response (parse JSON fields)
-    const transformedProducts = products.map((product) => ({
-      ...product,
-      id: String(product.id || ''), // Ensure id is always string
-      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
-      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
-      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
-    }))
-
-    return NextResponse.json({ data: transformedProducts })
+    const transformedProducts = products.map(transformProductForResponse)
+    return successResponse(transformedProducts)
   } catch (error) {
-    console.error('Error fetching products:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch products' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch products',
+    })
   }
-}
+})
 
 // POST create new product
-export async function POST(request: Request) {
-  // Check authentication
-  const currentUser = await getCurrentUser()
-  if (!currentUser) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
-
+export const POST = withAuth(async (request: Request) => {
   try {
-    const body = await request.json()
-    const {
-      name,
-      tagline,
-      price,
-      originalPrice,
-      discount,
-      category,
-      needs,
-      image,
-      hoverImage,
-      description,
-      benefits,
-      ingredients,
-      howToUse,
-    } = body
-
-    if (!name || !tagline || !price || !category || !image || !hoverImage) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
+    const validatedData = await validateRequestBody(request, createProductSchema)
 
     const product = await productDataService.createProduct({
-      name,
-      tagline,
-      price,
-      originalPrice: originalPrice || null,
-      discount: discount || null,
-      category,
-      needs: needs || [],
-      image,
-      hoverImage,
-      description: description || null,
-      benefits: benefits || null,
-      ingredients: ingredients || null,
-      howToUse: howToUse || null,
+      name: validatedData.name,
+      tagline: validatedData.tagline,
+      price: validatedData.price,
+      originalPrice: validatedData.originalPrice || null,
+      discount: validatedData.discount || null,
+      category: validatedData.category,
+      needs: validatedData.needs || [],
+      image: validatedData.image,
+      hoverImage: validatedData.hoverImage,
+      description: validatedData.description || null,
+      benefits: validatedData.benefits || null,
+      ingredients: validatedData.ingredients || null,
+      howToUse: validatedData.howToUse || null,
     })
 
-    // Transform for API response
-    const transformedProduct = {
-      ...product,
-      id: String(product.id || ''), // Ensure id is always string
-      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
-      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
-      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
+    const transformedProduct = transformProductForResponse(product)
+    return successResponse(transformedProduct, {
+      status: 201,
+      message: 'Product created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
     }
-
-    return NextResponse.json(
-      { message: 'Product created successfully', data: transformedProduct },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating product:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create product' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create product',
+    })
   }
-}
+})

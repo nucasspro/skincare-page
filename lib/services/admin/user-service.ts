@@ -1,3 +1,5 @@
+import { apiClient } from '@/lib/utils/api-client'
+
 export interface User {
   id: string
   email: string
@@ -22,68 +24,36 @@ class AdminUserService {
    * Get all users
    */
   async getAllUsers(): Promise<User[]> {
-    const response = await fetch('/api/admin/users')
-    if (!response.ok) {
-      throw new Error('Failed to fetch users')
-    }
-    const data = await response.json()
-    return data.data || []
+    return apiClient.get<User[]>('/api/admin/users', {
+      defaultErrorMessage: 'Failed to fetch users',
+    })
   }
 
   /**
    * Create a new user
    */
   async createUser(userData: UserData): Promise<User> {
-    const response = await fetch('/api/admin/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
+    return apiClient.post<User>('/api/admin/users', userData, {
+      defaultErrorMessage: 'Failed to create user',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to create user' }))
-      throw new Error(error.error || 'Failed to create user')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Update an existing user
    */
   async updateUser(id: string, userData: UserData): Promise<User> {
-    const response = await fetch(`/api/admin/users/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
+    return apiClient.put<User>(`/api/admin/users/${id}`, userData, {
+      defaultErrorMessage: 'Failed to update user',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update user' }))
-      throw new Error(error.error || 'Failed to update user')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Delete a user
    */
   async deleteUser(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/users/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/users/${id}`, {
+      defaultErrorMessage: 'Failed to delete user',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete user' }))
-      throw new Error(error.error || 'Failed to delete user')
-    }
   }
 }
 

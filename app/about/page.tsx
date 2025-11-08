@@ -1,8 +1,8 @@
 "use client"
 
-import Navigation from "@/components/navigation"
+import Navigation from "@/components/navigation/navigation"
 import { Button } from "@/components/ui/button"
-import { Footer } from "@/components/footer"
+import { Footer } from "@/components/layout/footer"
 import { useI18n } from "@/lib/i18n-context"
 import { ArrowRight, Award, Users, Building2, Heart, Leaf, Beaker, Sparkles } from "lucide-react"
 import Link from "next/link"
@@ -72,7 +72,7 @@ export default function AboutPage() {
               Nơi khoa học gặp gỡ thiên nhiên
             </h1>
             <p className="text-xl md:text-2xl p-desc max-w-2xl mx-auto leading-relaxed">
-              CELLIC - từ tiếng Pháp "Ánh sáng", là thương hiệu chăm sóc da cao cấp kết hợp 
+              CELLIC - từ tiếng Pháp "Ánh sáng", là thương hiệu chăm sóc da cao cấp kết hợp
               khoa học da liễu tiên tiến với sức mạnh của thiên nhiên.
             </p>
           </div>
@@ -91,19 +91,19 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-6 text-lg leading-relaxed">
               <p className="text-pretty p-desc">
-                Năm 2015, người sáng lập của chúng tôi, một bác sĩ da liễu với hơn 20 năm kinh nghiệm, 
-                nhận thấy một khoảng trống trong thị trường chăm sóc da. Bệnh nhân đang tìm kiếm các 
+                Năm 2015, người sáng lập của chúng tôi, một bác sĩ da liễu với hơn 20 năm kinh nghiệm,
+                nhận thấy một khoảng trống trong thị trường chăm sóc da. Bệnh nhân đang tìm kiếm các
                 sản phẩm kết hợp hiệu quả lâm sàng với thành phần tự nhiên nhẹ nhàng.
               </p>
               <p className="text-pretty p-desc">
-                Quan sát này đã khơi dậy một sứ mệnh: tạo ra một dòng sản phẩm chăm sóc da kết nối 
-                khoảng cách giữa khoa học da liễu và trí tuệ của thiên nhiên. Mỗi công thức được phát 
-                triển với sự nghiêm ngặt như các sản phẩm dược phẩm, nhưng khai thác sức mạnh của các 
+                Quan sát này đã khơi dậy một sứ mệnh: tạo ra một dòng sản phẩm chăm sóc da kết nối
+                khoảng cách giữa khoa học da liễu và trí tuệ của thiên nhiên. Mỗi công thức được phát
+                triển với sự nghiêm ngặt như các sản phẩm dược phẩm, nhưng khai thác sức mạnh của các
                 thành phần thực vật.
               </p>
               <p className="text-pretty p-desc">
                 Những gì bắt đầu trong một phòng thí nghiệm nhỏ đã phát triển thành một phong trào toàn cầu,
-                chạm đến cuộc sống của hàng triệu người tin rằng chăm sóc da hiệu quả không nên ảnh hưởng 
+                chạm đến cuộc sống của hàng triệu người tin rằng chăm sóc da hiệu quả không nên ảnh hưởng
                 đến sự an toàn hoặc tính bền vững.
               </p>
             </div>
@@ -161,12 +161,12 @@ export default function AboutPage() {
               Sứ mệnh của chúng tôi
             </h2>
             <p className="text-lg leading-relaxed p-desc text-pretty">
-              Chúng tôi tin rằng mọi người đều xứng đáng được tiếp cận với sản phẩm chăm sóc da hiệu quả. 
+              Chúng tôi tin rằng mọi người đều xứng đáng được tiếp cận với sản phẩm chăm sóc da hiệu quả.
               Sứ mệnh của chúng tôi là dân chủ hóa chuyên môn da liễu thông qua các sản phẩm vừa hiệu quả vừa dễ tiếp cận.
             </p>
             <p className="text-lg leading-relaxed p-desc text-pretty">
-              Mỗi sản phẩm trải qua thử nghiệm lâm sàng nghiêm ngặt và được điều chế với các thành phần có 
-              hiệu quả đã được chứng minh. Chúng tôi không bao giờ thỏa hiệp về chất lượng, và chúng tôi không 
+              Mỗi sản phẩm trải qua thử nghiệm lâm sàng nghiêm ngặt và được điều chế với các thành phần có
+              hiệu quả đã được chứng minh. Chúng tôi không bao giờ thỏa hiệp về chất lượng, và chúng tôi không
               bao giờ thử nghiệm trên động vật.
             </p>
           </div>
@@ -211,11 +211,11 @@ export default function AboutPage() {
               Hợp tác với chuyên gia
             </h2>
             <p className="text-lg leading-relaxed p-desc text-pretty">
-              Chúng tôi hợp tác với các bác sĩ da liễu, nhà khoa học và chuyên gia chăm sóc da hàng đầu 
+              Chúng tôi hợp tác với các bác sĩ da liễu, nhà khoa học và chuyên gia chăm sóc da hàng đầu
               để phát triển các công thức đáp ứng nhu cầu thực sự của làn da.
             </p>
             <p className="text-lg leading-relaxed p-desc text-pretty">
-              Mỗi sản phẩm được thử nghiệm lâm sàng và được chứng nhận bởi các chuyên gia da liễu độc lập. 
+              Mỗi sản phẩm được thử nghiệm lâm sàng và được chứng nhận bởi các chuyên gia da liễu độc lập.
               Chúng tôi tin vào sức mạnh của khoa học và chuyên môn.
             </p>
           </div>
@@ -250,8 +250,8 @@ export default function AboutPage() {
               Cam kết bền vững
             </h2>
             <p className="text-lg leading-relaxed opacity-90 md:text-xl text-pretty p-desc">
-              Cam kết của chúng tôi với hành tinh mạnh mẽ như cam kết với làn da của bạn. Chúng tôi sử dụng 
-              bao bì có thể tái chế, giảm thiểu chất thải trong quy trình sản xuất và hợp tác với các nhà 
+              Cam kết của chúng tôi với hành tinh mạnh mẽ như cam kết với làn da của bạn. Chúng tôi sử dụng
+              bao bì có thể tái chế, giảm thiểu chất thải trong quy trình sản xuất và hợp tác với các nhà
               cung cấp chia sẻ giá trị môi trường của chúng tôi.
             </p>
           </div>

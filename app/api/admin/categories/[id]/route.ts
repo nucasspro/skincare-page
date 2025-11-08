@@ -1,83 +1,89 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { categoryDataService } from '@/lib/services/category-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { updateCategorySchema } from '@/lib/validations/category-schemas'
 
 // GET single category
-export async function GET(
+export const GET = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const category = await categoryDataService.getCategoryById(id)
 
     if (!category) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Category not found',
+      })
     }
 
-    return NextResponse.json({ data: { ...category, id: String(category.id || '') } })
+    const transformedCategory = transformRecordForResponse(category)
+    return successResponse(transformedCategory)
   } catch (error) {
-    console.error('Error fetching category:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch category' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch category',
+    })
   }
-}
+})
 
 // PUT update category
-export async function PUT(
+export const PUT = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
-    const body = await request.json()
-    const { name, description } = body
+    const validatedData = await validateRequestBody(request, updateCategorySchema)
 
     const category = await categoryDataService.updateCategory({
       id,
-      name,
-      description: description || null,
+      name: validatedData.name,
+      description: validatedData.description !== undefined ? validatedData.description : null,
+      slug: validatedData.slug !== undefined ? validatedData.slug : null,
     })
 
-    return NextResponse.json({
+    const transformedCategory = transformRecordForResponse(category)
+    return successResponse(transformedCategory, {
       message: 'Category updated successfully',
-      data: { ...category, id: String(category.id || '') }
     })
-  } catch (error: any) {
-    console.error('Error updating category:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to update category' },
-      { status: 500 }
-    )
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to update category',
+    })
   }
-}
+})
 
 // DELETE category
-export async function DELETE(
+export const DELETE = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const success = await categoryDataService.deleteCategory(id)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to delete category' },
-        { status: 500 }
-      )
+      return errorResponse(null, {
+        status: 500,
+        message: 'Failed to delete category',
+      })
     }
 
-    return NextResponse.json({ message: 'Category deleted successfully' })
+    return successResponse(null, {
+      message: 'Category deleted successfully',
+    })
   } catch (error) {
-    console.error('Error deleting category:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete category' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to delete category',
+    })
   }
-}
+})

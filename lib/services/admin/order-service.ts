@@ -1,3 +1,6 @@
+import { apiClient } from '@/lib/utils/api-client'
+import { transformOrderRecord } from '@/lib/utils/order-transformer'
+
 export interface OrderItem {
   id: string
   name: string
@@ -54,65 +57,38 @@ class AdminOrderService {
    * Get all orders
    */
   async getAllOrders(): Promise<Order[]> {
-    const response = await fetch('/api/admin/orders')
-    if (!response.ok) {
-      throw new Error('Failed to fetch orders')
-    }
-    const data = await response.json()
-    return (data.data || []).map((order: any) => ({
-      ...order,
-      items: typeof order.items === 'string' ? JSON.parse(order.items) : order.items,
-    }))
+    const orders = await apiClient.get<Order[]>('/api/admin/orders', {
+      defaultErrorMessage: 'Failed to fetch orders',
+    })
+    return (orders || []).map((order: any) => transformOrderRecord(order))
   }
 
   /**
    * Get a single order
    */
   async getOrder(id: string): Promise<Order> {
-    const response = await fetch(`/api/admin/orders/${id}`)
-    if (!response.ok) {
-      throw new Error('Failed to fetch order')
-    }
-    const data = await response.json()
-    return {
-      ...data.data,
-      items: typeof data.data.items === 'string' ? JSON.parse(data.data.items) : data.data.items,
-    }
+    const order = await apiClient.get<Order>(`/api/admin/orders/${id}`, {
+      defaultErrorMessage: 'Failed to fetch order',
+    })
+    return transformOrderRecord(order)
   }
 
   /**
    * Update an existing order
    */
   async updateOrder(id: string, orderData: OrderData): Promise<Order> {
-    const response = await fetch(`/api/admin/orders/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData),
+    return apiClient.put<Order>(`/api/admin/orders/${id}`, orderData, {
+      defaultErrorMessage: 'Failed to update order',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update order' }))
-      throw new Error(error.error || 'Failed to update order')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Delete an order
    */
   async deleteOrder(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/orders/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/orders/${id}`, {
+      defaultErrorMessage: 'Failed to delete order',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete order' }))
-      throw new Error(error.error || 'Failed to delete order')
-    }
   }
 
   /**

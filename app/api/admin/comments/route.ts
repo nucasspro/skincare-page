@@ -1,61 +1,50 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { commentDataService } from '@/lib/services/comment-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { createCommentSchema } from '@/lib/validations/comment-schemas'
 
 // GET all comments
-export async function GET() {
+export const GET = withAuth(async () => {
   try {
     const comments = await commentDataService.getAllComments()
-    return NextResponse.json({
-      data: comments.map(c => ({ ...c, id: String(c.id || '') }))
-    })
+    const transformedComments = comments.map(transformRecordForResponse)
+    return successResponse(transformedComments)
   } catch (error) {
-    console.error('Error fetching comments:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch comments' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch comments',
+    })
   }
-}
+})
 
 // POST create new comment
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: Request) => {
   try {
-    const body = await request.json()
-    const { productId, userId, userName, userEmail, content, rating, status } = body
-
-    if (!productId || !content) {
-      return NextResponse.json(
-        { error: 'Product ID and content are required' },
-        { status: 400 }
-      )
-    }
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
-    }
+    const validatedData = await validateRequestBody(request, createCommentSchema)
 
     const comment = await commentDataService.createComment({
-      productId,
-      userId,
-      userName: userName || null,
-      userEmail: userEmail || null,
-      content,
-      rating: rating || 5,
-      status: status || 'pending',
+      productId: validatedData.productId,
+      userId: validatedData.userId,
+      userName: validatedData.userName || null,
+      userEmail: validatedData.userEmail || null,
+      content: validatedData.content,
+      rating: validatedData.rating || 5,
+      status: validatedData.status || 'pending',
     })
 
-    return NextResponse.json(
-      { message: 'Comment created successfully', data: { ...comment, id: String(comment.id || '') } },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating comment:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create comment' },
-      { status: 500 }
-    )
+    const transformedComment = transformRecordForResponse(comment)
+    return successResponse(transformedComment, {
+      status: 201,
+      message: 'Comment created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create comment',
+    })
   }
-}
+})

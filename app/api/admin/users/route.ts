@@ -1,87 +1,60 @@
+import { withAdminAuth, withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { userDataService } from '@/lib/services/user-data-service'
-import { getCurrentUser, isAdmin } from '@/lib/utils/auth'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { createUserSchema } from '@/lib/validations/user-schemas'
 
-// GET all users
-export async function GET() {
-  try {
-    // Check authentication
-    const user = await getCurrentUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const users = await userDataService.getAllUsers()
-    // Remove passwords from response
-    return NextResponse.json({
-      data: users.map(u => {
-        const { password, ...userWithoutPassword } = u as any
-        return { ...userWithoutPassword, id: String(u.id || '') }
-      })
-    })
-  } catch (error) {
-    console.error('Error fetching users:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch users' },
-      { status: 500 }
-    )
-  }
+// Helper to remove password from user object
+function removePassword(user: any) {
+  const { password, ...userWithoutPassword } = user
+  return userWithoutPassword
 }
 
-// POST create new user
-export async function POST(request: Request) {
+// GET all users
+export const GET = withAuth(async () => {
   try {
-    // Check authentication and admin role
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    const users = await userDataService.getAllUsers()
+    // Remove passwords from response
+    const usersWithoutPasswords = users.map(u => removePassword(u))
+    const transformedUsers = usersWithoutPasswords.map(transformRecordForResponse)
+    return successResponse(transformedUsers)
+  } catch (error) {
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch users',
+    })
+  }
+})
 
-    const isUserAdmin = await isAdmin()
-    if (!isUserAdmin) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only admin can create users' },
-        { status: 403 }
-      )
-    }
-
-    const body = await request.json()
-    const { email, name, phone, address, password, role } = body
-
-    if (!email || !name) {
-      return NextResponse.json(
-        { error: 'Email and name are required' },
-        { status: 400 }
-      )
-    }
+// POST create new user
+export const POST = withAdminAuth(async (request: Request) => {
+  try {
+    const validatedData = await validateRequestBody(request, createUserSchema)
 
     const user = await userDataService.createUser({
-      email,
-      name,
-      phone: phone || null,
-      address: address || null,
-      password: password || null,
-      role: role || 'user',
+      email: validatedData.email,
+      name: validatedData.name,
+      phone: validatedData.phone || null,
+      address: validatedData.address || null,
+      password: validatedData.password || null,
+      role: validatedData.role || 'user',
     })
 
     // Remove password from response
-    const { password: _, ...userWithoutPassword } = user as any
+    const userWithoutPassword = removePassword(user)
+    const transformedUser = transformRecordForResponse(userWithoutPassword)
 
-    return NextResponse.json(
-      { message: 'User created successfully', data: { ...userWithoutPassword, id: String(user.id || '') } },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating user:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create user' },
-      { status: 500 }
-    )
+    return successResponse(transformedUser, {
+      status: 201,
+      message: 'User created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create user',
+    })
   }
-}
+})

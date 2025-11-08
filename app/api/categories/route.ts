@@ -1,5 +1,5 @@
 import { categoryDataService } from '@/lib/services/category-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
 
 /**
  * Public Categories API
@@ -9,17 +9,12 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const categories = await categoryDataService.getAllCategories()
-    return NextResponse.json({
-      data: categories.map(c => ({
-        ...c,
-        id: String(c.id || ''), // Ensure id is always string
-      }))
-    })
+    const transformedCategories = categories.map(transformRecordForResponse)
+    return successResponse(transformedCategories)
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch categories' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch categories',
+    })
   }
 }

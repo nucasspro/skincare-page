@@ -1,3 +1,5 @@
+import { apiClient } from '@/lib/utils/api-client'
+
 export interface Review {
   id: string
   productId: string
@@ -20,68 +22,36 @@ class AdminReviewService {
    * Get all reviews
    */
   async getAllReviews(): Promise<Review[]> {
-    const response = await fetch('/api/admin/reviews')
-    if (!response.ok) {
-      throw new Error('Failed to fetch reviews')
-    }
-    const data = await response.json()
-    return data.data || []
+    return apiClient.get<Review[]>('/api/admin/reviews', {
+      defaultErrorMessage: 'Failed to fetch reviews',
+    })
   }
 
   /**
    * Create a new review
    */
   async createReview(reviewData: ReviewData): Promise<Review> {
-    const response = await fetch('/api/admin/reviews', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reviewData),
+    return apiClient.post<Review>('/api/admin/reviews', reviewData, {
+      defaultErrorMessage: 'Failed to create review',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to create review' }))
-      throw new Error(error.error || 'Failed to create review')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Update an existing review
    */
   async updateReview(id: string, reviewData: Partial<ReviewData>): Promise<Review> {
-    const response = await fetch(`/api/admin/reviews/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reviewData),
+    return apiClient.put<Review>(`/api/admin/reviews/${id}`, reviewData, {
+      defaultErrorMessage: 'Failed to update review',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update review' }))
-      throw new Error(error.error || 'Failed to update review')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Delete a review
    */
   async deleteReview(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/reviews/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/reviews/${id}`, {
+      defaultErrorMessage: 'Failed to delete review',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete review' }))
-      throw new Error(error.error || 'Failed to delete review')
-    }
   }
 }
 

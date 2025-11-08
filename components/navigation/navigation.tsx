@@ -1,7 +1,7 @@
 "use client"
 
-import { CartDropdown } from "@/components/cart-dropdown"
-import { SearchModal } from "@/components/search-modal"
+import { CartDropdown } from "@/components/cart/cart-dropdown"
+import { SearchModal } from "@/components/search/search-modal"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
 import { Menu, X } from "lucide-react"

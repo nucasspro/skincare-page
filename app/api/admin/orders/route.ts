@@ -1,88 +1,68 @@
 import { orderDataService } from '@/lib/services/order-data-service'
-import { getCurrentUser, isAdmin } from '@/lib/utils/auth'
-import { NextResponse } from 'next/server'
+import { withAdminAuth, withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
+import { createOrderSchema } from '@/lib/validations/order-schemas'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
 
 // GET all orders
-export async function GET() {
+export const GET = withAuth(async () => {
   try {
-    // Check authentication
-    const user = await getCurrentUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     const orders = await orderDataService.getAllOrders()
-    return NextResponse.json({
-      data: orders.map(o => ({ ...o, id: String(o.id || '') }))
-    })
+    const transformedOrders = orders.map(transformRecordForResponse)
+    return successResponse(transformedOrders)
   } catch (error) {
-    console.error('Error fetching orders:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch orders' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch orders',
+    })
   }
-}
+})
 
 // POST create new order
-export async function POST(request: Request) {
+export const POST = withAdminAuth(async (request: Request) => {
   try {
-    // Check authentication and admin role
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const isUserAdmin = await isAdmin()
-    if (!isUserAdmin) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only admin can create orders' },
-        { status: 403 }
-      )
-    }
-
     const body = await request.json()
-    const { orderNumber, customerName, customerEmail, customerPhone, userId, streetAddress, wardName, districtName, provinceName, status, paymentMethod, items, total, notes } = body
+    // Note: createOrderSchema is partial, so we validate manually for required fields
+    const { orderNumber, customerName, customerPhone, streetAddress, paymentMethod, items, total } = body
 
     if (!orderNumber || !customerName || !customerPhone || !streetAddress || !paymentMethod || !items || !total) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return errorResponse(null, {
+        status: 400,
+        message: 'Missing required fields: orderNumber, customerName, customerPhone, streetAddress, paymentMethod, items, total',
+      })
     }
+
+    const validatedData = await validateRequestBody(request, createOrderSchema)
 
     const order = await orderDataService.createOrder({
       orderNumber,
-      customerName,
-      customerEmail: customerEmail || null,
-      customerPhone,
-      userId: userId || null,
-      streetAddress,
-      wardName: wardName || null,
-      districtName: districtName || null,
-      provinceName: provinceName || null,
-      status: status || 'pending',
-      paymentMethod,
+      customerName: validatedData.customerName || customerName,
+      customerEmail: validatedData.customerEmail || null,
+      customerPhone: validatedData.customerPhone || customerPhone,
+      userId: body.userId || null,
+      streetAddress: validatedData.streetAddress || streetAddress,
+      wardName: validatedData.wardName || null,
+      districtName: validatedData.districtName || null,
+      provinceName: validatedData.provinceName || null,
+      status: validatedData.status || 'pending',
+      paymentMethod: validatedData.paymentMethod || paymentMethod,
       items,
       total,
-      notes: notes || null,
+      notes: validatedData.notes || null,
     })
 
-    return NextResponse.json(
-      { message: 'Order created successfully', data: { ...order, id: String(order.id || '') } },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating order:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create order' },
-      { status: 500 }
-    )
+    const transformedOrder = transformRecordForResponse(order)
+    return successResponse(transformedOrder, {
+      status: 201,
+      message: 'Order created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create order',
+    })
   }
-}
+})

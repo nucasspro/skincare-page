@@ -1,4 +1,6 @@
 import { Product } from '@/lib/product-service'
+import { apiClient } from '@/lib/utils/api-client'
+import { transformProductRecord } from '@/lib/utils/product-transformer'
 import { generateSlug } from '@/lib/utils/slug-util'
 
 interface ProductData {
@@ -22,98 +24,55 @@ class AdminProductService {
    * Get all products
    */
   async getAllProducts(): Promise<Product[]> {
-    const response = await fetch('/api/products')
-    if (!response.ok) {
-      throw new Error('Failed to fetch products')
-    }
-    const data = await response.json()
-    return (data.data || []).map((p: any) => this.transformProduct(p))
+    const products = await apiClient.get<any[]>('/api/products', {
+      defaultErrorMessage: 'Failed to fetch products',
+    })
+    return (products || []).map((p: any) => this.transformProduct(p))
   }
 
   /**
    * Create a new product
    */
   async createProduct(productData: ProductData): Promise<Product> {
-    const response = await fetch('/api/admin/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...productData,
-        slug: generateSlug(productData.name),
-      }),
+    const product = await apiClient.post<any>('/api/admin/products', {
+      ...productData,
+      slug: generateSlug(productData.name),
+    }, {
+      defaultErrorMessage: 'Failed to create product',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to create product' }))
-      throw new Error(error.error || 'Failed to create product')
-    }
-
-    const data = await response.json()
-    return this.transformProduct(data.data)
+    return this.transformProduct(product)
   }
 
   /**
    * Update an existing product
    */
   async updateProduct(id: string, productData: ProductData): Promise<Product> {
-    const response = await fetch(`/api/admin/products/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...productData,
-        slug: generateSlug(productData.name),
-      }),
+    const product = await apiClient.put<any>(`/api/admin/products/${id}`, {
+      ...productData,
+      slug: generateSlug(productData.name),
+    }, {
+      defaultErrorMessage: 'Failed to update product',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update product' }))
-      throw new Error(error.error || 'Failed to update product')
-    }
-
-    const data = await response.json()
-    return this.transformProduct(data.data)
+    return this.transformProduct(product)
   }
 
   /**
    * Delete a product
    */
   async deleteProduct(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/products/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/products/${id}`, {
+      defaultErrorMessage: 'Failed to delete product',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete product' }))
-      throw new Error(error.error || 'Failed to delete product')
-    }
   }
 
   /**
    * Transform database product to Product interface
    */
   private transformProduct(dbProduct: any): Product & { createdAt?: number } {
-    return {
-      id: dbProduct.id,
-      slug: dbProduct.slug || generateSlug(dbProduct.name),
-      name: dbProduct.name,
-      tagline: dbProduct.tagline,
-      price: dbProduct.price,
-      originalPrice: dbProduct.originalPrice || undefined,
-      discount: dbProduct.discount || undefined,
-      category: dbProduct.category,
-      needs: typeof dbProduct.needs === 'string' ? JSON.parse(dbProduct.needs) : dbProduct.needs || [],
-      image: dbProduct.image,
-      hoverImage: dbProduct.hoverImage,
-      description: dbProduct.description || undefined,
-      benefits: typeof dbProduct.benefits === 'string' ? JSON.parse(dbProduct.benefits) : dbProduct.benefits || [],
-      ingredients: typeof dbProduct.ingredients === 'string' ? JSON.parse(dbProduct.ingredients) : dbProduct.ingredients || [],
-      howToUse: dbProduct.howToUse || undefined,
-      createdAt: dbProduct.createdAt,
-    }
+    return transformProductRecord(dbProduct, {
+      useExistingSlug: true,
+      includeCreatedAt: true,
+    }) as Product & { createdAt?: number }
   }
 }
 
