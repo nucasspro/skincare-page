@@ -1,9 +1,9 @@
 "use client"
 
+import { CustomSelect } from "@/components/shared/custom-select"
 import { getDistricts, getProvinces, getWards, type District, type Province, type Ward } from "@/lib/location-service"
 import { Building2, CheckCircle2, ChevronDown, Loader2, MapPin, Phone, User } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { CustomSelect } from "./custom-select"
 
 interface CheckoutFormData {
   name: string

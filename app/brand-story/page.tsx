@@ -1,9 +1,9 @@
 "use client"
 
-import Navigation from "@/components/navigation"
+import Navigation from "@/components/navigation/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { Footer } from "@/components/footer"
+import { Footer } from "@/components/layout/footer"
 import { useI18n } from "@/lib/i18n-context"
 import Link from "next/link"
 

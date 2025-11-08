@@ -1,6 +1,6 @@
-import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
-import { PromotionBannerWrapper } from "@/components/promotion-banner-wrapper"
-import { ScrollToTop } from "@/components/scroll-to-top"
+import { ParallaxProviderWrapper } from "@/components/shared/parallax-provider-wrapper"
+import { PromotionBannerWrapper } from "@/components/hero/promotion-banner-wrapper"
+import { ScrollToTop } from "@/components/shared/scroll-to-top"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { GeistSans } from 'geist/font/sans'
