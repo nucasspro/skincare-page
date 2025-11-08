@@ -1,51 +1,47 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { reviewDataService } from '@/lib/services/review-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { createReviewSchema } from '@/lib/validations/review-schemas'
 
 // GET all reviews
-export async function GET() {
+export const GET = withAuth(async () => {
   try {
     const reviews = await reviewDataService.getAllReviews()
-    return NextResponse.json({
-      data: reviews.map(r => ({ ...r, id: String(r.id || '') }))
-    })
+    const transformedReviews = reviews.map(transformRecordForResponse)
+    return successResponse(transformedReviews)
   } catch (error) {
-    console.error('Error fetching reviews:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch reviews' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch reviews',
+    })
   }
-}
+})
 
 // POST create new review
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: Request) => {
   try {
-    const body = await request.json()
-    const { productId, reviewerName, rating, review } = body
-
-    if (!productId || !reviewerName || !rating || !review) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
+    const validatedData = await validateRequestBody(request, createReviewSchema)
 
     const newReview = await reviewDataService.createReview({
-      productId,
-      reviewerName,
-      rating,
-      review,
+      productId: validatedData.productId,
+      reviewerName: validatedData.reviewerName,
+      rating: validatedData.rating,
+      review: validatedData.review,
     })
 
-    return NextResponse.json(
-      { message: 'Review created successfully', data: { ...newReview, id: String(newReview.id || '') } },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating review:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create review' },
-      { status: 500 }
-    )
+    const transformedReview = transformRecordForResponse(newReview)
+    return successResponse(transformedReview, {
+      status: 201,
+      message: 'Review created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create review',
+    })
   }
-}
+})

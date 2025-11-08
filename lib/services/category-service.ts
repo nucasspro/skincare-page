@@ -4,14 +4,11 @@
  * Does NOT expose admin functions (create, update, delete)
  */
 
-export interface Category {
-  id: string
-  name: string
-  slug?: string | null // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
-  description?: string
-  createdAt: number
-  updatedAt: number
-}
+import { categoryReadService } from '@/lib/services/shared/category-read-service'
+import type { Category } from '@/lib/types/category'
+
+// Re-export for backward compatibility
+export type { Category } from '@/lib/types/category'
 
 class CategoryService {
   /**
@@ -28,14 +25,28 @@ class CategoryService {
 
   /**
    * Get category by ID
+   * Optimized: Direct API call instead of fetching all categories
    */
   async getCategoryById(id: string): Promise<Category | undefined> {
-    const categories = await this.getAllCategories()
-    return categories.find(cat => cat.id === id)
+    try {
+      const response = await fetch(`/api/categories/${id}`)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return undefined
+        }
+        throw new Error('Failed to fetch category')
+      }
+      const data = await response.json()
+      return data.data
+    } catch (error) {
+      console.error('Error fetching category by ID:', error)
+      return undefined
+    }
   }
 
   /**
    * Get category name by ID
+   * Optimized: Uses getCategoryById for better performance
    */
   async getCategoryName(categoryId: string): Promise<string> {
     const category = await this.getCategoryById(categoryId)
@@ -50,37 +61,7 @@ class CategoryService {
    */
   async getCategoriesAsObject(): Promise<Record<string, string>> {
     const categories = await this.getAllCategories()
-
-    // Define display order for categories (by slug)
-    const displayOrder = [
-      'da-mun-nhay-cam',  // Da mụn nhạy cảm
-      'da-dau',            // Da dầu
-      'da-kho',            // Da khô
-      'ngan-ngua-lao-hoa', // Ngăn ngừa lão hoá
-    ]
-
-    const result: Record<string, string> = {}
-
-    // First, add "all" option
-    result['all'] = 'Tất cả'
-
-    // Then add categories in the specified order
-    displayOrder.forEach(slug => {
-      const category = categories.find(cat => cat.slug === slug)
-      if (category) {
-        result[slug] = category.name
-      }
-    })
-
-    // Finally, add any remaining categories that weren't in the display order
-    categories.forEach(cat => {
-      const key = cat.slug || cat.id
-      if (!result[key] && key !== 'all') {
-        result[key] = cat.name
-      }
-    })
-
-    return result
+    return categoryReadService.getCategoriesAsObjectWithOrder(categories)
   }
 
   /**
@@ -88,15 +69,15 @@ class CategoryService {
    */
   async getFilterCategories(): Promise<Category[]> {
     const categories = await this.getAllCategories()
-    return categories.filter(cat => cat.id !== 'all')
+    return categoryReadService.getFilterCategories(categories)
   }
 
   /**
    * Check if category exists
    */
   async categoryExists(categoryId: string): Promise<boolean> {
-    const category = await this.getCategoryById(categoryId)
-    return !!category
+    const categories = await this.getAllCategories()
+    return categoryReadService.categoryExists(categories, categoryId)
   }
 }
 

@@ -1,41 +1,41 @@
-export interface Category {
-  id: string
-  name: string
-  slug?: string | null // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
-  description?: string
-  createdAt: number
-  updatedAt: number
-}
+import { categoryReadService } from '@/lib/services/shared/category-read-service'
+import type { Category, CategoryData } from '@/lib/types/category'
+import { apiClient } from '@/lib/utils/api-client'
 
-interface CategoryData {
-  name: string
-  slug?: string | null // Optional slug for filtering
-  description?: string
-}
+// Re-export for backward compatibility
+export type { Category, CategoryData } from '@/lib/types/category'
 
 class AdminCategoryService {
   /**
    * Get all categories
    */
   async getAllCategories(): Promise<Category[]> {
-    const response = await fetch('/api/admin/categories')
-    if (!response.ok) {
-      throw new Error('Failed to fetch categories')
-    }
-    const data = await response.json()
-    return data.data || []
+    return apiClient.get<Category[]>('/api/admin/categories', {
+      defaultErrorMessage: 'Failed to fetch categories',
+    })
   }
 
   /**
    * Get category by ID
+   * Optimized: Direct API call instead of fetching all categories
    */
   async getCategoryById(id: string): Promise<Category | undefined> {
-    const categories = await this.getAllCategories()
-    return categories.find(cat => cat.id === id)
+    try {
+      return await apiClient.get<Category>(`/api/admin/categories/${id}`, {
+        defaultErrorMessage: 'Failed to fetch category',
+      })
+    } catch (error) {
+      // Return undefined if category not found (404)
+      if (error instanceof Error && ((error as any).status === 404 || error.message.includes('404'))) {
+        return undefined
+      }
+      throw error
+    }
   }
 
   /**
    * Get category name by ID
+   * Optimized: Uses getCategoryById for better performance
    */
   async getCategoryName(categoryId: string): Promise<string> {
     const category = await this.getCategoryById(categoryId)
@@ -49,15 +49,7 @@ class AdminCategoryService {
    */
   async getCategoriesAsObject(): Promise<Record<string, string>> {
     const categories = await this.getAllCategories()
-    const result: Record<string, string> = {}
-    categories.forEach(cat => {
-      // Use slug as key if available, fallback to id
-      const key = cat.slug || cat.id
-      result[key] = cat.name
-    })
-    // Always include "all" option
-    result['all'] = 'Tất cả'
-    return result
+    return categoryReadService.getCategoriesAsObject(categories)
   }
 
   /**
@@ -65,71 +57,42 @@ class AdminCategoryService {
    */
   async getFilterCategories(): Promise<Category[]> {
     const categories = await this.getAllCategories()
-    return categories.filter(cat => cat.id !== 'all')
+    return categoryReadService.getFilterCategories(categories)
   }
 
   /**
    * Check if category exists
    */
   async categoryExists(categoryId: string): Promise<boolean> {
-    const category = await this.getCategoryById(categoryId)
-    return !!category
+    const categories = await this.getAllCategories()
+    return categoryReadService.categoryExists(categories, categoryId)
   }
 
   /**
    * Create a new category
    */
   async createCategory(categoryData: CategoryData): Promise<Category> {
-    const response = await fetch('/api/admin/categories', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(categoryData),
+    return apiClient.post<Category>('/api/admin/categories', categoryData, {
+      defaultErrorMessage: 'Failed to create category',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to create category' }))
-      throw new Error(error.error || 'Failed to create category')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Update an existing category
    */
   async updateCategory(id: string, categoryData: CategoryData): Promise<Category> {
-    const response = await fetch(`/api/admin/categories/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(categoryData),
+    return apiClient.put<Category>(`/api/admin/categories/${id}`, categoryData, {
+      defaultErrorMessage: 'Failed to update category',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update category' }))
-      throw new Error(error.error || 'Failed to update category')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Delete a category
    */
   async deleteCategory(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/categories/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/categories/${id}`, {
+      defaultErrorMessage: 'Failed to delete category',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete category' }))
-      throw new Error(error.error || 'Failed to delete category')
-    }
   }
 }
 

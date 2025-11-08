@@ -2,7 +2,7 @@
 
 import { getDistricts, getProvinces, getWards, type District, type Province, type Ward } from "@/lib/location-service"
 import { Building2, CheckCircle2, ChevronDown, Loader2, MapPin, Phone, User } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { CustomSelect } from "./custom-select"
 
 interface CheckoutFormData {
@@ -73,18 +73,32 @@ export function CheckoutForm({ onStepChange, currentStep = 1 }: CheckoutFormProp
   const [loadingDistricts, setLoadingDistricts] = useState(false)
   const [loadingWards, setLoadingWards] = useState(false)
 
-  // Load provinces on mount
+  // Ref to track if provinces have been loaded to prevent duplicate requests
+  const provincesLoadedRef = useRef(false)
+
+  // Load provinces on mount (only once)
   useEffect(() => {
+    // Prevent duplicate requests (e.g., React StrictMode in development)
+    if (provincesLoadedRef.current) {
+      return
+    }
+
+    provincesLoadedRef.current = true
+
     const loadProvinces = async () => {
       try {
+        // getProvinces() already handles concurrent requests via pendingRequests cache
         const data = await getProvinces()
         setProvinces(data || [])
       } catch (error) {
         console.error("Error loading provinces:", error)
+        // Reset flag on error so we can retry
+        provincesLoadedRef.current = false
       } finally {
         setLoading(false)
       }
     }
+
     loadProvinces()
   }, [])
 

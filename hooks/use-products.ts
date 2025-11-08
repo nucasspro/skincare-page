@@ -7,7 +7,7 @@
 'use client'
 
 import type { Product } from '@/lib/product-service'
-import { generateSlug } from '@/lib/utils/slug-util'
+import { transformProductRecord } from '@/lib/utils/product-transformer'
 import { useEffect, useState } from 'react'
 
 /**
@@ -15,42 +15,7 @@ import { useEffect, useState } from 'react'
  * @param record - ProductRecord from API
  */
 function transformProduct(record: any): Product {
-  // Parse needs, benefits, ingredients if they are strings
-  const needs = typeof record.needs === 'string'
-    ? JSON.parse(record.needs || '[]')
-    : Array.isArray(record.needs)
-    ? record.needs.map((n: any) => typeof n === 'string' ? n : n.id || n.name)
-    : []
-
-  const benefits = typeof record.benefits === 'string'
-    ? JSON.parse(record.benefits || '[]')
-    : Array.isArray(record.benefits)
-    ? record.benefits.map((b: any) => typeof b === 'string' ? b : b.title || b.description)
-    : []
-
-  const ingredients = typeof record.ingredients === 'string'
-    ? JSON.parse(record.ingredients || '[]')
-    : Array.isArray(record.ingredients)
-    ? record.ingredients.map((i: any) => typeof i === 'string' ? i : i.name)
-    : []
-
-  return {
-    id: String(record.id || ''),
-    slug: generateSlug(record.name), // Generate slug from name
-    name: record.name || '',
-    tagline: record.tagline || '',
-    price: record.price || 0,
-    originalPrice: record.originalPrice || undefined,
-    discount: record.discount || undefined,
-    category: record.category || '', // Category is already a string
-    needs: needs,
-    image: record.image || '',
-    hoverImage: record.hoverImage || '',
-    description: record.description || undefined,
-    benefits: benefits.length > 0 ? benefits : undefined,
-    ingredients: ingredients.length > 0 ? ingredients : undefined,
-    howToUse: record.howToUse || undefined,
-  }
+  return transformProductRecord(record)
 }
 
 // Request deduplication: if multiple components call useProducts() at the same time,

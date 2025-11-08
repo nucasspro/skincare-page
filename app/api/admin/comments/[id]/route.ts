@@ -1,84 +1,89 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { commentDataService } from '@/lib/services/comment-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { updateCommentSchema } from '@/lib/validations/comment-schemas'
 
 // GET single comment
-export async function GET(
+export const GET = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const comment = await commentDataService.getCommentById(id)
 
     if (!comment) {
-      return NextResponse.json(
-        { error: 'Comment not found' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Comment not found',
+      })
     }
 
-    return NextResponse.json({ data: { ...comment, id: String(comment.id || '') } })
+    const transformedComment = transformRecordForResponse(comment)
+    return successResponse(transformedComment)
   } catch (error) {
-    console.error('Error fetching comment:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch comment' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch comment',
+    })
   }
-}
+})
 
 // PUT update comment
-export async function PUT(
+export const PUT = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
-    const body = await request.json()
-    const { content, rating, status } = body
+    const validatedData = await validateRequestBody(request, updateCommentSchema)
 
     const updateData: any = { id }
-    if (content !== undefined) updateData.content = content
-    if (rating !== undefined) updateData.rating = rating
-    if (status !== undefined) updateData.status = status
+    if (validatedData.content !== undefined) updateData.content = validatedData.content
+    if (validatedData.rating !== undefined) updateData.rating = validatedData.rating
+    if (validatedData.status !== undefined) updateData.status = validatedData.status
 
     const comment = await commentDataService.updateComment(updateData)
+    const transformedComment = transformRecordForResponse(comment)
 
-    return NextResponse.json({
+    return successResponse(transformedComment, {
       message: 'Comment updated successfully',
-      data: { ...comment, id: String(comment.id || '') }
     })
-  } catch (error: any) {
-    console.error('Error updating comment:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to update comment' },
-      { status: 500 }
-    )
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to update comment',
+    })
   }
-}
+})
 
 // DELETE comment
-export async function DELETE(
+export const DELETE = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const success = await commentDataService.deleteComment(id)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to delete comment' },
-        { status: 500 }
-      )
+      return errorResponse(null, {
+        status: 500,
+        message: 'Failed to delete comment',
+      })
     }
 
-    return NextResponse.json({ message: 'Comment deleted successfully' })
+    return successResponse(null, {
+      message: 'Comment deleted successfully',
+    })
   } catch (error) {
-    console.error('Error deleting comment:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete comment' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to delete comment',
+    })
   }
-}
+})

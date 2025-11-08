@@ -1,154 +1,99 @@
+import { withAdminAuth, withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { productDataService } from '@/lib/services/product-data-service'
-import { getCurrentUser } from '@/lib/utils/auth'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformProductForResponse } from '@/lib/utils/api-response'
+import { updateProductSchema } from '@/lib/validations/product-schemas'
 
 // GET single product
-export async function GET(
+export const GET = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const product = await productDataService.getProductById(id)
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Product not found',
+      })
     }
 
-    // Transform for API response
-    const transformedProduct = {
-      ...product,
-      id: String(product.id || ''), // Ensure id is always string
-      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
-      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
-      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
-    }
-
-    return NextResponse.json({ data: transformedProduct })
+    const transformedProduct = transformProductForResponse(product)
+    return successResponse(transformedProduct)
   } catch (error) {
-    console.error('Error fetching product:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch product' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch product',
+    })
   }
-}
+})
 
 // PUT update product
-export async function PUT(
+export const PUT = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
-  // Check authentication
-  const currentUser = await getCurrentUser()
-  if (!currentUser) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
-
+) => {
   try {
     const { id } = await params
-    const body = await request.json()
-    const {
-      name,
-      tagline,
-      price,
-      originalPrice,
-      discount,
-      category,
-      needs,
-      image,
-      hoverImage,
-      description,
-      benefits,
-      ingredients,
-      howToUse,
-    } = body
+    const validatedData = await validateRequestBody(request, updateProductSchema)
 
     const product = await productDataService.updateProduct({
       id,
-      name,
-      tagline,
-      price,
-      originalPrice: originalPrice !== undefined ? originalPrice : null,
-      discount: discount !== undefined ? discount : null,
-      category,
-      needs: needs !== undefined ? needs : undefined,
-      image,
-      hoverImage,
-      description: description !== undefined ? description : null,
-      benefits: benefits !== undefined ? benefits : null,
-      ingredients: ingredients !== undefined ? ingredients : null,
-      howToUse: howToUse !== undefined ? howToUse : null,
+      name: validatedData.name,
+      tagline: validatedData.tagline,
+      price: validatedData.price,
+      originalPrice: validatedData.originalPrice !== undefined ? validatedData.originalPrice : null,
+      discount: validatedData.discount !== undefined ? validatedData.discount : null,
+      category: validatedData.category,
+      needs: validatedData.needs,
+      image: validatedData.image,
+      hoverImage: validatedData.hoverImage,
+      description: validatedData.description !== undefined ? validatedData.description : null,
+      benefits: validatedData.benefits,
+      ingredients: validatedData.ingredients,
+      howToUse: validatedData.howToUse,
     })
 
-    // Transform for API response
-    const transformedProduct = {
-      ...product,
-      id: String(product.id || ''), // Ensure id is always string
-      needs: typeof product.needs === 'string' ? JSON.parse(product.needs || '[]') : product.needs || [],
-      benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits || '[]') : product.benefits || [],
-      ingredients: typeof product.ingredients === 'string' ? JSON.parse(product.ingredients || '[]') : product.ingredients || [],
-    }
-
-    return NextResponse.json({
+    const transformedProduct = transformProductForResponse(product)
+    return successResponse(transformedProduct, {
       message: 'Product updated successfully',
-      data: transformedProduct,
     })
-  } catch (error: any) {
-    console.error('Error updating product:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to update product' },
-      { status: 500 }
-    )
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to update product',
+    })
   }
-}
+})
 
 // DELETE product
-export async function DELETE(
+export const DELETE = withAdminAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
-  // Check authentication
-  const currentUser = await getCurrentUser()
-  if (!currentUser) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
-
-  // Only admin can delete products
-  if (currentUser.role !== 'admin') {
-    return NextResponse.json(
-      { error: 'Forbidden: Only admin can delete products' },
-      { status: 403 }
-    )
-  }
-
+) => {
   try {
     const { id } = await params
-
     const success = await productDataService.deleteProduct(id)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Product not found or delete not supported' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Product not found or delete not supported',
+      })
     }
 
-    return NextResponse.json({ message: 'Product deleted successfully' })
+    return successResponse(null, {
+      message: 'Product deleted successfully',
+    })
   } catch (error) {
-    console.error('Error deleting product:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete product' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to delete product',
+    })
   }
-}
+})

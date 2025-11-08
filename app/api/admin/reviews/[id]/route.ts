@@ -1,85 +1,90 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { reviewDataService } from '@/lib/services/review-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { updateReviewSchema } from '@/lib/validations/review-schemas'
 
 // GET single review
-export async function GET(
+export const GET = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const review = await reviewDataService.getReviewById(id)
 
     if (!review) {
-      return NextResponse.json(
-        { error: 'Review not found' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Review not found',
+      })
     }
 
-    return NextResponse.json({ data: { ...review, id: String(review.id || '') } })
+    const transformedReview = transformRecordForResponse(review)
+    return successResponse(transformedReview)
   } catch (error) {
-    console.error('Error fetching review:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch review' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch review',
+    })
   }
-}
+})
 
 // PUT update review
-export async function PUT(
+export const PUT = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
-    const body = await request.json()
-    const { productId, reviewerName, rating, review } = body
+    const validatedData = await validateRequestBody(request, updateReviewSchema)
 
     const updateData: any = { id }
-    if (productId !== undefined) updateData.productId = productId
-    if (reviewerName !== undefined) updateData.reviewerName = reviewerName
-    if (rating !== undefined) updateData.rating = rating
-    if (review !== undefined) updateData.review = review
+    if (validatedData.productId !== undefined) updateData.productId = validatedData.productId
+    if (validatedData.reviewerName !== undefined) updateData.reviewerName = validatedData.reviewerName
+    if (validatedData.rating !== undefined) updateData.rating = validatedData.rating
+    if (validatedData.review !== undefined) updateData.review = validatedData.review
 
     const updatedReview = await reviewDataService.updateReview(updateData)
+    const transformedReview = transformRecordForResponse(updatedReview)
 
-    return NextResponse.json({
+    return successResponse(transformedReview, {
       message: 'Review updated successfully',
-      data: { ...updatedReview, id: String(updatedReview.id || '') },
     })
-  } catch (error: any) {
-    console.error('Error updating review:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to update review' },
-      { status: 500 }
-    )
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to update review',
+    })
   }
-}
+})
 
 // DELETE review
-export async function DELETE(
+export const DELETE = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params
     const success = await reviewDataService.deleteReview(id)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to delete review' },
-        { status: 500 }
-      )
+      return errorResponse(null, {
+        status: 500,
+        message: 'Failed to delete review',
+      })
     }
 
-    return NextResponse.json({ message: 'Review deleted successfully' })
-  } catch (error: any) {
-    console.error('Error deleting review:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to delete review' },
-      { status: 500 }
-    )
+    return successResponse(null, {
+      message: 'Review deleted successfully',
+    })
+  } catch (error) {
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to delete review',
+    })
   }
-}
+})

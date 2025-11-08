@@ -1,3 +1,5 @@
+import { apiClient } from '@/lib/utils/api-client'
+
 export interface Comment {
   id: string
   productId: string
@@ -23,59 +25,36 @@ class AdminCommentService {
    * Get all comments
    */
   async getAllComments(): Promise<Comment[]> {
-    const response = await fetch('/api/admin/comments')
-    if (!response.ok) {
-      throw new Error('Failed to fetch comments')
-    }
-    const data = await response.json()
-    return data.data || []
+    return apiClient.get<Comment[]>('/api/admin/comments', {
+      defaultErrorMessage: 'Failed to fetch comments',
+    })
   }
 
   /**
    * Get a single comment
    */
   async getComment(id: string): Promise<Comment> {
-    const response = await fetch(`/api/admin/comments/${id}`)
-    if (!response.ok) {
-      throw new Error('Failed to fetch comment')
-    }
-    const data = await response.json()
-    return data.data
+    return apiClient.get<Comment>(`/api/admin/comments/${id}`, {
+      defaultErrorMessage: 'Failed to fetch comment',
+    })
   }
 
   /**
    * Update an existing comment
    */
   async updateComment(id: string, commentData: CommentData): Promise<Comment> {
-    const response = await fetch(`/api/admin/comments/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(commentData),
+    return apiClient.put<Comment>(`/api/admin/comments/${id}`, commentData, {
+      defaultErrorMessage: 'Failed to update comment',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to update comment' }))
-      throw new Error(error.error || 'Failed to update comment')
-    }
-
-    const data = await response.json()
-    return data.data
   }
 
   /**
    * Delete a comment
    */
   async deleteComment(id: string): Promise<void> {
-    const response = await fetch(`/api/admin/comments/${id}`, {
-      method: 'DELETE',
+    await apiClient.delete(`/api/admin/comments/${id}`, {
+      defaultErrorMessage: 'Failed to delete comment',
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Failed to delete comment' }))
-      throw new Error(error.error || 'Failed to delete comment')
-    }
   }
 }
 

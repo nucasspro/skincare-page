@@ -4,6 +4,7 @@
 
 import type { UserRecord } from '@/lib/services/data-source.interface'
 import { dataSource } from '@/lib/services/data-sources'
+import { decodeSessionToken, isSessionExpired } from '@/lib/utils/session'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 
@@ -28,25 +29,22 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     }
 
     // Decode session token to get user info
-    const decoded = Buffer.from(sessionToken, 'base64').toString('utf-8')
-    const [userId, expiresAtStr] = decoded.split(':')
-
-    if (!userId || !expiresAtStr) {
+    const decoded = decodeSessionToken(sessionToken)
+    if (!decoded) {
       console.log('[Auth] Invalid session token format')
       return null
     }
 
     // Check if session has expired
-    const expiresAt = parseInt(expiresAtStr, 10)
-    if (Date.now() > expiresAt) {
+    if (isSessionExpired(decoded.expiresAt)) {
       console.log('[Auth] Session expired')
       return null
     }
 
     // Get user from database
-    const user = await dataSource.getUserById(userId)
+    const user = await dataSource.getUserById(decoded.userId)
     if (!user) {
-      console.log(`[Auth] User not found with ID: ${userId}`)
+      console.log(`[Auth] User not found with ID: ${decoded.userId}`)
       return null
     }
 

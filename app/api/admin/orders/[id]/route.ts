@@ -1,142 +1,96 @@
+import { withAdminAuth, withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { orderDataService } from '@/lib/services/order-data-service'
-import { getCurrentUser, isAdmin } from '@/lib/utils/auth'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { updateOrderSchema } from '@/lib/validations/order-schemas'
 
 // GET single order
-export async function GET(
+export const GET = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
-    // Check authentication
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     const { id } = await params
     const order = await orderDataService.getOrderById(id)
 
     if (!order) {
-      return NextResponse.json(
-        { error: 'Order not found' },
-        { status: 404 }
-      )
+      return errorResponse(null, {
+        status: 404,
+        message: 'Order not found',
+      })
     }
 
-    return NextResponse.json({ data: { ...order, id: String(order.id || '') } })
+    const transformedOrder = transformRecordForResponse(order)
+    return successResponse(transformedOrder)
   } catch (error) {
-    console.error('Error fetching order:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch order' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch order',
+    })
   }
-}
+})
 
 // PUT update order
-export async function PUT(
+export const PUT = withAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
-    // Check authentication
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     const { id } = await params
-    const body = await request.json()
-    const {
-      status,
-      paymentMethod,
-      notes,
-      customerName,
-      customerEmail,
-      customerPhone,
-      streetAddress,
-      wardName,
-      districtName,
-      provinceName,
-      items,
-      total,
-    } = body
+    const validatedData = await validateRequestBody(request, updateOrderSchema)
 
     const updateData: any = { id }
-    if (status !== undefined) updateData.status = status
-    if (paymentMethod !== undefined) updateData.paymentMethod = paymentMethod
-    if (notes !== undefined) updateData.notes = notes
-    if (customerName !== undefined) updateData.customerName = customerName
-    if (customerEmail !== undefined) updateData.customerEmail = customerEmail
-    if (customerPhone !== undefined) updateData.customerPhone = customerPhone
-    if (streetAddress !== undefined) updateData.streetAddress = streetAddress
-    if (wardName !== undefined) updateData.wardName = wardName
-    if (districtName !== undefined) updateData.districtName = districtName
-    if (provinceName !== undefined) updateData.provinceName = provinceName
-    if (items !== undefined) updateData.items = items
-    if (total !== undefined) updateData.total = total
+    if (validatedData.status !== undefined) updateData.status = validatedData.status
+    if (validatedData.paymentMethod !== undefined) updateData.paymentMethod = validatedData.paymentMethod
+    if (validatedData.notes !== undefined) updateData.notes = validatedData.notes
+    if (validatedData.customerName !== undefined) updateData.customerName = validatedData.customerName
+    if (validatedData.customerEmail !== undefined) updateData.customerEmail = validatedData.customerEmail
+    if (validatedData.customerPhone !== undefined) updateData.customerPhone = validatedData.customerPhone
+    if (validatedData.streetAddress !== undefined) updateData.streetAddress = validatedData.streetAddress
+    if (validatedData.wardName !== undefined) updateData.wardName = validatedData.wardName
+    if (validatedData.districtName !== undefined) updateData.districtName = validatedData.districtName
+    if (validatedData.provinceName !== undefined) updateData.provinceName = validatedData.provinceName
 
     const order = await orderDataService.updateOrder(updateData)
+    const transformedOrder = transformRecordForResponse(order)
 
-    return NextResponse.json({
+    return successResponse(transformedOrder, {
       message: 'Order updated successfully',
-      data: { ...order, id: String(order.id || '') },
     })
-  } catch (error: any) {
-    console.error('Error updating order:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to update order' },
-      { status: 500 }
-    )
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to update order',
+    })
   }
-}
+})
 
 // DELETE order
-export async function DELETE(
+export const DELETE = withAdminAuth(async (
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
-    // Check authentication and admin role
-    const currentUser = await getCurrentUser()
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const isUserAdmin = await isAdmin()
-    if (!isUserAdmin) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only admin can delete orders' },
-        { status: 403 }
-      )
-    }
-
     const { id } = await params
     const success = await orderDataService.deleteOrder(id)
 
     if (!success) {
-      return NextResponse.json(
-        { error: 'Failed to delete order' },
-        { status: 500 }
-      )
+      return errorResponse(null, {
+        status: 500,
+        message: 'Failed to delete order',
+      })
     }
 
-    return NextResponse.json({ message: 'Order deleted successfully' })
+    return successResponse(null, {
+      message: 'Order deleted successfully',
+    })
   } catch (error) {
-    console.error('Error deleting order:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete order' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to delete order',
+    })
   }
-}
+})

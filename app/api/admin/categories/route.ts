@@ -1,52 +1,46 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
 import { categoryDataService } from '@/lib/services/category-data-service'
-import { NextResponse } from 'next/server'
+import { errorResponse, successResponse, transformRecordForResponse } from '@/lib/utils/api-response'
+import { createCategorySchema } from '@/lib/validations/category-schemas'
 
 // GET all categories
-export async function GET() {
+export const GET = withAuth(async () => {
   try {
     const categories = await categoryDataService.getAllCategories()
-    return NextResponse.json({
-      data: categories.map(c => ({
-        ...c,
-        id: String(c.id || ''), // Ensure id is always string
-      }))
-    })
+    const transformedCategories = categories.map(transformRecordForResponse)
+    return successResponse(transformedCategories)
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch categories' },
-      { status: 500 }
-    )
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch categories',
+    })
   }
-}
+})
 
 // POST create new category
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: Request) => {
   try {
-    const body = await request.json()
-    const { name, description } = body
-
-    if (!name) {
-      return NextResponse.json(
-        { error: 'Category name is required' },
-        { status: 400 }
-      )
-    }
+    const validatedData = await validateRequestBody(request, createCategorySchema)
 
     const category = await categoryDataService.createCategory({
-      name,
-      description: description || null,
+      name: validatedData.name,
+      description: validatedData.description || null,
+      slug: validatedData.slug || null,
     })
 
-    return NextResponse.json(
-      { message: 'Category created successfully', data: { ...category, id: String(category.id || '') } },
-      { status: 201 }
-    )
-  } catch (error: any) {
-    console.error('Error creating category:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to create category' },
-      { status: 500 }
-    )
+    const transformedCategory = transformRecordForResponse(category)
+    return successResponse(transformedCategory, {
+      status: 201,
+      message: 'Category created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create category',
+    })
   }
-}
+})

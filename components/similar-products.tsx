@@ -2,11 +2,10 @@
 
 import { useProduct, useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
-import { formatCurrency } from "@/lib/utils/currency-utils"
 import type { Product } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 
 interface SimilarProductsProps {
@@ -14,7 +13,6 @@ interface SimilarProductsProps {
 }
 
 export function SimilarProducts({ productId }: SimilarProductsProps) {
-  const router = useRouter()
   const { items, isHydrated, addItem } = useCart()
   const { products: allProducts, loading: productsLoading } = useProducts()
   const { product, loading: productLoading } = useProduct(productId)
@@ -127,17 +125,6 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
                 <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
                 <span className="text-gray-500 text-[10px] sm:text-xs">Đang tải...</span>
               </div>
-            ) : items.some(item => item.id === product.id) ? (
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  router.push("/cart")
-                }}
-                className="w-full h-9 sm:h-10 px-3 sm:px-4 rounded-full border border-stone-300 group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900 transition-colors bg-transparent text-center flex items-center justify-center text-xs sm:text-sm font-medium"
-              >
-                Mua hàng
-              </button>
             ) : (
               <button
                 onClick={(e) => {
