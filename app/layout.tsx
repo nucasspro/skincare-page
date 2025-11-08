@@ -1,13 +1,13 @@
-import { ParallaxProviderWrapper } from "@/components/shared/parallax-provider-wrapper"
 import { PromotionBannerWrapper } from "@/components/hero/promotion-banner-wrapper"
+import { ParallaxProviderWrapper } from "@/components/shared/parallax-provider-wrapper"
 import { ScrollToTop } from "@/components/shared/scroll-to-top"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { GeistSans } from 'geist/font/sans'
-import { Air, Fragment } from './fonts'
 import type { Metadata } from "next"
 import { Inter } from 'next/font/google'
 import type React from "react"
+import { Air, Fragment } from './fonts'
 import "./globals.css"
 
 const geistSans = GeistSans
