@@ -28,6 +28,7 @@ export function VideoHero() {
         autoPlay
         loop
         className="absolute inset-0 h-full w-full object-cover"
+        suppressHydrationWarning
       >
         <source src="/videos/1.mp4" type="video/mp4" />
       </video>
