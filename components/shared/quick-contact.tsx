@@ -49,7 +49,7 @@ export function QuickContact() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[49]">
+    <div className="fixed bottom-20 right-4 z-[49] lg:bottom-6 lg:right-6">
       {isExpanded ? (
         /* Expanded state: Icons + Close button in horizontal layout */
         <div className="flex flex-row items-center gap-3 animate-in fade-in">
