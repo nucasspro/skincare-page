@@ -1,13 +1,13 @@
-import { ParallaxProviderWrapper } from "@/components/parallax-provider-wrapper"
-import { PromotionBanner } from "@/components/promotion-banner"
-import { ScrollToTop } from "@/components/scroll-to-top"
+import { PromotionBannerWrapper } from "@/components/hero/promotion-banner-wrapper"
+import { ParallaxProviderWrapper } from "@/components/shared/parallax-provider-wrapper"
+import { QuickContact } from "@/components/shared/quick-contact"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { GeistSans } from 'geist/font/sans'
-import { Air, Fragment } from './fonts'
 import type { Metadata } from "next"
 import { Inter } from 'next/font/google'
 import type React from "react"
+import { Air, Fragment } from './fonts'
 import "./globals.css"
 
 const geistSans = GeistSans
@@ -46,9 +46,10 @@ export default function RootLayout({
       <body className={`${inter.className} ${Air.variable} ${Fragment.variable} antialiased`} suppressHydrationWarning>
         <ParallaxProviderWrapper>
           <CartProvider>
-            <PromotionBanner />
+            <PromotionBannerWrapper />
             <I18nProvider>{children}</I18nProvider>
-            <ScrollToTop />
+            {/* <ScrollToTop /> */}
+            <QuickContact />
             {/* <Analytics /> */}
           </CartProvider>
         </ParallaxProviderWrapper>

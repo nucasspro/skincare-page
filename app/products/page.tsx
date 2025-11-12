@@ -1,17 +1,18 @@
 "use client"
 
-import { FAQSection, type FAQItem } from "@/components/faq-section"
-import { FeaturedArticle } from "@/components/featured-article"
-import { Footer } from "@/components/footer"
-import { NatureBannerSlider } from "@/components/nature-banner-slider"
-import Navigation from "@/components/navigation"
-import { NavigationFilterBar } from "@/components/navigation-filter-bar"
-import PromoSlider from "@/components/promo-slider"
+import { FAQSection, type FAQItem } from "@/components/feature/faq-section"
+import { FeaturedArticle } from "@/components/content/featured-article"
+import { Footer } from "@/components/layout/footer"
+import { NatureBannerSlider } from "@/components/hero/nature-banner-slider"
+import Navigation from "@/components/navigation/navigation"
+import { NavigationFilterBar } from "@/components/navigation/navigation-filter-bar"
+import PromoSlider from "@/components/hero/promo-slider"
+import { useCategoriesAsObject } from "@/hooks/use-categories"
+import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
-import { getCategoriesAsObject } from "@/lib/category-service"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
-import { formatCurrency } from "@/lib/currency-util"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -27,17 +28,37 @@ export default function ProductsPage() {
 
   const productsPerPage = 12
 
-  // Get categories from service
-  const categories = getCategoriesAsObject()
+  // Get categories from admin service
+  const { categories, loading: categoriesLoading } = useCategoriesAsObject()
 
-  // Get all products (no filters)
+  // Get products from database
+  const { products: dbProducts, loading: productsLoading } = useProducts()
+
+  // Get all products (from database)
   const filteredAndSortedProducts = useMemo(() => {
-    return ProductService.filterProducts({
-      category: selectedCategory,
-      needs: [],
-      priceRange: [0, 1000000],
-    })
-  }, [selectedCategory])
+    // Use database products if available
+    if (dbProducts.length === 0) return []
+
+    let filtered = dbProducts
+
+    // Filter by category
+    if (selectedCategory && selectedCategory !== "all") {
+      const categoryFilter = ProductService.CATEGORY_FILTER_MAP[selectedCategory]
+
+      if (categoryFilter) {
+        // Use mapped filter logic for known category slugs
+        filtered = filtered.filter(categoryFilter)
+      } else {
+        // Standard category filter for other categories
+        filtered = filtered.filter((p) => p.category === selectedCategory)
+      }
+    }
+
+    // Filter by needs (empty array, so no filtering)
+    // Filter by price range (0 to 1000000, so no filtering)
+
+    return filtered
+  }, [selectedCategory, dbProducts])
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedProducts.length / productsPerPage)
@@ -110,17 +131,21 @@ export default function ProductsPage() {
           {/* Category Title */}
           <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
-              {selectedCategory === "all"
+              {categoriesLoading
+                ? "Đang tải..."
+                : selectedCategory === "all"
                 ? "Tất cả sản phẩm"
                 : (categories[selectedCategory] || "Tất cả sản phẩm")}
             </h1>
           </div>
 
-          <NavigationFilterBar
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
+          {!categoriesLoading && (
+            <NavigationFilterBar
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+          )}
 
           {/* Products List - Mobile: 1 per row, Desktop: 4 per row with square images */}
           <div className="space-y-0">

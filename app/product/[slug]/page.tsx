@@ -1,13 +1,14 @@
-import { FeatureHighlight } from "@/components/feature-highlight"
-import { Footer } from "@/components/footer"
-import { Navigation } from "@/components/navigation"
-import { ProductDetailsAccordion } from "@/components/product-details-accordion"
-import { ProductImageGallery } from "@/components/product-image-gallery"
-import { ProductInfo } from "@/components/product-info"
-import { ProductQA } from "@/components/product-qa"
-import { RealResults } from "@/components/real-results"
-import { SimilarProducts } from "@/components/similar-products"
-import { getProductBySlug } from "@/lib/product-service"
+import { RealResults } from "@/components/content/real-results"
+import { FeatureHighlight } from "@/components/feature/feature-highlight"
+import { Footer } from "@/components/layout/footer"
+import { Navigation } from "@/components/navigation/navigation"
+import { MobileAddToCart } from "@/components/product/mobile-add-to-cart"
+import { ProductDetailsAccordion } from "@/components/product/product-details-accordion"
+import { ProductImageGallery } from "@/components/product/product-image-gallery"
+import { ProductInfo } from "@/components/product/product-info"
+import { ProductQA } from "@/components/product/product-qa"
+import { SimilarProducts } from "@/components/product/similar-products"
+import { ProductService } from "@/lib/product-service"
 
 // Stable reference để tránh lỗi React children
 const DEFAULT_FEATURE_ITEMS = [
@@ -25,8 +26,11 @@ const BRIGHT_MATTE_FEATURE_ITEMS = [
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   // Await params in Next.js 15+
   const { slug } = await params
-  const product = getProductBySlug(slug)
-  
+
+  // Fetch product from database
+  const product = await ProductService.getProductBySlug(slug)
+  console.log("product", product)
+
   // Chọn feature items dựa trên slug
   const featureItems = slug === "bright-matte-sunscreen" ? BRIGHT_MATTE_FEATURE_ITEMS : DEFAULT_FEATURE_ITEMS
 
@@ -46,7 +50,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-white">
       <Navigation isTransparent={false} />
 
-      <main className="pt-0 md:pt-12 lg:pt-16">
+      <main className="pt-0 md:pt-12 lg:pt-16 pb-20 lg:pb-0">
         {/* Product Gallery & Info Section */}
         <section className="w-full">
           {/* Mobile: Full width */}
@@ -62,7 +66,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
           </div>
-          
+
           {/* Desktop: Container with max-width, nhỏ gọn hơn */}
           <div className="hidden lg:block">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,7 +110,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       </main>
 
       <Footer />
+
+      {/* Mobile Add to Cart Button - Fixed at bottom */}
+      <MobileAddToCart productId={product.id} />
     </div>
   )
 }
-

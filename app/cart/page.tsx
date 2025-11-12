@@ -1,10 +1,10 @@
 "use client"
 
-import { Footer } from "@/components/footer"
-import Navigation from "@/components/navigation"
+import { Footer } from "@/components/layout/footer"
+import Navigation from "@/components/navigation/navigation"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
-import { formatCurrency } from "@/lib/currency-util"
+import { formatCurrency } from "@/lib/utils/currency-utils"
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"

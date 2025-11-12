@@ -1,3 +1,5 @@
+import { transformProductRecord } from '@/lib/utils/product-transformer'
+
 // Product types
 export interface Product {
   id: string
@@ -19,237 +21,162 @@ export interface Product {
 }
 
 /**
- * Generate URL-friendly slug from product name
+ * Transform ProductRecord from database to Product interface
+ * @param record - ProductRecord from database
  */
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD") // Decompose characters with diacritics
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
-    .trim()
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+function transformProduct(record: any): Product {
+  return transformProductRecord(record)
 }
 
-// Mock product data
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: "new",
-    slug: "bright-matte-sunscreen",
-    name: "Bright Matte Sunscreen",
-    tagline: "Bảo vệ và kiểm soát dầu hiệu quả",
-    price: 219000,
-    originalPrice: 350000,
-    discount: 37,
-    category: "oily",
-    needs: ["oily", "uv-protection", "pore"],
-    image: "/image-product/kcnxanhduong/1.png",
-    hoverImage: "/image-product/kcnxanhduong/8.png",
-    images: [
-      "/image-product/kcnxanhduong/1.png",
-      "/image-product/kcnxanhduong/8.png",
-      "/image-product/kcnxanhduong/6.png",
-      "/image-product/kcnxanhduong/7.png",
-      "/image-product/kcnxanhduong/ANHWEB-3.png"
-    ],
-    description: "Kem chống nắng kiểm soát dầu hiệu quả, mang lại làn da matte mịn màng và bảo vệ khỏi tia UV với SPF 50+ và PA++++.",
-    benefits: [
-      "Với công nghệ Booster kèm 4 màng lọc có kích thước hạt nhỏ thông minh tạo lớp bảo vệ bền vững, KCN Cellic Bright Matte kiểm soát và bảo vệ da khỏi tác động tia UVA, UVB và ánh sáng xanh trong suốt 8 giờ. Bổ sung thành phần PDRN cùng chiết xuất hoa kim ngân và công nghệ MicroBiome hỗ trợ cân bằng hệ vi sinh, làm dịu và giảm kích ứng khi tiếp xúc ánh nắng.",
-      "Chất kem mỏng nhẹ, thấm nhanh vào da, KCN Cellic Bright Matte tạo lớp bảo vệ tự nhiên, thoáng, mịn, không gây bít tắc lỗ chân lông cho da. KCN Cellic Bright Matte phù hợp với làn da hỗn hợp và hỗn hợp thiên dầu."
-    ],
-    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Matte Powder", "Sebum Control", "PDRN"],
-  },
-  {
-    id: "0",
-    slug: "cellic-calm-defense-sunscreen",
-    name: "Cellic Calm Defense Sunscreen",
-    tagline: "Bảo vệ và làm dịu cho da mụn",
-    price: 219000,
-    originalPrice: 350000,
-    discount: 37,
-    category: "normal",
-    needs: ["sensitive", "hydration", "acne"],
-    image: "/image-product/kcnxanhlacay/18.png",
-    hoverImage: "/image-product/kcnxanhlacay/19.png",
-    images: [
-      "/image-product/kcnxanhlacay/18.png",
-      "/image-product/kcnxanhlacay/19.png",
-      "/image-product/kcnxanhlacay/20.png",
-      "/image-product/kcnxanhlacay/30.png",
-      "/image-product/kcnxanhlacay/ANHWEB-5.png"
-    ],
-    description: "Kem chống nắng bảo vệ và làm dịu da mụn, phù hợp cho làn da nhạy cảm.",
-    benefits: [
-      "Bảo vệ khỏi tia UV",
-      "Làm dịu da mụn",
-      "Công thức không gây bít tắc",
-      "Phù hợp với da nhạy cảm"
-    ],
-    ingredients: ["Zinc Oxide", "Niacinamide", "Calming Extracts", "Hyaluronic Acid"],
-  },
-  {
-    id: "00",
-    slug: "cellic-dew-shield-sunscreen",
-    name: "Cellic Dew Shield Sunscreen",
-    tagline: "Lá chắn ẩm mượt cho da khô",
-    price: 219000,
-    originalPrice: 350000,
-    discount: 37,
-    category: "dry",
-    needs: ["dry", "hydration", "uv-protection"],
-    image: "/image-product/kcnmauvang/ANHWEBSTE-2.png",
-    hoverImage: "/image-product/kcnmauvang/14.png",
-    images: [
-      "/image-product/kcnmauvang/ANHWEBSTE-2.png",
-      "/image-product/kcnmauvang/14.png",
-      "/image-product/kcnmauvang/32.png",
-      "/image-product/kcnmauvang/ANHWEB-5.png",
-      "/image-product/kcnmauvang/ANHWEB-6.png"
-    ],
-    description: "Kem chống nắng cấp ẩm sâu, mang lại lớp nền ẩm mượt, bảo vệ da khô khỏi tác hại của tia UV với SPF 50+ và PA++++.",
-    benefits: [
-      "Bảo vệ da khỏi tia UVA/UVB",
-      "Cấp ẩm sâu, dưỡng ẩm lâu dài",
-      "Làm mềm mịn da khô",
-      "Phù hợp cho da khô và thiếu ẩm"
-    ],
-    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Hyaluronic Acid", "Glycerin", "Ceramides", "PDRN"],
-  },
-  {
-    id: "000",
-    slug: "cellic-right-match-lumi-sunscreen",
-    name: "Cellic Right Match Lumi Sunscreen",
-    tagline: "Bảo vệ và hiệu chỉnh màu da tối ưu",
-    price: 219000,
-    originalPrice: 350000,
-    discount: 37,
-    category: "normal",
-    needs: ["brightening", "uv-protection", "color-correction"],
-    image: "/image-product/kcnmautim/16.png",
-    hoverImage: "/image-product/kcnmautim/15.png",
-    images: [
-      "/image-product/kcnmautim/16.png",
-      "/image-product/kcnmautim/15.png",
-      "/image-product/kcnmautim/17.png",
-      "/image-product/kcnmautim/31.png",
-      "/image-product/kcnmautim/ANHWEB-5.png"
-    ],
-    description: "Kem chống nắng với công nghệ hiệu chỉnh màu da thông minh, mang lại làn da sáng đều màu và bảo vệ khỏi tia UV với SPF 50+ và PA++++.",
-    benefits: [
-      "Bảo vệ da khỏi tia UVA/UVB",
-      "Hiệu chỉnh và làm đều màu da",
-      "Làm sáng da tự nhiên",
-      "Phù hợp cho mọi loại da"
-    ],
-    ingredients: ["Zinc Oxide", "Titanium Dioxide", "Niacinamide", "Vitamin C", "Light Reflecting Particles", "PDRN"],
-  },
-]
+/**
+ * Fetch all products from database
+ * Server-side: fetches directly from DB
+ * Client-side: fetches from API endpoint
+ */
+async function fetchAllProducts(): Promise<Product[]> {
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // Client-side: fetch from API
+    const response = await fetch('/api/products')
+    if (!response.ok) {
+      throw new Error('Failed to fetch products')
+    }
+    const data = await response.json()
+    const productRecords = data.data || []
+    return productRecords.map(transformProduct)
+  } else {
+    // Server-side: fetch directly from DB
+    const { productDataService } = await import('@/lib/services/product-data-service')
+    const products = await productDataService.getAllProducts()
+    return products.map(transformProduct)
+  }
+}
 
 // Product Service
 export class ProductService {
   /**
-   * Get all products
+   * Get all products from database
    */
-  static getAllProducts(): Product[] {
-    return MOCK_PRODUCTS
+  static async getAllProducts(): Promise<Product[]> {
+    return await fetchAllProducts()
   }
 
   /**
-   * Get product by ID
+   * Get product by ID from database
    */
-  static getProductById(id: string): Product | undefined {
-    return MOCK_PRODUCTS.find(product => product.id === id)
+  static async getProductById(id: string): Promise<Product | null> {
+    const products = await fetchAllProducts()
+    return products.find(product => product.id === id) || null
   }
 
   /**
-   * Get product by slug
+   * Get product by slug from database
    */
-  static getProductBySlug(slug: string): Product | undefined {
-    return MOCK_PRODUCTS.find(product => product.slug === slug)
+  static async getProductBySlug(slug: string): Promise<Product | null> {
+    const products = await fetchAllProducts()
+    return products.find(product => product.slug === slug) || null
   }
 
   /**
-   * Get products by category
+   * Get products by category from database
    */
-  static getProductsByCategory(category: string): Product[] {
-    if (category === "all") return MOCK_PRODUCTS
-    return MOCK_PRODUCTS.filter(product => product.category === category)
+  static async getProductsByCategory(category: string): Promise<Product[]> {
+    const products = await fetchAllProducts()
+    if (category === "all") return products
+    return products.filter(product => product.category === category)
   }
 
   /**
-   * Get products by needs
+   * Get products by needs from database
    */
-  static getProductsByNeeds(needs: string[]): Product[] {
-    if (needs.length === 0) return MOCK_PRODUCTS
-    return MOCK_PRODUCTS.filter(product =>
+  static async getProductsByNeeds(needs: string[]): Promise<Product[]> {
+    const products = await fetchAllProducts()
+    if (needs.length === 0) return products
+    return products.filter(product =>
       needs.some(need => product.needs.includes(need))
     )
   }
 
   /**
-   * Get products by price range
+   * Get products by price range from database
    */
-  static getProductsByPriceRange(min: number, max: number): Product[] {
-    return MOCK_PRODUCTS.filter(product =>
+  static async getProductsByPriceRange(min: number, max: number): Promise<Product[]> {
+    const products = await fetchAllProducts()
+    return products.filter(product =>
       product.price >= min && product.price <= max
     )
   }
 
   /**
-   * Filter products with multiple criteria
+   * Category filter mapping
+   * Maps category slug to filter logic
    */
-  static filterProducts(filters: {
-    category?: string
-    needs?: string[]
-    priceRange?: [number, number]
-  }): Product[] {
-    let filtered = MOCK_PRODUCTS
+  static readonly CATEGORY_FILTER_MAP: Record<
+    string,
+    (product: Product) => boolean
+  > = {
+    "da-mun-nhay-cam": (p) =>
+      // Filter for products suitable for sensitive/acne skin
+      p.needs.includes("sensitive") ||
+      p.needs.includes("acne") ||
+      p.tagline.toLowerCase().includes("mụn") ||
+      (p.description?.toLowerCase().includes("mụn") ?? false) ||
+      (p.description?.toLowerCase().includes("nhạy cảm") ?? false),
+
+    "ngan-ngua-lao-hoa": (p) =>
+      // Filter for anti-aging products
+      p.needs.includes("antiAging") ||
+      p.tagline.toLowerCase().includes("lão") ||
+      (p.description?.toLowerCase().includes("lão") ?? false),
+
+    "da-dau": (p) =>
+      // Filter for oily skin products
+      p.category === "oily" || p.needs.includes("oily"),
+
+    "da-kho": (p) =>
+      // Filter for dry skin products
+      p.category === "dry" || p.needs.includes("dry"),
+  }
+
+  /**
+   * Filter products with multiple criteria
+   * @param filters - Filter criteria
+   * @param products - Optional products array to filter. If not provided, fetches from database
+   */
+  static async filterProducts(
+    filters: {
+      category?: string
+      needs?: string[]
+      priceRange?: [number, number]
+    },
+    products?: Product[]
+  ): Promise<Product[]> {
+    let filtered = products || await fetchAllProducts()
 
     // Filter by category
     if (filters.category && filters.category !== "all") {
-      if (filters.category === "da-mun-nhay-cam") {
-        // Filter for products that are suitable for sensitive/acne skin
-        filtered = filtered.filter(p => 
-          (p.needs.includes("sensitive") || p.needs.includes("acne")) ||
-          p.tagline.toLowerCase().includes("mụn") ||
-          p.description?.toLowerCase().includes("mụn") ||
-          p.description?.toLowerCase().includes("nhạy cảm")
-        )
-      } else if (filters.category === "ngan-ngua-lao-hoa") {
-        // Filter for anti-aging products
-        filtered = filtered.filter(p => 
-          p.needs.includes("antiAging") ||
-          p.tagline.toLowerCase().includes("lão") ||
-          p.description?.toLowerCase().includes("lão")
-        )
-      } else if (filters.category === "da-dau") {
-        // Filter for oily skin products
-        filtered = filtered.filter(p => 
-          p.category === "oily" || p.needs.includes("oily")
-        )
-      } else if (filters.category === "da-kho") {
-        // Filter for dry skin products
-        filtered = filtered.filter(p => 
-          p.category === "dry" || p.needs.includes("dry")
-        )
+      const categoryFilter = this.CATEGORY_FILTER_MAP[filters.category]
+
+      if (categoryFilter) {
+        // Use mapped filter logic for known category slugs
+        filtered = filtered.filter(categoryFilter)
       } else {
-        // Standard category filter
-        filtered = filtered.filter(p => p.category === filters.category)
+        // Standard category filter for other categories
+        filtered = filtered.filter((p) => p.category === filters.category)
       }
     }
 
     // Filter by needs
     if (filters.needs && filters.needs.length > 0) {
-      filtered = filtered.filter(p =>
-        filters.needs!.some(need => p.needs.includes(need))
+      filtered = filtered.filter((p) =>
+        filters.needs!.some((need) => p.needs.includes(need))
       )
     }
 
     // Filter by price range
     if (filters.priceRange) {
       const [min, max] = filters.priceRange
-      filtered = filtered.filter(p => p.price >= min && p.price <= max)
+      filtered = filtered.filter((p) => p.price >= min && p.price <= max)
     }
 
     return filtered
@@ -276,57 +203,66 @@ export class ProductService {
   }
 
   /**
-   * Search products by name or tagline
+   * Search products by name or tagline from database
    */
-  static searchProducts(query: string): Product[] {
+  static async searchProducts(query: string): Promise<Product[]> {
+    const products = await fetchAllProducts()
     const lowerQuery = query.toLowerCase()
-    return MOCK_PRODUCTS.filter(product =>
+    return products.filter(product =>
       product.name.toLowerCase().includes(lowerQuery) ||
       product.tagline.toLowerCase().includes(lowerQuery)
     )
   }
 
   /**
-   * Get featured/best-selling products
+   * Get featured/best-selling products from database
    */
-  static getFeaturedProducts(limit: number = 3): Product[] {
-    return MOCK_PRODUCTS.slice(0, limit)
+  static async getFeaturedProducts(limit: number = 3): Promise<Product[]> {
+    const products = await fetchAllProducts()
+    return products.slice(0, limit)
   }
 
   /**
    * Get related products with smart matching algorithm
    * Priority: 1) Same category + same needs, 2) Same category, 3) Same needs, 4) Other products
+   * @param productId - ID of the product to find related products for
+   * @param limit - Maximum number of related products to return
+   * @param products - Optional products array to search in. If not provided, fetches from database
+   * @param product - Optional product object. If not provided, will look up by productId
    */
-  static getRelatedProducts(productId: string, limit: number = 4): Product[] {
-    const product = this.getProductById(productId)
-    if (!product) return []
+  static async getRelatedProducts(
+    productId: string,
+    limit: number = 4,
+    products?: Product[],
+    product?: Product | null
+  ): Promise<Product[]> {
+    // Use provided product or look it up
+    const targetProduct = product || await this.getProductById(productId)
+    if (!targetProduct) return []
 
-    const otherProducts = MOCK_PRODUCTS.filter(p => p.id !== productId)
-    
+    // Use provided products array or fetch from database
+    const allProducts = products || await fetchAllProducts()
+    const otherProducts = allProducts.filter(p => p.id !== productId)
+
     if (otherProducts.length === 0) return []
 
     // Helper function to calculate similarity score
     const calculateScore = (p: Product): number => {
       let score = 0
-      
+
       // Priority 1: Same category and shared needs (highest priority)
-      if (p.category === product.category) {
+      if (p.category === targetProduct.category) {
         score += 100
-        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+        const sharedNeeds = p.needs.filter(need => targetProduct.needs.includes(need))
         score += sharedNeeds.length * 20 // Each shared need adds 20 points
       }
-      
-      // Priority 2: Same category but different needs
-      if (p.category === product.category) {
-        // Already added above, but ensure we have base score
-      }
-      
+
       // Priority 3: Different category but shared needs
-      if (p.category !== product.category) {
-        const sharedNeeds = p.needs.filter(need => product.needs.includes(need))
+      if (p.category !== targetProduct.category) {
+        const sharedNeeds = p.needs.filter(need => targetProduct.needs.includes(need))
         score += sharedNeeds.length * 10 // Each shared need adds 10 points
       }
-      
+
       return score
     }
 

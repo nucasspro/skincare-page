@@ -1,11 +1,11 @@
-import { BestSellers } from "@/components/best-sellers"
-import { BrandStoryPreview } from "@/components/brand-story-preview"
-import { Footer } from "@/components/footer"
-import { Navigation } from "@/components/navigation"
-import { ProductFeature } from "@/components/product-feature"
-import { PromoSlider } from "@/components/promo-slider"
-import { SocialMediaShowcase } from "@/components/social-media-showcase"
-import { VideoHero } from "@/components/video-hero"
+import { BestSellers } from "@/components/product-listing/best-sellers"
+import { BrandStoryPreview } from "@/components/content/brand-story-preview"
+import { Footer } from "@/components/layout/footer"
+import { Navigation } from "@/components/navigation/navigation"
+import { ProductFeature } from "@/components/product/product-feature"
+import { PromoSlider } from "@/components/hero/promo-slider"
+import { SocialMediaShowcase } from "@/components/content/social-media-showcase"
+import { VideoHero } from "@/components/hero/video-hero"
 
 export default function Home() {
   return (

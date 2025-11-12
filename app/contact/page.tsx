@@ -1,7 +1,7 @@
 "use client"
 
-import { Footer } from "@/components/footer"
-import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/layout/footer"
+import { Navigation } from "@/components/navigation/navigation"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { useState } from "react"
 

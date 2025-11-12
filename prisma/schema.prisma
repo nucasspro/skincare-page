@@ -1,0 +1,168 @@
+// Prisma Schema for MongoDB - Best Practices
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+// ============ COMPOSITE TYPES (MongoDB) ============
+
+type Benefit {
+  title   String
+  description String?
+}
+
+type Ingredient {
+  name    String
+  percentage Float?
+}
+
+type NeedTag {
+  id    String
+  name  String
+}
+
+type OrderItem {
+  productId String @db.ObjectId
+  productName String
+  quantity  Int
+  price     Float
+  total     Float
+}
+
+// ============ MODELS ============
+
+model Product {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  tagline       String
+  price         Float
+  originalPrice Float?
+  discount      Float?
+  categoryId    String   @db.ObjectId
+  category      Category @relation(fields: [categoryId], references: [id])
+
+  // Array of objects thay vì String
+  needs         NeedTag[]
+  benefits      Benefit[]
+  ingredients   Ingredient[]
+
+  image         String
+  hoverImage    String
+  description   String?
+  howToUse      String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  reviews       Review[]
+
+  // Chỉ index những field thường query
+  // Note: @unique on 'name' already creates an index, no need for @@index([name])
+  @@index([categoryId])
+  @@index([createdAt])
+  @@map("products")
+}
+
+model Category {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String   @unique
+  slug          String?  // Slug for filtering (e.g., "da-dau", "da-mun-nhay-cam")
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products      Product[]
+
+  @@index([slug])
+  @@map("categories")
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String   @unique
+  name          String
+  phone         String?
+  address       String?
+  password      String?  // Hashed password
+  role          String   @default("user")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orders        Order[]
+
+  // Note: @unique on 'email' already creates an index, no need for @@index([email])
+  @@map("users")
+}
+
+model Order {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber     String      @unique
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+
+  userId          String?     @db.ObjectId
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Address as embedded object
+  address         Address?
+
+  // Status
+  status          OrderStatus @default(pending)
+  paymentMethod   String
+
+  // Array of order items (embedded)
+  items           OrderItem[]
+
+  total           Float
+  notes           String?
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Note: @unique on 'orderNumber' already creates an index, no need for @@index([orderNumber])
+  @@index([userId])
+  @@index([status])
+  @@index([customerPhone])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+type Address {
+  street    String
+  ward      String?
+  district  String?
+  province  String?
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  shipped
+  delivered
+  cancelled
+  refunded
+}
+
+model Review {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String   @db.ObjectId
+  reviewerName  String
+  rating        Float    @default(5)
+  review        String
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([rating])
+  @@index([createdAt])
+  @@map("reviews")
+}
