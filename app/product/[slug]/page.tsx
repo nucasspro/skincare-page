@@ -1,11 +1,12 @@
+import { RealResults } from "@/components/content/real-results"
 import { FeatureHighlight } from "@/components/feature/feature-highlight"
 import { Footer } from "@/components/layout/footer"
 import { Navigation } from "@/components/navigation/navigation"
+import { MobileAddToCart } from "@/components/product/mobile-add-to-cart"
 import { ProductDetailsAccordion } from "@/components/product/product-details-accordion"
 import { ProductImageGallery } from "@/components/product/product-image-gallery"
 import { ProductInfo } from "@/components/product/product-info"
 import { ProductQA } from "@/components/product/product-qa"
-import { RealResults } from "@/components/content/real-results"
 import { SimilarProducts } from "@/components/product/similar-products"
 import { ProductService } from "@/lib/product-service"
 
@@ -49,7 +50,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-white">
       <Navigation isTransparent={false} />
 
-      <main className="pt-0 md:pt-12 lg:pt-16">
+      <main className="pt-0 md:pt-12 lg:pt-16 pb-20 lg:pb-0">
         {/* Product Gallery & Info Section */}
         <section className="w-full">
           {/* Mobile: Full width */}
@@ -109,6 +110,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       </main>
 
       <Footer />
+
+      {/* Mobile Add to Cart Button - Fixed at bottom */}
+      <MobileAddToCart productId={product.id} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { PromotionBannerWrapper } from "@/components/hero/promotion-banner-wrapper"
 import { ParallaxProviderWrapper } from "@/components/shared/parallax-provider-wrapper"
-import { ScrollToTop } from "@/components/shared/scroll-to-top"
+import { QuickContact } from "@/components/shared/quick-contact"
 import { CartProvider } from "@/lib/cart-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { GeistSans } from 'geist/font/sans'
@@ -48,7 +48,8 @@ export default function RootLayout({
           <CartProvider>
             <PromotionBannerWrapper />
             <I18nProvider>{children}</I18nProvider>
-            <ScrollToTop />
+            {/* <ScrollToTop /> */}
+            <QuickContact />
             {/* <Analytics /> */}
           </CartProvider>
         </ParallaxProviderWrapper>

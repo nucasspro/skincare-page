@@ -203,8 +203,8 @@ export function ProductInfo({ productId }: ProductInfoProps) {
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="space-y-2 sm:space-y-2.5 pt-1 sm:pt-1.5">
+      {/* Action Buttons - Hidden on mobile (lg and above only) */}
+      <div className="hidden lg:block space-y-2 sm:space-y-2.5 pt-1 sm:pt-1.5">
         {!isHydrated ? (
           <Button
             size="lg"

@@ -26,7 +26,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-stone-900 text-stone-100">
+    <footer className="bg-stone-900 text-stone-100 pb-20 lg:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Newsletter Section */}
         <div className="mb-12 pb-12 border-b border-stone-700">
