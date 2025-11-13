@@ -17,7 +17,13 @@ export function BestSellers() {
   const { products, loading: productsLoading } = useProducts()
 
   // Get featured products from database (first 4 products)
-  const featuredProducts = products.slice(0, 4)
+  // Sort to put "Bright Matte Sunscreen" first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.name === "Bright Matte Sunscreen") return -1
+    if (b.name === "Bright Matte Sunscreen") return 1
+    return 0
+  })
+  const featuredProducts = sortedProducts.slice(0, 4)
 
   return (
     <section className="py-14 sm:py-18 md:py-20 lg:py-24 bg-white">

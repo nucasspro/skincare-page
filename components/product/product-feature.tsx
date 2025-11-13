@@ -9,8 +9,13 @@ export function ProductFeature() {
   // Get products from database
   const { products, loading: productsLoading } = useProducts()
 
-  // Get first product as featured product
-  const featuredProduct = products.length > 0 ? products[0] : null
+  // Sort to put "Bright Matte Sunscreen" first, then get first product as featured
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.name === "Bright Matte Sunscreen") return -1
+    if (b.name === "Bright Matte Sunscreen") return 1
+    return 0
+  })
+  const featuredProduct = sortedProducts.length > 0 ? sortedProducts[0] : null
   const sectionRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
 

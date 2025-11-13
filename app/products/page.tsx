@@ -54,6 +54,13 @@ export default function ProductsPage() {
       }
     }
 
+    // Sort to put "Bright Matte Sunscreen" first
+    filtered = [...filtered].sort((a, b) => {
+      if (a.name === "Bright Matte Sunscreen") return -1
+      if (b.name === "Bright Matte Sunscreen") return 1
+      return 0
+    })
+
     // Filter by needs (empty array, so no filtering)
     // Filter by price range (0 to 1000000, so no filtering)
 
