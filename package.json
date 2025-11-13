@@ -19,11 +19,13 @@
     "seed:reviews": "tsx scripts/seeds/seed-mongodb-reviews.ts",
     "seed:orders": "tsx scripts/seeds/seed-mongodb-orders.ts",
     "seed:admin": "tsx scripts/seeds/seed-admin-user.ts",
+    "seed:settings": "tsx scripts/seeds/seed-settings.ts",
     "seed:all": "pnpm seed:categories && pnpm seed:products && pnpm seed:reviews && pnpm seed:orders",
     "setup:db": "tsx scripts/setup-database.ts",
     "migrate:soft-delete": "tsx scripts/migrations/add-soft-delete-fields.ts",
     "migrate:category": "tsx scripts/migrations/migrate-category-to-categoryid.ts",
     "migrate:review-date": "tsx scripts/migrations/add-review-date-field.ts",
+    "migrate:settings": "tsx scripts/migrations/create-settings-table.ts",
     "migrate:all": "pnpm migrate:soft-delete && pnpm migrate:category"
   },
   "dependencies": {

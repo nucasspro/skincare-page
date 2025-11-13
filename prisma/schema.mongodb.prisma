@@ -121,3 +121,28 @@ model Review {
   @@index([createdAt])
   @@map("reviews")
 }
+
+model Setting {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  key         String      @unique  // Unique key identifier (e.g., "contact_phone", "logo_url")
+  value       String      // Stored as string, parsed based on type
+  type        SettingType @default(string)  // Enum: string, number, image, boolean, json
+  description String?     // Human-readable description
+  group       String?     // Group for organization (e.g., "contact", "seo", "social")
+  isPublic    Boolean     @default(false)  // Whether setting is accessible without auth
+  createdAt   Int         @default(0)  // Unix timestamp
+  updatedAt   Int         @default(0)  // Unix timestamp
+
+  @@index([key])
+  @@index([group])
+  @@index([type])
+  @@map("settings")
+}
+
+enum SettingType {
+  string
+  number
+  image
+  boolean
+  json
+}
