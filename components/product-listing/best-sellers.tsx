@@ -3,6 +3,7 @@
 import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import { getBodyContentFont, getKeyHeadingFont, getNavigationFont } from "@/lib/utils/font-utils"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -30,7 +31,9 @@ export function BestSellers() {
       <div className="w-full">
         {/* Section Header - Centered */}
         <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">Tất cả sản phẩm</h2>
+          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900")}>
+            <strong>Tất cả sản phẩm</strong>
+          </h2>
         </div>
 
         {productsLoading ? (
@@ -88,7 +91,7 @@ export function BestSellers() {
                               e.stopPropagation()
                               router.push("/cart")
                             }}
-                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            className={getNavigationFont("w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             Mua hàng
@@ -106,7 +109,7 @@ export function BestSellers() {
                                 tagline: product.tagline,
                               })
                             }}
-                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            className={getNavigationFont("w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             {t.bestSellers.addToCart}
@@ -119,12 +122,12 @@ export function BestSellers() {
                   {/* Product Info - Padding như Facebook */}
                   <div className="space-y-2 px-4 sm:px-6 py-4 sm:py-5">
                     <h3
-                      className="text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors"
+                      className={getKeyHeadingFont("text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed" title={product.tagline}>
+                    <p className={getBodyContentFont("text-sm sm:text-base text-gray-600 leading-relaxed")} title={product.tagline}>
                       {product.tagline}
                     </p>
                   </div>
@@ -177,7 +180,7 @@ export function BestSellers() {
                               e.stopPropagation()
                               router.push("/cart")
                             }}
-                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm"
+                            className={getNavigationFont("w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             Mua hàng
@@ -195,7 +198,7 @@ export function BestSellers() {
                                 tagline: product.tagline,
                               })
                             }}
-                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm"
+                            className={getNavigationFont("w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             {t.bestSellers.addToCart}
@@ -208,12 +211,12 @@ export function BestSellers() {
                   {/* Product Info */}
                   <div className="space-y-2 mt-5">
                     <h3
-                      className="text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
+                      className={getKeyHeadingFont("text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className="text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
+                    <p className={getBodyContentFont("text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2")} title={product.tagline}>
                       {product.tagline}
                     </p>
                   </div>

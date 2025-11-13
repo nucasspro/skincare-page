@@ -26,6 +26,7 @@
     "migrate:category": "tsx scripts/migrations/migrate-category-to-categoryid.ts",
     "migrate:review-date": "tsx scripts/migrations/add-review-date-field.ts",
     "migrate:settings": "tsx scripts/migrations/create-settings-table.ts",
+    "migrate:contact-messages": "tsx scripts/migrations/create-contact-messages-table.ts",
     "migrate:all": "pnpm migrate:soft-delete && pnpm migrate:category"
   },
   "dependencies": {

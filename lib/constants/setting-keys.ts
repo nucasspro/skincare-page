@@ -61,6 +61,14 @@ export const EMAIL_SETTING_KEYS = {
 } as const
 
 /**
+ * Product Feature Settings Keys
+ */
+export const PRODUCT_FEATURE_SETTING_KEYS = {
+  TITLE: 'product_feature_title',
+  DESCRIPTION: 'product_feature_description',
+} as const
+
+/**
  * All Setting Keys
  */
 export const SETTING_KEYS = {
@@ -70,6 +78,7 @@ export const SETTING_KEYS = {
   ...GENERAL_SETTING_KEYS,
   ...SMTP_SETTING_KEYS,
   ...EMAIL_SETTING_KEYS,
+  ...PRODUCT_FEATURE_SETTING_KEYS,
 } as const
 
 /**
@@ -83,6 +92,7 @@ export const SETTING_GROUPS = {
   APPEARANCE: 'appearance',
   SMTP: 'smtp',
   EMAIL: 'email',
+  PRODUCT_FEATURE: 'product_feature',
 } as const
 
 /**

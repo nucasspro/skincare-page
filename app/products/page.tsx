@@ -1,19 +1,19 @@
 "use client"
 
-import { FAQSection, type FAQItem } from "@/components/feature/faq-section"
 import { FeaturedArticle } from "@/components/content/featured-article"
-import { Footer } from "@/components/layout/footer"
+import { FAQSection, type FAQItem } from "@/components/feature/faq-section"
 import { NatureBannerSlider } from "@/components/hero/nature-banner-slider"
+import PromoSlider from "@/components/hero/promo-slider"
+import { Footer } from "@/components/layout/footer"
 import Navigation from "@/components/navigation/navigation"
 import { NavigationFilterBar } from "@/components/navigation/navigation-filter-bar"
-import PromoSlider from "@/components/hero/promo-slider"
 import { useCategoriesAsObject } from "@/hooks/use-categories"
 import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
-import { formatCurrency } from "@/lib/utils/currency-utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
-import { ShoppingCart } from "lucide-react"
+import { formatCurrency } from "@/lib/utils/currency-utils"
+import { PackageX, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
@@ -68,7 +68,6 @@ export default function ProductsPage() {
   }, [selectedCategory, dbProducts])
 
   // Pagination
-  const totalPages = Math.ceil(filteredAndSortedProducts.length / productsPerPage)
   const startIndex = (currentPage - 1) * productsPerPage
   const paginatedProducts = filteredAndSortedProducts.slice(startIndex, startIndex + productsPerPage)
 
@@ -123,12 +122,6 @@ export default function ProductsPage() {
   return (
     <>
       <Navigation isTransparent={false} />
-      {/* <NavigationFilterBar
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        isSticky={isSticky}
-      /> */}
       <div className="min-h-screen bg-stone-50">
         {/* Nature Images Banner Slider */}
         <NatureBannerSlider />
@@ -155,10 +148,20 @@ export default function ProductsPage() {
           )}
 
           {/* Products List - Mobile: 1 per row, Desktop: 4 per row with square images */}
-          <div className="space-y-0">
-            {/* Mobile: 1 product per row */}
-            <div className="md:hidden">
-              {paginatedProducts.map((product, index) => (
+          {productsLoading ? (
+            <div className="text-center py-12">
+              <div className="w-6 h-6 border-2 border-gray-500 border-t-white rounded-full animate-spin mx-auto mb-2" />
+              <p className="text-gray-600">Đang tải sản phẩm...</p>
+            </div>
+          ) : paginatedProducts.length === 0 ? (
+            <div className="text-center py-12 min-h-[400px] md:min-h-[500px] flex items-center justify-center">
+              <PackageX className="w-16 h-16 text-gray-400" />
+            </div>
+          ) : (
+            <div className="space-y-0">
+              {/* Mobile: 1 product per row */}
+              <div className="md:hidden">
+                {paginatedProducts.map((product, index) => (
                 <div
                   key={product.id}
                   className="group relative"
@@ -334,58 +337,12 @@ export default function ProductsPage() {
               </div>
             </div>
           </div>
-
-          {/* Pagination */}
-          {/* {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mb-12">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-white border border-stone-200 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50"
-              >
-                {t.productListing.pagination.previous}
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded text-sm ${
-                    currentPage === page
-                      ? "bg-stone-900 text-white"
-                      : "bg-white border border-stone-200 hover:bg-stone-50"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-white border border-stone-200 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50"
-              >
-                {t.productListing.pagination.next}
-              </button>
-            </div>
-          )} */}
+          )}
         </div>
 
         { /* Break component */ }
           <PromoSlider />
-        {/* <VideoHero /> */}
-            {/* <div className="relative w-full h-[200px] md:h-[340px] lg:h-[850px] mb-12 flex items-center justify-center overflow-hidden">
-              <img
-                src="/luxury-skincare-brand-story-natural-ingredients-lab.jpg"
-                alt="Skin close up"
-                className="object-cover w-full h-full"
-              />
-              <span className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-white font-semibold text-xl md:text-2xl lg:text-3xl drop-shadow-md uppercase tracking-wide">
-                  SKIN CHECK
-                </span>
-              </span>
-            </div> */}
+
 
         {/* Featured Article Section */}
         <FeaturedArticle

@@ -7,6 +7,7 @@
 
 import {
   EMAIL_SETTING_KEYS,
+  PRODUCT_FEATURE_SETTING_KEYS,
   SETTING_GROUPS,
   SETTING_KEYS,
   SMTP_SETTING_KEYS,
@@ -193,6 +194,23 @@ const DEFAULT_SETTINGS = [
     description: 'Template nội dung email thông báo tin nhắn liên hệ (HTML)',
     group: SETTING_GROUPS.EMAIL,
     isPublic: false,
+  },
+  // Product Feature Settings
+  {
+    key: PRODUCT_FEATURE_SETTING_KEYS.TITLE,
+    value: 'Bright Matte Sunscreen',
+    type: 'string',
+    description: 'Tiêu đề sản phẩm nổi bật trên trang chủ',
+    group: SETTING_GROUPS.PRODUCT_FEATURE,
+    isPublic: true,
+  },
+  {
+    key: PRODUCT_FEATURE_SETTING_KEYS.DESCRIPTION,
+    value: 'Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng. Phù hợp với da thường, da dầu,và da nhạy cảm.',
+    type: 'string',
+    description: 'Mô tả sản phẩm nổi bật trên trang chủ',
+    group: SETTING_GROUPS.PRODUCT_FEATURE,
+    isPublic: true,
   },
 ]
 
