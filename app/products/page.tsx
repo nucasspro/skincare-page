@@ -2,7 +2,7 @@
 
 import { FeaturedArticle } from "@/components/content/featured-article"
 import { FAQSection, type FAQItem } from "@/components/feature/faq-section"
-import { NatureBannerSlider } from "@/components/hero/nature-banner-slider"
+import { ProductBannerSlider } from "@/components/hero/product-banner-slider"
 import PromoSlider from "@/components/hero/promo-slider"
 import { Footer } from "@/components/layout/footer"
 import Navigation from "@/components/navigation/navigation"
@@ -10,16 +10,15 @@ import { NavigationFilterBar } from "@/components/navigation/navigation-filter-b
 import { useCategoriesAsObject } from "@/hooks/use-categories"
 import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
-import { useI18n } from "@/lib/i18n-context"
 import { ProductService, type Product } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/utils/currency-utils"
+import { getBodyContentFont, getKeyHeadingFont, getNavigationFont } from "@/lib/utils/font-utils"
 import { PackageX, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 
 export default function ProductsPage() {
-  const { t } = useI18n()
   const { addItem } = useCart()
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
@@ -124,13 +123,13 @@ export default function ProductsPage() {
       <Navigation isTransparent={false} />
       <div className="min-h-screen bg-stone-50">
         {/* Nature Images Banner Slider */}
-        <NatureBannerSlider />
+        <ProductBannerSlider />
 
         {/* Main Products Section */}
         <div className="w-full py-14 sm:py-18 md:py-20 lg:py-24">
           {/* Category Title */}
           <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
+            <h1 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 uppercase")}>
               {categoriesLoading
                 ? "Đang tải..."
                 : selectedCategory === "all"
@@ -202,10 +201,10 @@ export default function ProductsPage() {
                               e.stopPropagation()
                               handleAddToCart(product)
                             }}
-                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                            className={getNavigationFont("w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer")}
                           >
                             <ShoppingCart className="w-4 h-4" />
-                            {t.productListing.addToCart}
+                            Thêm vào giỏ
                           </button>
                         </div>
                       </div>
@@ -214,12 +213,12 @@ export default function ProductsPage() {
                     {/* Product Info - Padding như Facebook */}
                     <div className="space-y-2 px-4 sm:px-6 py-4 sm:py-5">
                       <h3
-                        className="text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors"
+                        className={getKeyHeadingFont("text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors")}
                         title={product.name}
                       >
                         {product.name}
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed" title={product.tagline}>
+                      <p className={getBodyContentFont("text-sm sm:text-base text-gray-600 leading-relaxed")} title={product.tagline}>
                         {product.tagline}
                       </p>
                       {/* Price display */}
@@ -289,10 +288,10 @@ export default function ProductsPage() {
                               e.stopPropagation()
                               handleAddToCart(product)
                             }}
-                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer text-sm"
+                            className={getNavigationFont("w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer text-sm")}
                           >
                             <ShoppingCart className="w-4 h-4" />
-                            {t.productListing.addToCart}
+                            Thêm vào giỏ
                           </button>
                         </div>
                       </div>
@@ -301,12 +300,12 @@ export default function ProductsPage() {
                     {/* Product Info */}
                     <div className="space-y-2 mt-5">
                       <h3
-                        className="text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
+                        className={getKeyHeadingFont("text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2")}
                         title={product.name}
                       >
                         {product.name}
                       </h3>
-                      <p className="text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
+                      <p className={getBodyContentFont("text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2")} title={product.tagline}>
                         {product.tagline}
                       </p>
                       {/* Price display */}
@@ -351,7 +350,7 @@ export default function ProductsPage() {
           description="Chăm sóc da đúng cách là bước quan trọng để duy trì sức khỏe và vẻ đẹp. Một quy trình chăm sóc da tốt giúp làm sạch, dưỡng ẩm và bảo vệ da khỏi tác động của môi trường bên ngoài."
           readMoreLink="#"
           readMoreText="Xem thêm"
-          imageUrl="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800&h=900&fit=crop"
+          imageUrl="/brand-story/3.png"
         />
 
 

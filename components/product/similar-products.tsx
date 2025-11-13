@@ -4,6 +4,7 @@ import { useProduct, useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import type { Product } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/utils/currency-utils"
+import { getBodyContentFont, getKeyHeadingFont, getNavigationFont } from "@/lib/utils/font-utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo } from "react"
@@ -69,12 +70,12 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
     return (
       <div className="space-y-6 sm:space-y-7 md:space-y-8">
         <div className="text-center space-y-1.5 sm:space-y-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">Có thể bạn cũng thích</h2>
+          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl text-gray-900 uppercase tracking-tight")}>CÓ THỂ BẠN CŨNG THÍCH</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-square bg-stone-200 rounded-lg sm:rounded-xl" />
+              <div className="aspect-square bg-stone-200" />
               <div className="mt-2 space-y-2">
                 <div className="h-4 bg-stone-200 rounded w-3/4" />
                 <div className="h-3 bg-stone-200 rounded w-1/2" />
@@ -94,14 +95,14 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
   return (
     <div className="space-y-6 sm:space-y-7 md:space-y-8">
       <div className="text-center space-y-1.5 sm:space-y-2">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-900">Có thể bạn cũng thích</h2>
+        <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl text-gray-900 uppercase tracking-tight")}>CÓ THỂ BẠN CŨNG THÍCH</h2>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
         {similarProducts.map((product: Product) => (
           <div key={product.id} className="group space-y-2 sm:space-y-3 md:space-y-4 w-full flex flex-col">
             <Link href={`/product/${product.slug}`} className="block w-full flex flex-col">
-              <div className="relative aspect-square bg-stone-50 rounded-lg sm:rounded-xl overflow-hidden w-full">
+              <div className="relative aspect-square bg-stone-50 overflow-hidden w-full">
                 <Image
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
@@ -111,13 +112,13 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
               </div>
               <div className="space-y-0.5 sm:space-y-1 mt-2 sm:mt-3 md:mt-4 w-full">
                 <h3
-                  className="text-sm sm:text-base font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+                  className={getKeyHeadingFont("text-sm sm:text-base font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate")}
                   title={product.name}
                 >
                   {product.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-stone-600 truncate" title={product.tagline}>{product.tagline}</p>
-                <p className="text-base sm:text-lg font-medium text-gray-900">{formatCurrency(product.price)}</p>
+                <p className={getBodyContentFont("text-xs sm:text-sm text-stone-600 truncate")} title={product.tagline}>{product.tagline}</p>
+                <p className={getBodyContentFont("text-base sm:text-lg font-medium text-gray-900")}>{formatCurrency(product.price)}</p>
               </div>
             </Link>
             {!isHydrated ? (
@@ -138,7 +139,7 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
                     tagline: product.tagline,
                   }, 1)
                 }}
-                className="w-full h-9 sm:h-10 px-3 sm:px-4 rounded-full border border-stone-300 group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900 transition-colors bg-transparent text-center flex items-center justify-center text-xs sm:text-sm font-medium"
+                className={getNavigationFont("w-full h-9 sm:h-10 px-3 sm:px-4 rounded-full border border-stone-300 group-hover:bg-gray-900 group-hover:text-white group-hover:border-gray-900 transition-colors bg-transparent text-center flex items-center justify-center text-xs sm:text-sm font-medium")}
               >
                 Thêm vào giỏ
               </button>

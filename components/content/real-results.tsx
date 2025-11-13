@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 
 import { useReviewsByProductId } from "@/hooks/use-reviews"
-import { useI18n } from "@/lib/i18n-context"
+import { getKeyHeadingFont } from "@/lib/utils/font-utils"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import Image from "next/image"
 
@@ -134,52 +134,12 @@ function BeforeAfterSlider({
 }
 
 export function RealResults({ productId }: { productId: string }) {
-  const { t } = useI18n()
-  const [sliderPosition, setSliderPosition] = useState(50)
-  const [isDragging, setIsDragging] = useState(false)
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [direction, setDirection] = useState<'next' | 'prev'>('next')
 
-  const resultsData: BeforeAfterImage[] = [
-    {
-      productId: "1",
-      productName: "Hydrating Essence",
-      beforeImage: "/before-essence.jpg",
-      afterImage: "/after-essence.jpg",
-      duration: "4 " + t.productDetail.realResults.weeks,
-      description: "Improved hydration and skin texture",
-    },
-    {
-      productId: "2",
-      productName: "Vitamin C Serum",
-      beforeImage: "/before-serum.jpg",
-      afterImage: "/after-serum.jpg",
-      duration: "6 " + t.productDetail.realResults.weeks,
-      description: "Brighter, more even skin tone",
-    },
-    {
-      productId: "3",
-      productName: "Ceramide Cream",
-      beforeImage: "/before-cream.jpg",
-      afterImage: "/after-cream.jpg",
-      duration: "8 " + t.productDetail.realResults.weeks,
-      description: "Restored skin barrier and reduced redness",
-    },
-    {
-      productId: "4",
-      productName: "Gentle Cleanser",
-      beforeImage: "/before-cleanser.jpg",
-      afterImage: "/after-cleanser.jpg",
-      duration: "2 " + t.productDetail.realResults.weeks,
-      description: "Clearer, smoother complexion",
-    },
-  ]
-
   // Get reviews from database
   const { reviews, loading: reviewsLoading } = useReviewsByProductId(productId)
-
-  const currentResult = resultsData.find((r) => r.productId === productId) || resultsData[0]
 
   // Carousel logic for reviews
   const itemsPerPage = 3
@@ -212,32 +172,13 @@ export function RealResults({ productId }: { productId: string }) {
     return reviews.slice(start, start + itemsPerPage)
   }
 
-  const handleMouseDown = () => setIsDragging(true)
-  const handleMouseUp = () => setIsDragging(false)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width))
-    const percent = Math.max(0, Math.min((x / rect.width) * 100, 100))
-    setSliderPosition(percent)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!isDragging) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width))
-    const percent = Math.max(0, Math.min((x / rect.width) * 100, 100))
-    setSliderPosition(percent)
-  }
-
   return (
     <section className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 bg-stone-50">
       <div className="max-w-5xl mx-auto">
 
         <div className="mb-6 sm:mb-8 md:mb-10 pb-3 sm:pb-4 md:pb-5">
-          <h2 className="text-xl sm:text-2xl md:text-3xl text-gray-900 mb-3 sm:mb-4 md:mb-5 text-center">
-            {t.productDetail.realResults.customerReviews || "Customer Reviews"}
+          <h2 className={getKeyHeadingFont("text-xl sm:text-2xl md:text-3xl text-gray-900 mb-3 sm:mb-4 md:mb-5 text-center uppercase tracking-tight")}>
+            Đánh giá từ khách hàng
           </h2>
 
           {/* Show message if no reviews */}

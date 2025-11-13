@@ -1,10 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { Play, ExternalLink } from "lucide-react"
+import { getBodyContentFont, getKeyHeadingFont } from "@/lib/utils/font-utils"
+import { ExternalLink, Play } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
-import { useI18n } from "@/lib/i18n-context"
+import { useState } from "react"
 
 interface VideoItem {
   id: string
@@ -47,7 +46,6 @@ const videos: VideoItem[] = [
 
 export function SocialMediaShowcase() {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null)
-  const { t } = useI18n()
 
   const handlePlay = (videoId: string, e: React.MouseEvent) => {
     e.preventDefault()
@@ -73,10 +71,10 @@ export function SocialMediaShowcase() {
       <div className="px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-10 sm:mb-12 md:mb-16 space-y-3 sm:space-y-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
+          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 uppercase")}>
             Theo dõi hành trình làm đẹp
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+                  <p className={getBodyContentFont("text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4")}>
             Tham gia cộng đồng của chúng tôi
           </p>
         </div>
@@ -133,7 +131,7 @@ export function SocialMediaShowcase() {
 
                   {/* Title */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="font-medium text-sm">{video.title}</p>
+                    <p className={getBodyContentFont("font-medium text-sm")}>{video.title}</p>
                   </div>
                 </>
               )}

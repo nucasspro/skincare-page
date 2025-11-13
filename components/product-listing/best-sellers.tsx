@@ -31,8 +31,8 @@ export function BestSellers() {
       <div className="w-full">
         {/* Section Header - Centered */}
         <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4 sm:px-6 lg:px-8">
-          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900")}>
-            <strong>Tất cả sản phẩm</strong>
+          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 uppercase")}>
+            TẤT CẢ SẢN PHẨM
           </h2>
         </div>
 

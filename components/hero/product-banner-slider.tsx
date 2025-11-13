@@ -3,41 +3,31 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useState } from "react"
 
-interface NatureImage {
+interface ProductImage {
   id: number
   url: string
   alt: string
 }
 
-const NATURE_IMAGES: NatureImage[] = [
-  // {
-  //   id: 1,
-  //   url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1400&h=400&fit=crop",
-  //   alt: "Green nature landscape"
-  // },
+const PRODUCT_IMAGES: ProductImage[] = [
+  {
+    id: 1,
+    url: "/product-banner/3.png",
+    alt: "Product Banner 1"
+  },
   {
     id: 2,
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=400&fit=crop",
-    alt: "Forest path"
+    url: "/product-banner/2.png",
+    alt: "Product Banner 2"
   },
   {
     id: 3,
-    url: "https://images.unsplash.com/photo-1469022563149-aa64dbd37c5f?w=1400&h=400&fit=crop",
-    alt: "Mountain landscape"
-  },
-  {
-    id: 4,
-    url: "https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1400&h=400&fit=crop",
-    alt: "Natural water fall"
-  },
-  {
-    id: 5,
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=400&fit=crop",
-    alt: "Green nature"
+    url: "/product-banner/1.png",
+    alt: "Product Banner 3"
   }
 ]
 
-export function NatureBannerSlider() {
+export function ProductBannerSlider() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
 
@@ -45,7 +35,7 @@ export function NatureBannerSlider() {
     if (!autoPlay) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % NATURE_IMAGES.length)
+      setCurrentIndex((prev) => (prev + 1) % PRODUCT_IMAGES.length)
     }, 5000)
 
     return () => clearInterval(interval)
@@ -57,12 +47,12 @@ export function NatureBannerSlider() {
   }
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + NATURE_IMAGES.length) % NATURE_IMAGES.length)
+    setCurrentIndex((prev) => (prev - 1 + PRODUCT_IMAGES.length) % PRODUCT_IMAGES.length)
     setAutoPlay(false)
   }
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % NATURE_IMAGES.length)
+    setCurrentIndex((prev) => (prev + 1) % PRODUCT_IMAGES.length)
     setAutoPlay(false)
   }
 
@@ -70,7 +60,7 @@ export function NatureBannerSlider() {
     <div className="w-screen relative -ml-[calc((100vw-100%)/2)] mb-0">
       <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] overflow-hidden bg-stone-200 relative group">
         {/* Images */}
-        {NATURE_IMAGES.map((image, index) => (
+        {PRODUCT_IMAGES.map((image, index) => (
           <img
             key={image.id}
             src={image.url}
@@ -103,7 +93,7 @@ export function NatureBannerSlider() {
 
         {/* Dots Indicator */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-          {NATURE_IMAGES.map((_, index) => (
+          {PRODUCT_IMAGES.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
