@@ -2,12 +2,19 @@
 
 import { useContactSettings } from "@/hooks/use-settings"
 import { X } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { HotlineIcon } from "./icons/hotline-icon"
 import { MessengerIcon } from "./icons/messenger-icon"
 import { ZaloIcon } from "./icons/zalo-icon"
 
 export function QuickContact() {
+  const pathname = usePathname()
+
+  if (pathname?.startsWith("/admin")) {
+    return null
+  }
+
   const [isExpanded, setIsExpanded] = useState(false)
   const { contactInfo, loading } = useContactSettings()
 
