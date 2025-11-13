@@ -2,14 +2,13 @@
 
 import { Footer } from "@/components/layout/footer"
 import { Navigation } from "@/components/navigation/navigation"
-import { CONTACT_SETTING_KEYS } from "@/lib/constants/setting-keys"
-import { useSettings } from "@/hooks/use-settings"
+import { useContactInfo } from "@/hooks/use-contact-info"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 export default function ContactPage() {
-  const { settings: contactSettings, loading: contactLoading } = useSettings('contact')
+  const { contactInfo, loading: contactLoading } = useContactInfo()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,10 +19,10 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Get contact info from settings
-  const email = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.EMAIL)?.value || 'support@cellic.com'
-  const phone = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.PHONE)?.value || '+84 (123) 456-789'
-  const address = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.ADDRESS)?.value || '123 Đường Skincare\nQuận 1, TP.HCM\nViệt Nam'
+  // Get contact info from cached/local storage
+  const email = contactInfo.email
+  const phone = contactInfo.phone
+  const address = contactInfo.address
 
   // Format phone for tel: link (remove spaces and special chars except +)
   const phoneLink = phone.replace(/[\s\-\(\)]/g, '')

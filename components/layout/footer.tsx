@@ -4,8 +4,7 @@ import type React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useSettings } from "@/hooks/use-settings"
-import { CONTACT_SETTING_KEYS } from "@/lib/constants/setting-keys"
+import { useContactInfo } from "@/hooks/use-contact-info"
 import { useI18n } from "@/lib/i18n-context"
 import { Building2, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react"
 import Image from "next/image"
@@ -16,12 +15,12 @@ export function Footer() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
   const { t } = useI18n()
-  const { settings: contactSettings } = useSettings("contact")
+  const { contactInfo, loading: contactLoading } = useContactInfo()
 
-  // Get contact information from settings
-  const phone = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.PHONE)?.value || ""
-  const emailContact = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.EMAIL)?.value || ""
-  const address = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.ADDRESS)?.value || ""
+  // Get contact information from cached/local storage
+  const phone = contactInfo.phone
+  const emailContact = contactInfo.email
+  const address = contactInfo.address
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,9 +58,9 @@ export function Footer() {
         </div>
 
         {/* Main Footer Content - 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-12 items-start">
           {/* Column 1: Logo - Description - Contact Info */}
-          <div className="flex flex-col">
+          <div className="flex flex-col lg:col-span-4">
             {/* Logo - White logo without border */}
             <Link href="/" className="inline-block mb-4 pl-4 md:pl-0 ml-[31px] md:ml-0">
               <Image
@@ -118,7 +117,7 @@ export function Footer() {
           </div>
 
           {/* Column 2: Customer Service */}
-          <div className="flex flex-col">
+          <div className="flex flex-col lg:col-span-3">
             <h4 className="text-lg font-medium mb-4">Dịch vụ khách hàng</h4>
             <ul className="space-y-3">
               <li>
@@ -145,7 +144,7 @@ export function Footer() {
           </div>
 
           {/* Column 3: Product Categories */}
-          <div className="flex flex-col">
+          <div className="flex flex-col lg:col-span-3">
             <h4 className="text-lg font-medium mb-4">Danh mục sản phẩm</h4>
             <ul className="space-y-3">
               <li>
@@ -172,7 +171,7 @@ export function Footer() {
           </div>
 
           {/* Column 4: Connect */}
-          <div className="flex flex-col">
+          <div className="flex flex-col lg:col-span-2">
             <h4 className="text-lg font-medium mb-4">{t.footer.connect.title}</h4>
             <div className="flex gap-4 mb-6">
               <a
