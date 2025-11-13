@@ -127,9 +127,9 @@ export default function ProductsPage() {
         <NatureBannerSlider />
 
         {/* Main Products Section */}
-        <div className="w-full py-12">
+        <div className="w-full py-14 sm:py-18 md:py-20 lg:py-24">
           {/* Category Title */}
-          <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">
               {categoriesLoading
                 ? "Đang tải..."
@@ -238,10 +238,10 @@ export default function ProductsPage() {
               ))}
             </div>
 
-            {/* Desktop: 4 products per row, square images - Container with max-width */}
+            {/* Desktop: 4 products per row, taller images - Container full width */}
             <div className="hidden md:block">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
+              <div className="w-full px-3 sm:px-4 lg:px-6">
+                <div className="grid md:grid-cols-4 gap-6 lg:gap-8 xl:gap-10">
               {paginatedProducts.map((product) => (
                 <div
                   key={product.id}
@@ -253,8 +253,8 @@ export default function ProductsPage() {
                     href={`/product/${product.slug}`}
                     className="block"
                   >
-                    {/* Product Image - Square on desktop */}
-                    <div className="relative w-full aspect-square overflow-hidden bg-stone-50">
+                    {/* Product Image - Taller on desktop */}
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-stone-50">
                       <Image
                         src={product.image || "/placeholder.svg"}
                         alt={product.name}
@@ -271,7 +271,7 @@ export default function ProductsPage() {
                       />
 
                       {/* Add to Cart Button - Shows on Hover - Inside Image Container */}
-                      <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                      <div className="absolute inset-x-5 bottom-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
                         <div className="pointer-events-auto">
                           <button
                             onClick={(e) => {
@@ -289,31 +289,31 @@ export default function ProductsPage() {
                     </div>
 
                     {/* Product Info */}
-                    <div className="space-y-1.5 mt-4">
+                    <div className="space-y-2 mt-5">
                       <h3
-                        className="text-base lg:text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
+                        className="text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
                         title={product.name}
                       >
                         {product.name}
                       </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
+                      <p className="text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
                         {product.tagline}
                       </p>
                       {/* Price display */}
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-sm lg:text-base font-medium text-gray-900">
+                            <span className="text-base lg:text-lg font-medium text-gray-900">
                               {formatCurrency(product.price)}
                             </span>
                             {product.originalPrice && product.originalPrice > product.price && (
-                              <span className="text-xs lg:text-sm text-gray-500 line-through">
+                              <span className="text-sm lg:text-base text-gray-500 line-through">
                                 {formatCurrency(product.originalPrice)}
                               </span>
                             )}
                           </div>
                           {product.discount && product.discount > 0 && (
-                            <span className="text-[10px] lg:text-xs font-bold text-white bg-red-500 px-1.5 lg:px-2 py-0.5 rounded-md inline-flex items-center justify-center leading-none">
+                            <span className="text-xs lg:text-sm font-bold text-white bg-red-500 px-2 lg:px-2.5 py-0.5 rounded-md inline-flex items-center justify-center leading-none">
                               -{product.discount}%
                             </span>
                           )}
