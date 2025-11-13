@@ -2,17 +2,26 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Instagram, Facebook, Youtube } from "lucide-react"
+import { useSettings } from "@/hooks/use-settings"
+import { CONTACT_SETTING_KEYS } from "@/lib/constants/setting-keys"
 import { useI18n } from "@/lib/i18n-context"
+import { Building2, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
 
 export function Footer() {
   const [email, setEmail] = useState("")
   const [isSubscribed, setIsSubscribed] = useState(false)
   const { t } = useI18n()
+  const { settings: contactSettings } = useSettings("contact")
+
+  // Get contact information from settings
+  const phone = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.PHONE)?.value || ""
+  const emailContact = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.EMAIL)?.value || ""
+  const address = contactSettings.find((s) => s.key === CONTACT_SETTING_KEYS.ADDRESS)?.value || ""
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,95 +59,120 @@ export function Footer() {
         </div>
 
         {/* Main Footer Content - 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Column 1: About */}
-          <div>
-            <h4 className="text-lg font-medium mb-4">{t.footer.about.title}</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/brand-story" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.brandStory.title}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.about.aboutUs}
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.about.contact}
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Careers
-                </Link>
-              </li>
-            </ul>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 items-start">
+          {/* Column 1: Logo - Description - Contact Info */}
+          <div className="flex flex-col">
+            {/* Logo - White logo without border */}
+            <Link href="/" className="inline-block mb-4 pl-4 md:pl-0 ml-[31px] md:ml-0">
+              <Image
+                src="/logo/logo-white.svg"
+                alt="CELLIC"
+                width={200}
+                height={60}
+                className="h-8 md:h-10 w-auto"
+                priority
+              />
+            </Link>
+            {/* Description */}
+            <p className="text-stone-400 text-sm mb-6 leading-relaxed">
+              Cellic đồng hành cùng làn da Việt bằng công nghệ y sinh học chuẩn quốc tế, mang lại giải pháp chăm sóc khoa học, an toàn và bền vững cho từng khách hàng.
+            </p>
+            {/* Contact Information */}
+            <div className="space-y-3.5">
+              {/* Distributor Info */}
+              <div className="flex items-start gap-3">
+                <Building2 className="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0" />
+                <p className="text-stone-400 hover:text-stone-100 transition-colors">Phân phối bởi Công ty TNHH CELLIC</p>
+              </div>
+
+              {/* Contact Details */}
+              {phone && (
+                <div className="flex items-start gap-3">
+                  <Phone className="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0" />
+                  <a
+                    href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                    className="text-stone-400 hover:text-stone-100 transition-colors"
+                  >
+                    {phone}
+                  </a>
+                </div>
+              )}
+              {emailContact && (
+                <div className="flex items-start gap-3">
+                  <Mail className="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0" />
+                  <a
+                    href={`mailto:${emailContact}`}
+                    className="text-stone-400 hover:text-stone-100 transition-colors"
+                  >
+                    {emailContact}
+                  </a>
+                </div>
+              )}
+              {address && (
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0" />
+                  <p className="text-stone-400 hover:text-stone-100 transition-colors break-words leading-relaxed">{address}</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Column 2: Customer Service */}
-          <div>
-            <h4 className="text-lg font-medium mb-4">{t.footer.customerService.title}</h4>
+          <div className="flex flex-col">
+            <h4 className="text-lg font-medium mb-4">Dịch vụ khách hàng</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/faq" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.customerService.faqs}
+                  Q&A
                 </Link>
               </li>
               <li>
                 <Link href="/shipping" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.about.shippingReturns}
+                  Chính sách mua hàng
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-stone-400 hover:text-stone-100 transition-colors">
+                  Chính sách bảo mật
                 </Link>
               </li>
               <li>
                 <Link href="/track-order" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.customerService.trackOrder}
-                </Link>
-              </li>
-              <li>
-                <Link href="/size-guide" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  Size Guide
+                  Checking đơn hàng
                 </Link>
               </li>
             </ul>
           </div>
 
           {/* Column 3: Product Categories */}
-          <div>
-            <h4 className="text-lg font-medium mb-4">{t.footer.shop.title}</h4>
+          <div className="flex flex-col">
+            <h4 className="text-lg font-medium mb-4">Danh mục sản phẩm</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/products/cleansers" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.shop.cleansers}
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/serums" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.shop.serums}
+                <Link href="/products/sunscreen" className="text-stone-400 hover:text-stone-100 transition-colors">
+                  Kem chống nắng
                 </Link>
               </li>
               <li>
                 <Link href="/products/moisturizers" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.shop.moisturizers}
+                  Dưỡng Da
                 </Link>
               </li>
               <li>
-                <Link href="/products/sunscreen" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.shop.suncare}
+                <Link href="/products/cleansers" className="text-stone-400 hover:text-stone-100 transition-colors">
+                  Rửa mặt
                 </Link>
               </li>
               <li>
-                <Link href="/products/masks" className="text-stone-400 hover:text-stone-100 transition-colors">
-                  {t.footer.shop.masks}
+                <Link href="/products/serums" className="text-stone-400 hover:text-stone-100 transition-colors">
+                  Serum
                 </Link>
               </li>
             </ul>
           </div>
 
           {/* Column 4: Connect */}
-          <div>
+          <div className="flex flex-col">
             <h4 className="text-lg font-medium mb-4">{t.footer.connect.title}</h4>
             <div className="flex gap-4 mb-6">
               <a
