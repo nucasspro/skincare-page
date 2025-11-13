@@ -41,6 +41,26 @@ export const GENERAL_SETTING_KEYS = {
 } as const
 
 /**
+ * SMTP Settings Keys
+ */
+export const SMTP_SETTING_KEYS = {
+  HOST: 'smtp_host',
+  PORT: 'smtp_port',
+  USER: 'smtp_user',
+  PASSWORD: 'smtp_password',
+  FROM: 'smtp_from',
+  TO: 'smtp_to',
+} as const
+
+/**
+ * Email Template Settings Keys
+ */
+export const EMAIL_SETTING_KEYS = {
+  CONTACT_SUBJECT: 'email_contact_subject',
+  CONTACT_BODY: 'email_contact_body',
+} as const
+
+/**
  * All Setting Keys
  */
 export const SETTING_KEYS = {
@@ -48,6 +68,8 @@ export const SETTING_KEYS = {
   ...SOCIAL_SETTING_KEYS,
   ...SEO_SETTING_KEYS,
   ...GENERAL_SETTING_KEYS,
+  ...SMTP_SETTING_KEYS,
+  ...EMAIL_SETTING_KEYS,
 } as const
 
 /**
@@ -59,6 +81,8 @@ export const SETTING_GROUPS = {
   SEO: 'seo',
   GENERAL: 'general',
   APPEARANCE: 'appearance',
+  SMTP: 'smtp',
+  EMAIL: 'email',
 } as const
 
 /**

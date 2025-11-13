@@ -5,7 +5,12 @@
  * Seeds default settings for the application
  */
 
-import { SETTING_GROUPS, SETTING_KEYS } from '@/lib/constants/setting-keys'
+import {
+  EMAIL_SETTING_KEYS,
+  SETTING_GROUPS,
+  SETTING_KEYS,
+  SMTP_SETTING_KEYS,
+} from '@/lib/constants/setting-keys'
 import { getDb } from '@/lib/services/data-sources/mongodb/mongodb-data-source'
 import { config } from 'dotenv'
 import { ObjectId } from 'mongodb'
@@ -117,6 +122,78 @@ const DEFAULT_SETTINGS = [
     group: SETTING_GROUPS.GENERAL,
     isPublic: false,
   },
+  // SMTP Settings
+  {
+    key: SMTP_SETTING_KEYS.HOST,
+    value: '',
+    type: 'string',
+    description: 'SMTP host để gửi email',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  {
+    key: SMTP_SETTING_KEYS.PORT,
+    value: '587',
+    type: 'string',
+    description: 'SMTP port (ví dụ: 587 hoặc 465)',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  {
+    key: SMTP_SETTING_KEYS.USER,
+    value: '',
+    type: 'string',
+    description: 'SMTP username',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  {
+    key: SMTP_SETTING_KEYS.PASSWORD,
+    value: '',
+    type: 'string',
+    description: 'SMTP password',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  {
+    key: SMTP_SETTING_KEYS.FROM,
+    value: 'no-reply@cellic.vn',
+    type: 'string',
+    description: 'Địa chỉ email gửi đi',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  {
+    key: SMTP_SETTING_KEYS.TO,
+    value: 'contact@cellic.vn',
+    type: 'string',
+    description: 'Địa chỉ email nhận thông báo',
+    group: SETTING_GROUPS.SMTP,
+    isPublic: false,
+  },
+  // Email Template Settings
+  {
+    key: EMAIL_SETTING_KEYS.CONTACT_SUBJECT,
+    value: 'Tin nhắn mới từ {{name}} - {{subject}}',
+    type: 'string',
+    description: 'Template tiêu đề email thông báo tin nhắn liên hệ',
+    group: SETTING_GROUPS.EMAIL,
+    isPublic: false,
+  },
+  {
+    key: EMAIL_SETTING_KEYS.CONTACT_BODY,
+    value: `<h2>Bạn có tin nhắn mới từ form liên hệ</h2>
+<p><strong>Tên:</strong> {{name}}</p>
+<p><strong>Email:</strong> {{email}}</p>
+<p><strong>Chủ đề:</strong> {{subject}}</p>
+<p><strong>Nội dung:</strong></p>
+<p>{{message}}</p>
+<p><strong>Thời gian:</strong> {{date}}</p>`,
+    type: 'string',
+    description: 'Template nội dung email thông báo tin nhắn liên hệ (HTML)',
+    group: SETTING_GROUPS.EMAIL,
+    isPublic: false,
+  },
 ]
 
 async function main() {
@@ -137,27 +214,8 @@ async function main() {
       const existing = await settingsCollection.findOne({ key: setting.key })
 
       if (existing) {
-        // Update existing setting if value is different
-        if (existing.value !== setting.value || existing.type !== setting.type) {
-          await settingsCollection.updateOne(
-            { key: setting.key },
-            {
-              $set: {
-                value: setting.value,
-                type: setting.type,
-                description: setting.description,
-                group: setting.group,
-                isPublic: setting.isPublic,
-                updatedAt: now,
-              },
-            }
-          )
-          console.log(`🔄 Updated setting: ${setting.key}`)
-          updated++
-        } else {
-          console.log(`⚠️  Setting already exists: ${setting.key}`)
-          skipped++
-        }
+        console.log(`⚠️  Setting already exists (skipped to avoid overwriting): ${setting.key}`)
+        skipped++
       } else {
         // Create new setting
         await settingsCollection.insertOne({

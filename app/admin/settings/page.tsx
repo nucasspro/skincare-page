@@ -1,16 +1,17 @@
 'use client'
 
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { Pagination } from '@/components/admin/pagination'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { SETTING_KEYS, SETTING_GROUPS } from '@/lib/constants/setting-keys'
+import { SETTING_GROUPS, SETTING_KEYS } from '@/lib/constants/setting-keys'
 import { adminSettingService } from '@/lib/services/admin/setting-service'
 import type { CreateSettingData, Setting } from '@/lib/types/setting'
 import { SettingType } from '@/lib/types/setting'
-import { Edit, Plus, Save, Settings, Trash2, X } from 'lucide-react'
+import { Edit, Plus, RefreshCw, Save, Settings, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -28,7 +29,11 @@ const COMMON_GROUPS = [
   SETTING_GROUPS.SOCIAL,
   SETTING_GROUPS.GENERAL,
   SETTING_GROUPS.APPEARANCE,
+  SETTING_GROUPS.SMTP,
+  SETTING_GROUPS.EMAIL,
 ]
+
+const ITEMS_PER_PAGE = 10
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true)
@@ -37,6 +42,7 @@ export default function AdminSettings() {
   const [filteredSettings, setFilteredSettings] = useState<Setting[]>([])
   const [selectedGroup, setSelectedGroup] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
   const [showForm, setShowForm] = useState(false)
   const [editingSetting, setEditingSetting] = useState<Setting | null>(null)
   const [formData, setFormData] = useState<CreateSettingData>({
@@ -47,18 +53,27 @@ export default function AdminSettings() {
     group: '',
     isPublic: false,
   })
+  const [refreshing, setRefreshing] = useState(false)
 
-  const fetchSettings = async () => {
+  const fetchSettings = async (options?: { showLoading?: boolean; showToast?: boolean }) => {
+    const { showLoading = true, showToast = false } = options || {}
     try {
-      setLoading(true)
+      if (showLoading) {
+        setLoading(true)
+      }
       const data = await adminSettingService.getAllSettings()
       setSettings(data)
       setFilteredSettings(data)
+      if (showToast) {
+        toast.success('Đã tải lại cài đặt')
+      }
     } catch (error) {
       console.error('Error fetching settings:', error)
       toast.error('Không thể tải cài đặt')
     } finally {
-      setLoading(false)
+      if (showLoading) {
+        setLoading(false)
+      }
     }
   }
 
@@ -87,7 +102,21 @@ export default function AdminSettings() {
     }
 
     setFilteredSettings(filtered)
+    setCurrentPage(1)
   }, [settings, selectedGroup, searchQuery])
+
+  const totalPages = Math.max(1, Math.ceil(filteredSettings.length / ITEMS_PER_PAGE))
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [totalPages, currentPage])
+
+  const paginatedSettings = filteredSettings.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
 
   const handleCreate = () => {
     setEditingSetting(null)
@@ -286,35 +315,41 @@ export default function AdminSettings() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-neutral-900 flex items-center gap-2">
-              <Settings className="h-8 w-8" />
-              Cài đặt
-            </h1>
-            <p className="text-sm text-neutral-600 mt-1">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Settings className="h-8 w-8 text-neutral-700" />
+              <h1 className="text-3xl font-bold text-neutral-900">Cài đặt</h1>
+            </div>
+            <p className="text-sm text-neutral-600">
               Quản lý các cài đặt hệ thống (liên hệ, SEO, mạng xã hội, v.v.)
             </p>
           </div>
-          <Button onClick={handleCreate} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Thêm setting
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                setRefreshing(true)
+                await fetchSettings({ showLoading: false, showToast: true })
+                setRefreshing(false)
+              }}
+              disabled={refreshing}
+              className="flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              Làm mới
+            </Button>
+            <Button onClick={handleCreate} className="flex items-center gap-2 cursor-pointer">
+              <Plus className="h-4 w-4" />
+              Thêm setting
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
         <Card className="border-0 shadow-md">
           <CardContent className="pt-6">
             <div className="flex gap-4 flex-wrap">
-              <div className="flex-1 min-w-[200px]">
-                <Label className="text-sm font-medium mb-2 block">Tìm kiếm</Label>
-                <Input
-                  placeholder="Tìm theo key, value, description..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
-                />
-              </div>
               <div className="min-w-[200px]">
                 <Label className="text-sm font-medium mb-2 block">Nhóm</Label>
                 <select
@@ -329,6 +364,15 @@ export default function AdminSettings() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="flex-1 min-w-[200px]">
+                <Label className="text-sm font-medium mb-2 block">Tìm kiếm</Label>
+                <Input
+                  placeholder="Tìm theo key, value, description..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
               </div>
             </div>
           </CardContent>
@@ -349,36 +393,17 @@ export default function AdminSettings() {
                 <table className="w-full">
                   <thead className="bg-neutral-100 border-b-2 border-neutral-200">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Key</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Value</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Type</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Group</th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Description</th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 w-32">Actions</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Key</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Group</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Type</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Value</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-neutral-800">Description</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-200">
-                    {filteredSettings.map((setting) => (
+                    {paginatedSettings.map((setting) => (
                       <tr key={setting.id} className="hover:bg-neutral-50">
-                        <td className="px-4 py-3">
-                          <code className="text-sm font-mono bg-neutral-100 px-2 py-1 rounded">
-                            {setting.key}
-                          </code>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-neutral-700 max-w-md truncate">
-                          {formatValue(setting)}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                            {SETTING_TYPES.find((t) => t.value === setting.type)?.label || setting.type}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-neutral-600">
-                          {setting.group || '-'}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-neutral-600 max-w-xs truncate">
-                          {setting.description || '-'}
-                        </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
                             <Button
@@ -399,6 +424,25 @@ export default function AdminSettings() {
                             </Button>
                           </div>
                         </td>
+                        <td className="px-4 py-3">
+                          <code className="text-sm font-mono bg-neutral-100 px-2 py-1 rounded">
+                            {setting.key}
+                          </code>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-neutral-600">
+                          {setting.group || '-'}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            {SETTING_TYPES.find((t) => t.value === setting.type)?.label || setting.type}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-neutral-700 max-w-md truncate">
+                          {formatValue(setting)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-neutral-600 max-w-xs truncate">
+                          {setting.description || '-'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -407,6 +451,13 @@ export default function AdminSettings() {
             )}
           </CardContent>
         </Card>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredSettings.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          onPageChange={setCurrentPage}
+        />
 
         {/* Form Dialog */}
         {showForm && (

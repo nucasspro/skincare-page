@@ -146,3 +146,28 @@ enum SettingType {
   boolean
   json
 }
+
+model ContactMessage {
+  id         String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String
+  subject    String
+  message    String
+  status     ContactMessageStatus   @default(unread)
+  adminNotes String?
+  repliedAt  Int?
+  createdAt  Int                    @default(0)
+  updatedAt  Int                    @default(0)
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@map("contact_messages")
+}
+
+enum ContactMessageStatus {
+  unread
+  read
+  replied
+  archived
+}

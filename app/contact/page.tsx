@@ -5,7 +5,8 @@ import { Navigation } from "@/components/navigation/navigation"
 import { CONTACT_SETTING_KEYS } from "@/lib/constants/setting-keys"
 import { useSettings } from "@/hooks/use-settings"
 import { Mail, MapPin, Phone } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 
 export default function ContactPage() {
   const { settings: contactSettings, loading: contactLoading } = useSettings('contact')
@@ -16,6 +17,8 @@ export default function ContactPage() {
     message: "",
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Get contact info from settings
   const email = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.EMAIL)?.value || 'support@cellic.com'
@@ -33,14 +36,43 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    setIsSubmitted(true)
-    setTimeout(() => {
-      setIsSubmitted(false)
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
+    setIsSubmitted(false)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        throw new Error(data?.error || "Không thể gửi tin nhắn. Vui lòng thử lại sau.")
+      }
+
+      setIsSubmitted(true)
       setFormData({ name: "", email: "", subject: "", message: "" })
-    }, 3000)
+      successTimeoutRef.current = setTimeout(() => {
+        setIsSubmitted(false)
+      }, 4000)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không thể gửi tin nhắn. Vui lòng thử lại.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -205,9 +237,10 @@ export default function ContactPage() {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 hover:shadow-lg"
+                    className="w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
                   >
-                    Gửi tin nhắn
+                    {isSubmitting ? "Đang gửi..." : "Gửi tin nhắn"}
                   </button>
 
                   {/* Success Message */}
