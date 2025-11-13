@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { SETTING_KEYS, SETTING_GROUPS } from '@/lib/constants/setting-keys'
 import { adminSettingService } from '@/lib/services/admin/setting-service'
 import type { CreateSettingData, Setting } from '@/lib/types/setting'
 import { SettingType } from '@/lib/types/setting'
@@ -21,7 +22,13 @@ const SETTING_TYPES: { value: SettingType; label: string }[] = [
   { value: SettingType.JSON, label: 'JSON' },
 ]
 
-const COMMON_GROUPS = ['contact', 'seo', 'social', 'general', 'appearance']
+const COMMON_GROUPS = [
+  SETTING_GROUPS.CONTACT,
+  SETTING_GROUPS.SEO,
+  SETTING_GROUPS.SOCIAL,
+  SETTING_GROUPS.GENERAL,
+  SETTING_GROUPS.APPEARANCE,
+]
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true)
@@ -431,7 +438,7 @@ export default function AdminSettings() {
                       id="key"
                       value={formData.key}
                       onChange={(e) => setFormData({ ...formData, key: e.target.value })}
-                      placeholder="contact_phone"
+                      placeholder={SETTING_KEYS.PHONE}
                       disabled={!!editingSetting}
                       className="w-full font-mono"
                     />

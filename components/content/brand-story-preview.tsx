@@ -1,9 +1,10 @@
 "use client"
 
-import Link from "next/link"
-import Image from "next/image"
-import { ArrowRight } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
+import { getHeroHeadlineClass } from "@/lib/utils/typography-utils"
+import { ArrowRight } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export function BrandStoryPreview() {
   const { t } = useI18n()
@@ -19,7 +20,7 @@ export function BrandStoryPreview() {
             </div>
 
             <div className="max-w-2xl py-4 sm:py-6 px-4 sm:px-0">
-              <p className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight uppercase leading-[1.2] sm:leading-[1.3]">
+              <p className={getHeroHeadlineClass("text-gray-900")}>
                 Từ khoa học tử tế, Cellic trao lại làn da Việt vẻ đẹp sáng khỏe tự nhiên.
               </p>
             </div>

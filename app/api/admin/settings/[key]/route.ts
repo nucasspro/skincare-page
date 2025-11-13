@@ -24,10 +24,11 @@ function transformSetting(doc: any): any {
 // GET setting by key
 export async function GET(
   request: Request,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
-    const key = decodeURIComponent(params.key)
+    const { key: rawKey } = await params
+    const key = decodeURIComponent(rawKey)
 
     const db = await getDb()
     const settingsCollection = db.collection<SettingRecord>('settings')
@@ -56,10 +57,11 @@ export async function GET(
 // PUT update setting by key
 export async function PUT(
   request: Request,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
-    const key = decodeURIComponent(params.key)
+    const { key: rawKey } = await params
+    const key = decodeURIComponent(rawKey)
     const body = await validateRequestBody(request, updateSettingSchema)
 
     const db = await getDb()
@@ -123,10 +125,11 @@ export async function PUT(
 // DELETE setting by key
 export async function DELETE(
   request: Request,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
-    const key = decodeURIComponent(params.key)
+    const { key: rawKey } = await params
+    const key = decodeURIComponent(rawKey)
 
     const db = await getDb()
     const settingsCollection = db.collection<SettingRecord>('settings')

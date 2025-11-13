@@ -5,6 +5,7 @@
  * Seeds default settings for the application
  */
 
+import { SETTING_GROUPS, SETTING_KEYS } from '@/lib/constants/setting-keys'
 import { getDb } from '@/lib/services/data-sources/mongodb/mongodb-data-source'
 import { config } from 'dotenv'
 import { ObjectId } from 'mongodb'
@@ -18,102 +19,102 @@ config({ path: resolve(process.cwd(), '.env') })
 const DEFAULT_SETTINGS = [
   // SEO Settings
   {
-    key: 'site_title',
+    key: SETTING_KEYS.SITE_TITLE,
     value: 'Cellic - Mỹ phẩm chăm sóc da',
     type: 'string',
     description: 'Tiêu đề website',
-    group: 'seo',
+    group: SETTING_GROUPS.SEO,
     isPublic: true,
   },
   {
-    key: 'site_description',
+    key: SETTING_KEYS.SITE_DESCRIPTION,
     value: 'Mỹ phẩm chăm sóc da chất lượng cao, được bác sĩ da liễu khuyên dùng',
     type: 'string',
     description: 'Mô tả website cho SEO',
-    group: 'seo',
+    group: SETTING_GROUPS.SEO,
     isPublic: true,
   },
   {
-    key: 'og_image',
+    key: SETTING_KEYS.OG_IMAGE,
     value: '',
     type: 'image',
     description: 'Hình ảnh chia sẻ mạng xã hội (OG Image)',
-    group: 'seo',
+    group: SETTING_GROUPS.SEO,
     isPublic: true,
   },
   // Contact Settings
   {
-    key: 'contact_phone',
+    key: SETTING_KEYS.PHONE,
     value: '0123456789',
     type: 'string',
     description: 'Số điện thoại liên hệ',
-    group: 'contact',
+    group: SETTING_GROUPS.CONTACT,
     isPublic: true,
   },
   {
-    key: 'contact_email',
+    key: SETTING_KEYS.EMAIL,
     value: 'contact@cellic.vn',
     type: 'string',
     description: 'Email liên hệ',
-    group: 'contact',
+    group: SETTING_GROUPS.CONTACT,
     isPublic: true,
   },
   {
-    key: 'contact_address',
+    key: SETTING_KEYS.ADDRESS,
     value: '123 Đường ABC, Quận XYZ, TP.HCM',
     type: 'string',
     description: 'Địa chỉ liên hệ',
-    group: 'contact',
+    group: SETTING_GROUPS.CONTACT,
     isPublic: true,
   },
   // Social Media Settings
   {
-    key: 'social_facebook',
+    key: SETTING_KEYS.FACEBOOK,
     value: 'https://facebook.com/cellic',
     type: 'image',
     description: 'Link Facebook',
-    group: 'social',
+    group: SETTING_GROUPS.SOCIAL,
     isPublic: true,
   },
   {
-    key: 'social_instagram',
+    key: SETTING_KEYS.INSTAGRAM,
     value: 'https://instagram.com/cellic',
     type: 'image',
     description: 'Link Instagram',
-    group: 'social',
+    group: SETTING_GROUPS.SOCIAL,
     isPublic: true,
   },
   {
-    key: 'social_zalo',
+    key: SETTING_KEYS.ZALO,
     value: 'https://zalo.me/cellic',
     type: 'image',
     description: 'Link Zalo',
-    group: 'social',
+    group: SETTING_GROUPS.SOCIAL,
     isPublic: true,
   },
   // General Settings
   {
-    key: 'free_shipping_threshold',
+    key: SETTING_KEYS.FREE_SHIPPING_THRESHOLD,
     value: '0',
     type: 'number',
     description: 'Ngưỡng miễn phí vận chuyển (VNĐ)',
-    group: 'general',
+    group: SETTING_GROUPS.GENERAL,
     isPublic: false,
   },
   {
-    key: 'return_days',
+    key: SETTING_KEYS.RETURN_DAYS,
     value: '30',
     type: 'number',
     description: 'Số ngày được đổi trả',
-    group: 'general',
+    group: SETTING_GROUPS.GENERAL,
     isPublic: true,
   },
   {
-    key: 'maintenance_mode',
+    key: SETTING_KEYS.MAINTENANCE_MODE,
     value: 'false',
     type: 'boolean',
     description: 'Chế độ bảo trì',
-    group: 'general',
+    group: SETTING_GROUPS.GENERAL,
     isPublic: false,
   },
 ]

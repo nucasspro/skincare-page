@@ -7,6 +7,7 @@
  * Usage: npx tsx scripts/migrations/create-settings-table.ts
  */
 
+import { SETTING_GROUPS, SETTING_KEYS } from '@/lib/constants/setting-keys'
 import 'dotenv/config'
 import { MongoClient, ObjectId } from 'mongodb'
 
@@ -55,33 +56,33 @@ async function migrate() {
       const newSettings = [
         {
           _id: new ObjectId(),
-          key: 'site_title',
+          key: SETTING_KEYS.SITE_TITLE,
           value: oldSettings.siteTitle || 'Cellic - Mỹ phẩm chăm sóc da',
           type: 'string',
           description: 'Tiêu đề website',
-          group: 'seo',
+          group: SETTING_GROUPS.SEO,
           isPublic: true,
           createdAt: now,
           updatedAt: now,
         },
         {
           _id: new ObjectId(),
-          key: 'site_description',
+          key: SETTING_KEYS.SITE_DESCRIPTION,
           value: oldSettings.siteDescription || 'Mỹ phẩm chăm sóc da chất lượng cao',
           type: 'string',
           description: 'Mô tả website cho SEO',
-          group: 'seo',
+          group: SETTING_GROUPS.SEO,
           isPublic: true,
           createdAt: now,
           updatedAt: now,
         },
         {
           _id: new ObjectId(),
-          key: 'og_image',
+          key: SETTING_KEYS.OG_IMAGE,
           value: oldSettings.ogImage || '',
           type: 'image',
           description: 'Hình ảnh chia sẻ mạng xã hội (OG Image)',
-          group: 'seo',
+          group: SETTING_GROUPS.SEO,
           isPublic: true,
           createdAt: now,
           updatedAt: now,

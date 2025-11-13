@@ -2,10 +2,13 @@
 
 import { Footer } from "@/components/layout/footer"
 import { Navigation } from "@/components/navigation/navigation"
+import { CONTACT_SETTING_KEYS } from "@/lib/constants/setting-keys"
+import { useSettings } from "@/hooks/use-settings"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { useState } from "react"
 
 export default function ContactPage() {
+  const { settings: contactSettings, loading: contactLoading } = useSettings('contact')
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,6 +16,17 @@ export default function ContactPage() {
     message: "",
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  // Get contact info from settings
+  const email = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.EMAIL)?.value || 'support@cellic.com'
+  const phone = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.PHONE)?.value || '+84 (123) 456-789'
+  const address = contactSettings.find(s => s.key === CONTACT_SETTING_KEYS.ADDRESS)?.value || '123 Đường Skincare\nQuận 1, TP.HCM\nViệt Nam'
+
+  // Format phone for tel: link (remove spaces and special chars except +)
+  const phoneLink = phone.replace(/[\s\-\(\)]/g, '')
+
+  // Format address (split by newline or <br>)
+  const addressLines = address.split(/\n|<br\s*\/?>/i).filter(line => line.trim())
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -58,12 +72,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Email</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    <a href="mailto:support@cellic.com" className="hover:text-gray-900 transition-colors">
-                      support@cellic.com
-                    </a>
-                  </p>
-                  <p className="text-sm text-stone-500 ml-13">Phản hồi trong 24 giờ</p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <>
+                      <p className="text-stone-600 ml-13">
+                        <a href={`mailto:${email}`} className="hover:text-gray-900 transition-colors">
+                          {email}
+                        </a>
+                      </p>
+                      <p className="text-sm text-stone-500 ml-13">Phản hồi trong 24 giờ</p>
+                    </>
+                  )}
                 </div>
 
                 {/* Phone */}
@@ -74,12 +94,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Điện thoại</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    <a href="tel:+84123456789" className="hover:text-gray-900 transition-colors">
-                      +84 (123) 456-789
-                    </a>
-                  </p>
-                  <p className="text-sm text-stone-500 ml-13">Thứ 2 - Thứ 6, 9:00 - 18:00</p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <>
+                      <p className="text-stone-600 ml-13">
+                        <a href={`tel:${phoneLink}`} className="hover:text-gray-900 transition-colors">
+                          {phone}
+                        </a>
+                      </p>
+                      <p className="text-sm text-stone-500 ml-13">Thứ 2 - Thứ 6, 9:00 - 18:00</p>
+                    </>
+                  )}
                 </div>
 
                 {/* Address */}
@@ -90,11 +116,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Địa chỉ</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    123 Đường Skincare<br />
-                    Quận 1, TP.HCM<br />
-                    Việt Nam
-                  </p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <p className="text-stone-600 ml-13">
+                      {addressLines.map((line, index) => (
+                        <span key={index}>
+                          {line.trim()}
+                          {index < addressLines.length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
+                  )}
                 </div>
               </div>
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { getHeroHeadlineClass } from "@/lib/utils/typography-utils"
 import { useEffect, useRef } from "react"
 
 export function VideoHero() {
@@ -41,8 +42,8 @@ export function VideoHero() {
         <div className="mx-auto h-full w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="h-full flex items-center">
             <div className="max-w-xl text-white px-4">
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-light tracking-tight">
-                <span className="font-air text-white drop-shadow-lg tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.12em] uppercase text-xl sm:text-[2rem] md:text-[3rem] font-light leading-tight whitespace-nowrap">
+              <h2 className="font-light tracking-tight">
+                <span className={`${getHeroHeadlineClass("text-white")} drop-shadow-lg whitespace-nowrap`}>
                   "BRIGHT BEAUTY"
                 </span>
               </h2>
