@@ -39,6 +39,32 @@ model Product {
   @@map("products")
 }
 
+model Article {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String   @unique
+  content       String
+  excerpt       String?
+  featuredImage String?
+  category      String
+  isFeatured    Boolean  @default(false)
+  author        String?
+  publishedAt   Int?
+  isPublished   Boolean  @default(false)
+  createdBy     String?  @db.ObjectId
+  updatedBy     String?  @db.ObjectId
+  createdAt     Int      @default(0)
+  updatedAt     Int      @default(0)
+  isDeleted     Boolean  @default(false)
+  deletedAt     Int?
+
+  @@index([category])
+  @@index([isFeatured])
+  @@index([isPublished])
+  @@index([createdAt])
+  @@map("articles")
+}
+
 model Category {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique

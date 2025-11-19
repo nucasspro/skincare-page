@@ -5,8 +5,11 @@
 
 import type {
   Address,
+  ArticleQueryOptions,
+  ArticleRecord,
   Benefit,
   CategoryRecord,
+  CreateArticleData,
   CreateCategoryData,
   CreateOrderData,
   CreateProductData,
@@ -19,6 +22,7 @@ import type {
   OrderRecord,
   ProductRecord,
   ReviewRecord,
+  UpdateArticleData,
   UpdateCategoryData,
   UpdateOrderData,
   UpdateProductData,
@@ -95,6 +99,23 @@ function dateTimeToUnix(dateTime: Date | string | number | undefined | null): nu
   if (typeof dateTime === 'number') return dateTime
   if (typeof dateTime === 'string') return Math.floor(new Date(dateTime).getTime() / 1000)
   return Math.floor(dateTime.getTime() / 1000)
+}
+
+function unixToDate(value: number | string | Date | null | undefined): Date | null {
+  if (value === undefined || value === null) return null
+  if (value instanceof Date) return value
+  if (typeof value === 'number') {
+    return value > 1_000_000_000_000 ? new Date(value) : new Date(value * 1000)
+  }
+  if (typeof value === 'string') {
+    const numeric = Number(value)
+    if (!Number.isNaN(numeric)) {
+      return numeric > 1_000_000_000_000 ? new Date(numeric) : new Date(numeric * 1000)
+    }
+    const parsed = Date.parse(value)
+    return Number.isNaN(parsed) ? null : new Date(parsed)
+  }
+  return null
 }
 
 /**
@@ -191,6 +212,161 @@ export class MongoDataSource implements IDataSource {
     }
 
     return transformFn(updated)
+  }
+
+  private buildArticleFilter(options: ArticleQueryOptions = {}): Record<string, any> {
+    const filter: Record<string, any> = {
+      isDeleted: { $ne: true },
+    }
+
+    if (!options.includeUnpublished) {
+      filter.isPublished = true
+    }
+
+    if (options.category) {
+      filter.category = options.category
+    }
+
+    if (typeof options.isFeatured === 'boolean') {
+      filter.isFeatured = options.isFeatured
+    }
+
+    if (options.excludeSlug) {
+      filter.slug = { $ne: options.excludeSlug }
+    }
+
+    if (options.search) {
+      const regex = new RegExp(options.search, 'i')
+      filter.$or = [
+        { title: regex },
+        { excerpt: regex },
+        { content: regex },
+      ]
+    }
+
+    return filter
+  }
+
+  // ==================== Articles ====================
+  async getAllArticles(options: ArticleQueryOptions = {}): Promise<ArticleRecord[]> {
+    const collection = await getCollection<any>('articles')
+    const filter = this.buildArticleFilter(options)
+    const cursor = collection
+      .find(filter)
+      .sort({ isFeatured: -1, publishedAt: -1, createdAt: -1 })
+
+    if (options.skip) {
+      cursor.skip(options.skip)
+    }
+
+    if (options.limit) {
+      cursor.limit(options.limit)
+    }
+
+    const articles = await cursor.toArray()
+    return articles.map((article: any) => this.transformArticle(article))
+  }
+
+  async countArticles(options: ArticleQueryOptions = {}): Promise<number> {
+    const collection = await getCollection<any>('articles')
+    const filter = this.buildArticleFilter(options)
+    return collection.countDocuments(filter)
+  }
+
+  async getArticleById(id: string): Promise<ArticleRecord | null> {
+    const collection = await getCollection<any>('articles')
+    const filter = this.buildIdFilter(id)
+    const article = await collection.findOne(filter)
+    return article ? this.transformArticle(article) : null
+  }
+
+  async getArticleBySlug(slug: string): Promise<ArticleRecord | null> {
+    const collection = await getCollection<any>('articles')
+    const article = await collection.findOne({ slug, isDeleted: { $ne: true } })
+    return article ? this.transformArticle(article) : null
+  }
+
+  async createArticle(data: CreateArticleData): Promise<ArticleRecord> {
+    const now = new Date()
+    const article: any = {
+      title: data.title,
+      slug: data.slug,
+      content: data.content,
+      excerpt: data.excerpt ?? null,
+      featuredImage: data.featuredImage ?? null,
+      category: data.category,
+      isFeatured: Boolean(data.isFeatured),
+      author: data.author ?? null,
+      publishedAt: unixToDate(data.publishedAt),
+      isPublished: Boolean(data.isPublished),
+      createdBy: data.createdBy || null,
+      updatedBy: data.updatedBy || null,
+      createdAt: now,
+      updatedAt: now,
+      isDeleted: false,
+      deletedAt: null,
+    }
+
+    const collection = await getCollection<any>('articles')
+    const result = await collection.insertOne(article)
+    const inserted = await collection.findOne({ _id: result.insertedId })
+    return this.transformArticle(inserted!)
+  }
+
+  async updateArticle(data: UpdateArticleData): Promise<ArticleRecord> {
+    const updateData: any = { updatedAt: new Date() }
+
+    if (data.title !== undefined) updateData.title = data.title
+    if (data.slug !== undefined) updateData.slug = data.slug
+    if (data.content !== undefined) updateData.content = data.content
+    if (data.excerpt !== undefined) updateData.excerpt = data.excerpt ?? null
+    if (data.featuredImage !== undefined) updateData.featuredImage = data.featuredImage ?? null
+    if (data.category !== undefined) updateData.category = data.category
+    if (typeof data.isFeatured === 'boolean') updateData.isFeatured = data.isFeatured
+    if (data.author !== undefined) updateData.author = data.author ?? null
+    if ('publishedAt' in data) updateData.publishedAt = unixToDate(data.publishedAt)
+    if (typeof data.isPublished === 'boolean') updateData.isPublished = data.isPublished
+    if (data.updatedBy !== undefined) updateData.updatedBy = data.updatedBy ?? null
+
+    const collection = await getCollection<any>('articles')
+    return this.updateAndFetch(collection, data.id, updateData, (doc) => this.transformArticle(doc), 'Article')
+  }
+
+  async deleteArticle(id: string): Promise<boolean> {
+    try {
+      const collection = await getCollection<any>('articles')
+      const filter = this.buildIdFilter(id)
+      const updateData = {
+        isDeleted: true,
+        deletedAt: Math.floor(Date.now() / 1000),
+        updatedAt: new Date(),
+      }
+      const result = await collection.updateOne(filter, { $set: updateData })
+      return result.matchedCount > 0
+    } catch (error) {
+      console.error('Error deleting article:', error)
+      return false
+    }
+  }
+
+  private transformArticle(article: any): ArticleRecord {
+    return {
+      id: article._id ? String(article._id) : article.id,
+      title: article.title,
+      slug: article.slug,
+      content: article.content,
+      excerpt: article.excerpt ?? null,
+      featuredImage: article.featuredImage ?? null,
+      category: article.category,
+      isFeatured: Boolean(article.isFeatured),
+      author: article.author ?? null,
+      publishedAt: dateTimeToUnix(article.publishedAt),
+      isPublished: Boolean(article.isPublished),
+      createdBy: article.createdBy ? String(article.createdBy) : null,
+      updatedBy: article.updatedBy ? String(article.updatedBy) : null,
+      createdAt: dateTimeToUnix(article.createdAt),
+      updatedAt: dateTimeToUnix(article.updatedAt),
+    }
   }
 
   // ==================== Products ====================

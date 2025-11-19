@@ -1,0 +1,113 @@
+import { withAuth } from '@/lib/middleware/api-auth'
+import { handleValidationError, validateRequestBody } from '@/lib/middleware/validate-request'
+import { articleDataService } from '@/lib/services/article-data-service'
+import { errorResponse, successResponse } from '@/lib/utils/api-response'
+import { getCurrentUser } from '@/lib/utils/auth'
+import { generateSlug } from '@/lib/utils/slug-util'
+import { articleQuerySchema, createArticleSchema } from '@/lib/validations/article'
+
+function normalizePublishedAt(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null
+  if (typeof value === 'number') {
+    return value > 1_000_000_000_000 ? Math.floor(value / 1000) : value
+  }
+  if (value instanceof Date) {
+    return Math.floor(value.getTime() / 1000)
+  }
+  if (typeof value === 'string') {
+    const parsed = new Date(value)
+    if (!Number.isNaN(parsed.getTime())) {
+      return Math.floor(parsed.getTime() / 1000)
+    }
+  }
+  return null
+}
+
+export const GET = withAuth(async (request: Request) => {
+  try {
+    const url = new URL(request.url)
+    const rawParams = url.searchParams
+    const parsed = articleQuerySchema.safeParse(Object.fromEntries(rawParams.entries()))
+
+    if (!parsed.success) {
+      const errorMessage = parsed.error.errors
+        .map((err) => `${err.path.join('.')}: ${err.message}`)
+        .join(', ')
+      return errorResponse(null, {
+        status: 400,
+        message: `Validation error: ${errorMessage}`,
+      })
+    }
+
+    const params = parsed.data
+    const includeUnpublished = rawParams.has('includeUnpublished')
+      ? params.includeUnpublished
+      : true
+
+    const { articles, total, page, pageSize } = await articleDataService.getArticles({
+      category: params.category,
+      isFeatured: params.isFeatured,
+      search: params.search,
+      includeUnpublished,
+      excludeSlug: params.excludeSlug,
+      page: params.page,
+      pageSize: params.pageSize,
+      limit: params.limit,
+    })
+
+    return successResponse({
+      data: articles,
+      total,
+      page,
+      pageSize,
+    })
+  } catch (error) {
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to fetch articles',
+    })
+  }
+})
+
+export const POST = withAuth(async (request: Request) => {
+  try {
+    const validatedData = await validateRequestBody(request, createArticleSchema)
+    const currentUser = await getCurrentUser()
+
+    if (!currentUser) {
+      return errorResponse(null, {
+        status: 401,
+        message: 'Unauthorized',
+      })
+    }
+
+    const slug = validatedData.slug || generateSlug(validatedData.title)
+    const article = await articleDataService.createArticle({
+      title: validatedData.title,
+      slug,
+      category: validatedData.category,
+      content: validatedData.content,
+      excerpt: validatedData.excerpt ?? null,
+      featuredImage: validatedData.featuredImage ?? null,
+      isFeatured: validatedData.isFeatured ?? false,
+      author: validatedData.author ?? null,
+      publishedAt: normalizePublishedAt(validatedData.publishedAt),
+      isPublished: validatedData.isPublished ?? false,
+      createdBy: currentUser.id,
+      updatedBy: currentUser.id,
+    })
+
+    return successResponse(article, {
+      status: 201,
+      message: 'Article created successfully',
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Validation error:')) {
+      return handleValidationError(error)
+    }
+    return errorResponse(error, {
+      status: 500,
+      defaultMessage: 'Failed to create article',
+    })
+  }
+})
