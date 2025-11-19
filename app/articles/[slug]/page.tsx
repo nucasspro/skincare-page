@@ -77,7 +77,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
         </section>
 
         <section className="mx-auto w-full max-w-full px-4 py-16 sm:px-6 lg:px-12">
-          <div className="flex flex-col gap-12 lg:flex-row">
+          <div className="flex flex-col gap-16 lg:flex-row">
             {/* Left Column: Title and Metadata */}
             <aside className="lg:w-64 lg:flex-shrink-0">
               <div className="sticky top-24 space-y-6">
@@ -105,7 +105,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             </aside>
 
             {/* Middle Column: Article Content */}
-            <article className="lg:flex-1">
+            <article className="lg:flex-[2]">
               <div
                 className={`${getBodyContentFont("text-lg leading-relaxed text-gray-800")} prose prose-lg max-w-none prose-headings:font-semibold prose-a:text-stone-600`}
                 dangerouslySetInnerHTML={{ __html: article!.content }}
