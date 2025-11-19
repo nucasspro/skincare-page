@@ -5,6 +5,7 @@ export default {
     byCategory: "By Category",
     byNeeds: "By Needs",
     brandStory: "Brand Story",
+    articles: "Articles",
     media: "Media",
     myAccount: "My Account",
     search: "Search",

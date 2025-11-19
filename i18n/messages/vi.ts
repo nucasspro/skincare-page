@@ -5,6 +5,7 @@ export default {
     byCategory: "Theo danh mục",
     byNeeds: "Theo nhu cầu",
     brandStory: "Câu chuyện thương hiệu",
+    articles: "Bài viết",
     media: "Truyền thông",
     myAccount: "Tài khoản của tôi",
     search: "Tìm kiếm",

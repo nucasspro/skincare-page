@@ -3,7 +3,6 @@
 import { CartDropdown } from "@/components/cart/cart-dropdown"
 import { SearchModal } from "@/components/search/search-modal"
 import { useCart } from "@/lib/cart-context"
-import { useI18n } from "@/lib/i18n-context"
 import { getNavigationFont } from "@/lib/utils/font-utils"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
@@ -17,7 +16,6 @@ export interface NavigationProps {
 }
 
 export function Navigation({ isTransparent = true, isHomePage = false, disableSticky = false }: NavigationProps) {
-  const { t } = useI18n()
   const { getTotalItems } = useCart()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -127,14 +125,21 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
                   href="/products"
                   className={menuLinkClass}
                 >
-                  {t.nav.products}
+                  Sản phẩm
                 </Link>
 
                 <Link
                   href="/brand-story"
                   className={menuLinkClass}
                 >
-                  {t.nav.brandStory}
+                  Câu chuyện thương hiệu
+                </Link>
+
+                <Link
+                  href="/articles"
+                  className={menuLinkClass}
+                >
+                  Bài viết
                 </Link>
 
                 <Link
@@ -179,7 +184,7 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.nav.products}
+                Sản phẩm
               </Link>
 
               <Link
@@ -189,7 +194,17 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t.nav.brandStory}
+                Câu chuyện thương hiệu
+              </Link>
+
+              <Link
+                href="/articles"
+                className={getNavigationFont(
+                  "relative block py-2 text-base font-semibold uppercase tracking-wide text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                )}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Bài viết
               </Link>
 
               <Link

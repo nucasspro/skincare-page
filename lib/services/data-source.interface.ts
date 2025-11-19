@@ -19,6 +19,53 @@ export interface Ingredient {
   percentage?: number | null
 }
 
+export interface ArticleRecord {
+  id: string
+  title: string
+  slug: string
+  content: string
+  excerpt?: string | null
+  featuredImage?: string | null
+  category: string
+  isFeatured: boolean
+  author?: string | null
+  publishedAt?: number | null
+  isPublished: boolean
+  createdBy?: string | null
+  updatedBy?: string | null
+  createdAt: number
+  updatedAt: number
+}
+
+export interface ArticleQueryOptions {
+  category?: string
+  isFeatured?: boolean
+  search?: string
+  excludeSlug?: string
+  includeUnpublished?: boolean
+  limit?: number
+  skip?: number
+}
+
+export interface CreateArticleData {
+  title: string
+  slug: string
+  content: string
+  category: string
+  excerpt?: string | null
+  featuredImage?: string | null
+  isFeatured?: boolean
+  author?: string | null
+  publishedAt?: number | null
+  isPublished?: boolean
+  createdBy?: string | null
+  updatedBy?: string | null
+}
+
+export interface UpdateArticleData extends Partial<CreateArticleData> {
+  id: string
+}
+
 export interface ProductRecord {
   id: string
   name: string
@@ -205,6 +252,15 @@ export interface UpdateReviewData extends Partial<CreateReviewData> {
  * MongoDB-only implementation
  */
 export interface IDataSource {
+  // Articles
+  getAllArticles(options?: ArticleQueryOptions): Promise<ArticleRecord[]>
+  countArticles(options?: ArticleQueryOptions): Promise<number>
+  getArticleById(id: string): Promise<ArticleRecord | null>
+  getArticleBySlug(slug: string): Promise<ArticleRecord | null>
+  createArticle(data: CreateArticleData): Promise<ArticleRecord>
+  updateArticle(data: UpdateArticleData): Promise<ArticleRecord>
+  deleteArticle(id: string): Promise<boolean>
+
   // Products
   getAllProducts(): Promise<ProductRecord[]>
   getProductById(id: string): Promise<ProductRecord | null>
