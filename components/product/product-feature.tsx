@@ -1,6 +1,9 @@
 "use client"
 
 import { useProducts } from "@/hooks/use-products"
+import { useSettings } from "@/hooks/use-settings"
+import { PRODUCT_FEATURE_SETTING_KEYS, SETTING_GROUPS } from "@/lib/constants/setting-keys"
+import { getProductTitleFont, getProductDescriptionFont } from "@/lib/utils/font-utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -9,10 +12,36 @@ export function ProductFeature() {
   // Get products from database
   const { products, loading: productsLoading } = useProducts()
 
-  // Get first product as featured product
-  const featuredProduct = products.length > 0 ? products[0] : null
+  // Get product feature settings
+  const { settings: featureSettings, loading: settingsLoading } = useSettings(SETTING_GROUPS.PRODUCT_FEATURE)
+
+  // Sort to put "Bright Matte Sunscreen" first, then get first product as featured
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.name === "Bright Matte Sunscreen") return -1
+    if (b.name === "Bright Matte Sunscreen") return 1
+    return 0
+  })
+  const featuredProduct = sortedProducts.length > 0 ? sortedProducts[0] : null
   const sectionRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
+
+  // Get setting values with fallbacks
+  const getSettingValue = (key: string, fallback: string) => {
+    const setting = featureSettings.find(s => s.key === key)
+    return setting?.value || fallback
+  }
+
+  const title = getSettingValue(
+    PRODUCT_FEATURE_SETTING_KEYS.TITLE,
+    featuredProduct?.name || ""
+  )
+
+  const description = getSettingValue(
+    PRODUCT_FEATURE_SETTING_KEYS.DESCRIPTION,
+    featuredProduct?.slug === "bright-matte-sunscreen"
+      ? "Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng. Phù hợp với da thường, da dầu,và da nhạy cảm."
+      : featuredProduct?.tagline || ""
+  )
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +76,7 @@ export function ProductFeature() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  if (productsLoading) {
+  if (productsLoading || settingsLoading) {
     return null
   }
 
@@ -112,14 +141,11 @@ export function ProductFeature() {
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 md:gap-8">
           {/* Right: Text (desktop) - 50% */}
           <div className="space-y-3 sm:space-y-4 md:order-2 md:pl-8 lg:pl-12 flex flex-col justify-center text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 leading-tight">
-              {featuredProduct.name}
+            <h3 className={getProductTitleFont("text-2xl sm:text-3xl md:text-4xl uppercase text-gray-900 leading-tight")}>
+              {title}
             </h3>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed px-4 md:px-0">
-              {featuredProduct.slug === "bright-matte-sunscreen"
-                ? "Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng. Phù hợp với da thường, da dầu,và da nhạy cảm."
-                : featuredProduct.tagline
-              }
+            <p className={getProductDescriptionFont("text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed px-4 md:px-0")}>
+              {description}
             </p>
             <div className="pt-2">
               <Link
