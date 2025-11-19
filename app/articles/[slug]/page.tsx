@@ -74,29 +74,49 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          <div className="absolute inset-0 flex items-end">
-            <div className="mx-auto mb-10 max-w-4xl px-4 text-white">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80">
-                {article!.category?.replace(/-/g, " ")}
-              </p>
-              <h1 className={getKeyHeadingFont("text-4xl sm:text-5xl text-white leading-tight mt-4")}>
-                {article!.title}
-              </h1>
-              <p className="mt-4 text-sm font-semibold uppercase tracking-[0.3em] text-white/70">
-                {article!.author ? `${article!.author} • ` : ""}{publishedDate || "Đang cập nhật"}
-              </p>
-            </div>
-          </div>
         </section>
 
-        <section className="mx-auto max-w-4xl space-y-16 px-4 py-16 sm:px-6 lg:px-0">
-          <article
-            className={`${getBodyContentFont("text-lg leading-relaxed text-gray-800")} prose prose-lg max-w-none prose-headings:font-semibold prose-a:text-stone-600`}
-            dangerouslySetInnerHTML={{ __html: article!.content }}
-          />
+        <section className="mx-auto w-full max-w-full px-4 py-16 sm:px-6 lg:px-12">
+          <div className="flex flex-col gap-12 lg:flex-row">
+            {/* Left Column: Title and Metadata */}
+            <aside className="lg:w-64 lg:flex-shrink-0">
+              <div className="sticky top-24 space-y-6">
+                <div>
+                  <p className={getBodyContentFont("text-xs font-semibold uppercase tracking-[0.3em] text-gray-500 mb-4")}>
+                    {article!.category?.replace(/-/g, " ").toUpperCase()}
+                  </p>
+                  <h1 className={getKeyHeadingFont("text-3xl text-gray-900 leading-tight mb-4")}>
+                    {article!.title}
+                  </h1>
+                  <div className="space-y-2">
+                    {article!.author && (
+                      <p className={getBodyContentFont("text-sm text-gray-600")}>
+                        <span className="font-semibold">Tác giả:</span> {article!.author}
+                      </p>
+                    )}
+                    {publishedDate && (
+                      <p className={getBodyContentFont("text-sm text-gray-600")}>
+                        <span className="font-semibold">Ngày đăng:</span> {publishedDate}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </aside>
 
-          <RelatedArticles articles={relatedArticles} />
+            {/* Middle Column: Article Content */}
+            <article className="lg:flex-1">
+              <div
+                className={`${getBodyContentFont("text-lg leading-relaxed text-gray-800")} prose prose-lg max-w-none prose-headings:font-semibold prose-a:text-stone-600`}
+                dangerouslySetInnerHTML={{ __html: article!.content }}
+              />
+            </article>
+
+            {/* Right Column: Related Articles */}
+            <aside className="lg:w-64 lg:flex-shrink-0">
+              <RelatedArticles articles={relatedArticles} />
+            </aside>
+          </div>
         </section>
       </main>
 

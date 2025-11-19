@@ -17,12 +17,12 @@ export function RelatedArticles({
   if (!articles.length) return null
 
   return (
-    <section className={`space-y-8 ${className}`}>
-      <h3 className={getKeyHeadingFont("text-2xl md:text-3xl text-gray-900 uppercase tracking-tight")}>
+    <section className={`space-y-6 ${className}`}>
+      <h3 className={getKeyHeadingFont("text-xl text-gray-900 uppercase tracking-tight")}>
         {title}
       </h3>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="flex flex-col gap-6">
         {articles.map((article) => (
           <ArticleCard
             key={article.id}

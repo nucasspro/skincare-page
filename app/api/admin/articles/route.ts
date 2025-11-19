@@ -4,7 +4,28 @@ import { articleDataService } from '@/lib/services/article-data-service'
 import { errorResponse, successResponse } from '@/lib/utils/api-response'
 import { getCurrentUser } from '@/lib/utils/auth'
 import { generateSlug } from '@/lib/utils/slug-util'
+import { processArticleContent } from '@/lib/utils/process-article-content'
 import { articleQuerySchema, createArticleSchema } from '@/lib/validations/article'
+
+const MAX_ARTICLE_CONTENT_BYTES = 8 * 1024 * 1024
+const CONTENT_TOO_LARGE_ERROR = 'ARTICLE_CONTENT_TOO_LARGE'
+
+function ensureContentWithinLimit(content: string) {
+  const size = Buffer.byteLength(content || '', 'utf-8')
+  if (size > MAX_ARTICLE_CONTENT_BYTES) {
+    throw new Error(CONTENT_TOO_LARGE_ERROR)
+  }
+}
+
+function handleContentLimitError(error: unknown) {
+  if (error instanceof Error && error.message === CONTENT_TOO_LARGE_ERROR) {
+    return errorResponse(null, {
+      status: 413,
+      message: 'Nội dung bài viết vượt quá giới hạn 8MB. Vui lòng tải ảnh lên và chèn đường dẫn thay vì dán ảnh dạng base64.',
+    })
+  }
+  return null
+}
 
 function normalizePublishedAt(value: unknown): number | null {
   if (value === null || value === undefined || value === '') return null
@@ -72,6 +93,7 @@ export const GET = withAuth(async (request: Request) => {
 export const POST = withAuth(async (request: Request) => {
   try {
     const validatedData = await validateRequestBody(request, createArticleSchema)
+    ensureContentWithinLimit(validatedData.content)
     const currentUser = await getCurrentUser()
 
     if (!currentUser) {
@@ -82,11 +104,16 @@ export const POST = withAuth(async (request: Request) => {
     }
 
     const slug = validatedData.slug || generateSlug(validatedData.title)
+
+    // Process content: extract base64 images and upload them
+    const processedContent = await processArticleContent(validatedData.content, null)
+    ensureContentWithinLimit(processedContent)
+
     const article = await articleDataService.createArticle({
       title: validatedData.title,
       slug,
       category: validatedData.category,
-      content: validatedData.content,
+      content: processedContent,
       excerpt: validatedData.excerpt ?? null,
       featuredImage: validatedData.featuredImage ?? null,
       isFeatured: validatedData.isFeatured ?? false,
@@ -102,6 +129,10 @@ export const POST = withAuth(async (request: Request) => {
       message: 'Article created successfully',
     })
   } catch (error) {
+    const sizeErrorResponse = handleContentLimitError(error)
+    if (sizeErrorResponse) {
+      return sizeErrorResponse
+    }
     if (error instanceof Error && error.message.startsWith('Validation error:')) {
       return handleValidationError(error)
     }

@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import type { Article } from "@/lib/types/article"
-import { getBodyContentFont, getKeyHeadingFont } from "@/lib/utils/font-utils"
+import { getKeyHeadingFont } from "@/lib/utils/font-utils"
 
 import { ArticleCard } from "./article-card"
 
@@ -16,10 +16,9 @@ export interface ArticleListProps {
 
 export function ArticleList({
   title,
-  description,
   articles,
-  ctaLabel = "Xem thêm",
-  ctaHref = "#",
+  ctaLabel = "TẤT CẢ BÀI VIẾT",
+  ctaHref,
   className = "",
 }: ArticleListProps) {
   return (
@@ -29,25 +28,20 @@ export function ArticleList({
           <h2 className={getKeyHeadingFont("text-3xl md:text-4xl text-gray-900 tracking-tight uppercase")}>
             {title}
           </h2>
-          {description && (
-            <p className={getBodyContentFont("text-base md:text-lg text-gray-600 max-w-2xl")}>
-              {description}
-            </p>
-          )}
         </div>
 
         {ctaHref && (
           <Link
             href={ctaHref}
-            className="inline-flex items-center gap-3 rounded-full border border-gray-900 px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-gray-900 transition-all hover:bg-gray-900 hover:text-white"
+            className="inline-flex items-center justify-between gap-3 rounded-none border border-stone-300 bg-stone-50 px-6 py-3 text-sm font-semibold uppercase tracking-wide text-gray-900 transition-colors hover:bg-stone-100"
           >
-            {ctaLabel}
-            <span>↗</span>
+            <span>{ctaLabel}</span>
+            <span>→</span>
           </Link>
         )}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-12 md:grid-cols-3">
         {articles.map((article) => (
           <ArticleCard key={article.id} article={article} />
         ))}

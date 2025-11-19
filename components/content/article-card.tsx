@@ -6,7 +6,7 @@ import Link from "next/link"
 import type { Article } from "@/lib/types/article"
 import { getBodyContentFont, getKeyHeadingFont } from "@/lib/utils/font-utils"
 
-type ArticleCardVariant = "default" | "compact"
+type ArticleCardVariant = "default" | "compact" | "large"
 
 export interface ArticleCardProps {
   article: Article
@@ -22,15 +22,28 @@ function formatPublishedDate(timestamp?: number | null) {
   if (!timestamp) return null
 
   try {
-    const date = new Date(timestamp)
-    return new Intl.DateTimeFormat("vi-VN", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(date)
+    const date = new Date(timestamp * 1000)
+    const day = String(date.getDate()).padStart(2, "0")
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const year = String(date.getFullYear()).slice(-2)
+    return `${day}.${month}.${year}`
   } catch {
     return null
   }
+}
+
+function formatCategory(category?: string | null) {
+  if (!category) return ""
+
+  const categoryMap: Record<string, string> = {
+    "kien-thuc-dep": "KIẾN THỨC ĐẸP",
+    "hoat-dong-cellic": "Hoạt động CELLIC",
+  }
+
+  return categoryMap[category] || category
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
 }
 
 export function ArticleCard({
@@ -46,60 +59,54 @@ export function ArticleCard({
   const titleClasses =
     variant === "compact"
       ? getKeyHeadingFont("text-xl font-semibold text-gray-900")
-      : getKeyHeadingFont("text-2xl font-semibold text-gray-900")
+      : variant === "large"
+        ? getKeyHeadingFont("text-xl font-semibold text-gray-900")
+        : getKeyHeadingFont("text-2xl font-semibold text-gray-900")
 
   const excerptClasses =
     variant === "compact"
       ? getBodyContentFont("text-sm text-gray-600 leading-relaxed")
-      : getBodyContentFont("text-base text-gray-600 leading-relaxed")
+      : variant === "large"
+        ? getBodyContentFont("text-base text-gray-600 leading-relaxed")
+        : getBodyContentFont("text-base text-gray-600 leading-relaxed")
+
+  const categoryLabel = formatCategory(article.category)
+  const metadata = publishedDate
+    ? showCategory && categoryLabel
+      ? `${categoryLabel} | ${publishedDate}`
+      : publishedDate
+    : "ĐANG CẬP NHẬT"
 
   return (
-    <article
-      className={`group flex flex-col overflow-hidden rounded-[32px] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(15,23,42,0.12)] ${className}`}
-    >
-      <div className="relative w-full pt-[66%] overflow-hidden">
-        <Image
-          src={image}
-          alt={article.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        {showCategory && (
-          <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-gray-900">
-            {article.category?.replace(/-/g, " ")}
-          </span>
-        )}
-      </div>
+    <Link href={`/articles/${article.slug}`} className={`group flex flex-col overflow-hidden transition-all duration-300 cursor-pointer ${className}`}>
+      <article className="flex flex-col flex-1">
+        <div className={`relative w-full overflow-hidden ${variant === "large" ? "pt-[80%]" : "pt-[66%]"}`}>
+          <Image
+            src={image}
+            alt={article.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
 
-      <div className="flex flex-1 flex-col space-y-4 p-6 sm:p-8">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-            {publishedDate || "ĐANG CẬP NHẬT"}
-          </p>
-          <Link href={`/articles/${article.slug}`} className="block focus:outline-none">
+        <div className={`flex flex-1 flex-col space-y-3 ${variant === "large" ? "pl-0 pr-0 py-4" : "pb-6 pt-6"}`}>
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-gray-500">
+              {metadata}
+            </p>
             <h3 className={`${titleClasses} line-clamp-2 transition-colors duration-300 group-hover:text-stone-600`}>
               {article.title}
             </h3>
-          </Link>
-        </div>
+          </div>
 
-        {showExcerpt && article.excerpt && (
-          <p className={`${excerptClasses} line-clamp-3`}>
-            {article.excerpt}
-          </p>
-        )}
-
-        <div className="mt-auto">
-          <Link
-            href={`/articles/${article.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-gray-900 transition-colors hover:text-stone-600"
-          >
-            ĐỌC THÊM
-            <span className="transition-transform duration-300 group-hover:translate-x-1">↗</span>
-          </Link>
+          {showExcerpt && article.excerpt && (
+            <p className={`${excerptClasses} ${variant === "large" ? "line-clamp-5" : "line-clamp-3"}`}>
+              {article.excerpt}
+            </p>
+          )}
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   )
 }
