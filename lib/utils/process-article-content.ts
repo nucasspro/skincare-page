@@ -6,7 +6,6 @@
 
 import { promises as fs } from 'fs'
 import path from 'path'
-import sharp from 'sharp'
 
 const MAX_IMAGE_WIDTH = 1920
 const MAX_IMAGE_HEIGHT = 1920
@@ -73,10 +72,12 @@ async function processBase64Image(
   const uploadDir = path.join(process.cwd(), 'public', 'articles', folderName)
   await fs.mkdir(uploadDir, { recursive: true })
 
-  // Process image with sharp
+  // Process image with sharp (dynamic import to reduce bundle size)
   let processedBuffer: Buffer
 
   try {
+    // Dynamic import sharp to avoid bundling it in routes that don't need it
+    const sharp = (await import('sharp')).default
     const image = sharp(buffer)
     const metadata = await image.metadata()
 
@@ -128,7 +129,7 @@ async function processBase64Image(
   // Generate filename and save
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`
   const filePath = path.join(uploadDir, filename)
-  await fs.writeFile(filePath, processedBuffer)
+  await fs.writeFile(filePath, processedBuffer as Uint8Array)
 
   // Return public URL
   return `/articles/${folderName}/${filename}`

@@ -2,7 +2,6 @@ import { withAuth } from '@/lib/middleware/api-auth'
 import { errorResponse, successResponse } from '@/lib/utils/api-response'
 import { promises as fs } from 'fs'
 import path from 'path'
-import sharp from 'sharp'
 
 export const runtime = 'nodejs'
 
@@ -63,6 +62,8 @@ export const POST = withAuth(async (request: Request) => {
     let outputMime = file.type
 
     try {
+      // Dynamic import sharp to reduce bundle size
+      const sharp = (await import('sharp')).default
       const image = sharp(originalBuffer)
       const metadata = await image.metadata()
 
