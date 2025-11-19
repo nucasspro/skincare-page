@@ -7,6 +7,7 @@ import {
   FolderTree,
   LayoutDashboard,
   LogOut,
+  Mail,
   Menu,
   MessageSquare,
   Package,
@@ -26,6 +27,7 @@ const navigation = [
   { name: 'Danh mục', href: '/admin/categories', icon: FolderTree },
   { name: 'Người dùng', href: '/admin/users', icon: Users },
   { name: 'Đơn hàng', href: '/admin/orders', icon: ShoppingCart },
+  { name: 'Tin nhắn', href: '/admin/contact-messages', icon: Mail },
   { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
   { name: 'Cài đặt', href: '/admin/settings', icon: Settings },
 ]

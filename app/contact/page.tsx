@@ -2,10 +2,13 @@
 
 import { Footer } from "@/components/layout/footer"
 import { Navigation } from "@/components/navigation/navigation"
+import { useContactInfo } from "@/hooks/use-contact-info"
 import { Mail, MapPin, Phone } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 
 export default function ContactPage() {
+  const { contactInfo, loading: contactLoading } = useContactInfo()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,20 +16,62 @@ export default function ContactPage() {
     message: "",
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Get contact info from cached/local storage
+  const email = contactInfo.email
+  const phone = contactInfo.phone
+  const address = contactInfo.address
+
+  // Format phone for tel: link (remove spaces and special chars except +)
+  const phoneLink = phone.replace(/[\s\-\(\)]/g, '')
+
+  // Format address (split by newline or <br>)
+  const addressLines = address.split(/\n|<br\s*\/?>/i).filter(line => line.trim())
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    setIsSubmitted(true)
-    setTimeout(() => {
-      setIsSubmitted(false)
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
+    setIsSubmitted(false)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        throw new Error(data?.error || "Không thể gửi tin nhắn. Vui lòng thử lại sau.")
+      }
+
+      setIsSubmitted(true)
       setFormData({ name: "", email: "", subject: "", message: "" })
-    }, 3000)
+      successTimeoutRef.current = setTimeout(() => {
+        setIsSubmitted(false)
+      }, 4000)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không thể gửi tin nhắn. Vui lòng thử lại.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -58,12 +103,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Email</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    <a href="mailto:support@cellic.com" className="hover:text-gray-900 transition-colors">
-                      support@cellic.com
-                    </a>
-                  </p>
-                  <p className="text-sm text-stone-500 ml-13">Phản hồi trong 24 giờ</p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <>
+                      <p className="text-stone-600 ml-13">
+                        <a href={`mailto:${email}`} className="hover:text-gray-900 transition-colors">
+                          {email}
+                        </a>
+                      </p>
+                      <p className="text-sm text-stone-500 ml-13">Phản hồi trong 24 giờ</p>
+                    </>
+                  )}
                 </div>
 
                 {/* Phone */}
@@ -74,12 +125,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Điện thoại</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    <a href="tel:+84123456789" className="hover:text-gray-900 transition-colors">
-                      +84 (123) 456-789
-                    </a>
-                  </p>
-                  <p className="text-sm text-stone-500 ml-13">Thứ 2 - Thứ 6, 9:00 - 18:00</p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <>
+                      <p className="text-stone-600 ml-13">
+                        <a href={`tel:${phoneLink}`} className="hover:text-gray-900 transition-colors">
+                          {phone}
+                        </a>
+                      </p>
+                      <p className="text-sm text-stone-500 ml-13">Thứ 2 - Thứ 6, 9:00 - 18:00</p>
+                    </>
+                  )}
                 </div>
 
                 {/* Address */}
@@ -90,11 +147,18 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">Địa chỉ</h3>
                   </div>
-                  <p className="text-stone-600 ml-13">
-                    123 Đường Skincare<br />
-                    Quận 1, TP.HCM<br />
-                    Việt Nam
-                  </p>
+                  {contactLoading ? (
+                    <p className="text-stone-400 ml-13 animate-pulse">Đang tải...</p>
+                  ) : (
+                    <p className="text-stone-600 ml-13">
+                      {addressLines.map((line, index) => (
+                        <span key={index}>
+                          {line.trim()}
+                          {index < addressLines.length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -172,9 +236,10 @@ export default function ContactPage() {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 hover:shadow-lg"
+                    className="w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
                   >
-                    Gửi tin nhắn
+                    {isSubmitting ? "Đang gửi..." : "Gửi tin nhắn"}
                   </button>
 
                   {/* Success Message */}

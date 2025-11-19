@@ -1,3 +1,4 @@
+import { getProductTitleFont, getProductDescriptionFont } from "@/lib/utils/font-utils"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -33,14 +34,14 @@ export function FeaturedArticle({
                 {label}
               </span>
             )}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 tracking-tight uppercase px-4">
+            <h2 className={getProductTitleFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-gray-900 tracking-tight uppercase px-4")}>
               {title}
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed max-w-2xl px-4">
+            <p className={getProductDescriptionFont("text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed max-w-2xl px-4")}>
               {description}
             </p>
             {secondaryDescription && (
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-2xl px-4">
+              <p className={getProductDescriptionFont("text-sm sm:text-base text-gray-600 leading-relaxed max-w-2xl px-4")}>
                 {secondaryDescription}
               </p>
             )}

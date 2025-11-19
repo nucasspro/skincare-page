@@ -3,6 +3,12 @@
 import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import {
+  getKeyHeadingFont,
+  getNavigationFont,
+  getProductDescriptionFont,
+  getProductTitleFont,
+} from "@/lib/utils/font-utils"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -17,14 +23,22 @@ export function BestSellers() {
   const { products, loading: productsLoading } = useProducts()
 
   // Get featured products from database (first 4 products)
-  const featuredProducts = products.slice(0, 4)
+  // Sort to put "Bright Matte Sunscreen" first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.name === "Bright Matte Sunscreen") return -1
+    if (b.name === "Bright Matte Sunscreen") return 1
+    return 0
+  })
+  const featuredProducts = sortedProducts.slice(0, 4)
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-white">
+    <section className="py-14 sm:py-18 md:py-20 lg:py-24 bg-white">
       <div className="w-full">
         {/* Section Header - Centered */}
-        <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900">Tất cả sản phẩm</h2>
+        <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4 sm:px-6 lg:px-8">
+          <h2 className={getKeyHeadingFont("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 uppercase")}>
+            TẤT CẢ SẢN PHẨM
+          </h2>
         </div>
 
         {productsLoading ? (
@@ -82,7 +96,7 @@ export function BestSellers() {
                               e.stopPropagation()
                               router.push("/cart")
                             }}
-                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            className={getNavigationFont("w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             Mua hàng
@@ -100,7 +114,7 @@ export function BestSellers() {
                                 tagline: product.tagline,
                               })
                             }}
-                            className="w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            className={getNavigationFont("w-full py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             {t.bestSellers.addToCart}
@@ -113,12 +127,15 @@ export function BestSellers() {
                   {/* Product Info - Padding như Facebook */}
                   <div className="space-y-2 px-4 sm:px-6 py-4 sm:py-5">
                     <h3
-                      className="text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors"
+                      className={getProductTitleFont("text-xl sm:text-2xl text-gray-900 group-hover:text-stone-600 transition-colors")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed" title={product.tagline}>
+                    <p
+                      className={getProductDescriptionFont("text-sm sm:text-base text-gray-600 leading-relaxed")}
+                      title={product.tagline}
+                    >
                       {product.tagline}
                     </p>
                   </div>
@@ -127,10 +144,10 @@ export function BestSellers() {
             ))}
           </div>
 
-              {/* Desktop: 4 products per row, square images - Container with max-width */}
+              {/* Desktop: 4 products per row, taller images - Container with max-width */}
               <div className="hidden md:block">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
+                <div className="w-full px-3 sm:px-4 lg:px-6">
+                  <div className="grid md:grid-cols-4 gap-6 lg:gap-8 xl:gap-10">
                 {featuredProducts.map((product) => (
               <div
                 key={product.id}
@@ -139,8 +156,8 @@ export function BestSellers() {
                 onMouseLeave={() => setHoveredId(null)}
               >
                 <Link href={`/product/${product.slug}`} className="block">
-                  {/* Product Image - Square on desktop */}
-                  <div className="relative w-full aspect-square overflow-hidden bg-stone-50">
+                  {/* Product Image - Taller on desktop */}
+                  <div className="relative w-full aspect-[3/4] overflow-hidden bg-stone-50">
                     <Image
                       src={product.image || "/placeholder.svg"}
                       alt={product.name}
@@ -157,7 +174,7 @@ export function BestSellers() {
                     />
 
                     {/* Add to Cart / Go to Cart Button - Shows on Hover - Inside Image Container */}
-                    <div className="absolute inset-x-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                    <div className="absolute inset-x-5 bottom-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
                       <div className="pointer-events-auto">
                         {!isHydrated ? (
                           <div className="w-full py-2.5 bg-gray-100 rounded-full flex items-center justify-center gap-2 shadow-lg">
@@ -171,7 +188,7 @@ export function BestSellers() {
                               e.stopPropagation()
                               router.push("/cart")
                             }}
-                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm"
+                            className={getNavigationFont("w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             Mua hàng
@@ -189,7 +206,7 @@ export function BestSellers() {
                                 tagline: product.tagline,
                               })
                             }}
-                            className="w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm"
+                            className={getNavigationFont("w-full py-2.5 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg text-sm")}
                           >
                             <ShoppingCart className="w-4 h-4" />
                             {t.bestSellers.addToCart}
@@ -200,14 +217,17 @@ export function BestSellers() {
                   </div>
 
                   {/* Product Info */}
-                  <div className="space-y-1.5 mt-4">
+                  <div className="space-y-2 mt-5">
                     <h3
-                      className="text-base lg:text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2"
+                      className={getProductTitleFont("text-lg lg:text-xl xl:text-2xl text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-2" title={product.tagline}>
+                    <p
+                      className={getProductDescriptionFont("text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2")}
+                      title={product.tagline}
+                    >
                       {product.tagline}
                     </p>
                   </div>

@@ -1,15 +1,13 @@
 "use client"
 
+import { Footer } from "@/components/layout/footer"
 import Navigation from "@/components/navigation/navigation"
 import { Button } from "@/components/ui/button"
-import { Footer } from "@/components/layout/footer"
-import { useI18n } from "@/lib/i18n-context"
-import { ArrowRight, Award, Users, Building2, Heart, Leaf, Beaker, Sparkles } from "lucide-react"
-import Link from "next/link"
+import { ArrowRight, Award, Beaker, Building2, Heart, Leaf, Users } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function AboutPage() {
-  const { t } = useI18n()
 
   const stats = [
     {

@@ -76,7 +76,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-inter), "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+  --font-sans: var(--font-quicksand), var(--font-inter), "Quicksand", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -153,7 +153,7 @@
 
   /* Specific fixes for Vietnamese diacritics */
   [lang="vi"], .vietnamese {
-    font-family: var(--font-inter), "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    font-family: var(--font-quicksand), var(--font-inter), "Quicksand", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif;
     font-feature-settings: "liga" 1, "kern" 1, "calt" 1;
   }
 }
@@ -161,12 +161,15 @@
 /* Font utility classes */
 .font-air { font-family: var(--font-air); }
 .font-fragment { font-family: var(--font-fragment); }
+.font-kodchasan { font-family: var(--font-kodchasan); }
+.font-hero-video { font-family: var(--font-hero-video); }
+.font-quicksand { font-family: var(--font-quicksand); }
 
 /* Short-hand roles per yêu cầu */
-.h-heading { font-family: var(--font-air); font-weight: 400; }
-.p-desc { font-family: var(--font-air); font-style: italic; }
-.nav-link { font-family: var(--font-air); font-style: italic; }
-.tag-small { font-family: var(--font-air); font-style: italic; font-size: 0.875rem; }
+.h-heading { font-family: var(--font-quicksand); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.p-desc { font-family: var(--font-quicksand); font-weight: 400; }
+.nav-link { font-family: var(--font-quicksand); font-weight: 500; }
+.tag-small { font-family: var(--font-quicksand); font-weight: 500; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .slogan { font-family: var(--font-fragment); }
 
 /* Custom Select Styles */
@@ -180,7 +183,7 @@ select option {
   line-height: 1.6;
   color: #111827;
   background-color: white;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-quicksand), var(--font-inter), sans-serif;
 }
 
 select option:disabled {

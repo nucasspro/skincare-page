@@ -1,20 +1,22 @@
 "use client"
 
+import { useContactSettings } from "@/hooks/use-settings"
 import { X } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { HotlineIcon } from "./icons/hotline-icon"
 import { MessengerIcon } from "./icons/messenger-icon"
 import { ZaloIcon } from "./icons/zalo-icon"
 
 export function QuickContact() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const pathname = usePathname()
 
-  // Load contact info from environment variables
-  const contactInfo = {
-    zalo: process.env.NEXT_PUBLIC_ZALO_ID || "",
-    hotline: process.env.NEXT_PUBLIC_HOTLINE || "",
-    messenger: process.env.NEXT_PUBLIC_MESSENGER_URL || "",
+  if (pathname?.startsWith("/admin")) {
+    return null
   }
+
+  const [isExpanded, setIsExpanded] = useState(false)
+  const { contactInfo, loading } = useContactSettings()
 
   const handleContact = (type: "zalo" | "hotline" | "messenger") => {
     switch (type) {
@@ -40,11 +42,16 @@ export function QuickContact() {
     }
   }
 
-  // Hide component if no contact info is available
+  // Hide component if no contact info is available or still loading
   const hasContactInfo =
     contactInfo.zalo || contactInfo.hotline || contactInfo.messenger
 
-  if (!hasContactInfo) {
+  if (!hasContactInfo && !loading) {
+    return null
+  }
+
+  // Show loading state or hide if no data
+  if (loading && !hasContactInfo) {
     return null
   }
 

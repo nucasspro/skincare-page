@@ -1,5 +1,6 @@
 "use client"
 
+import { getProductTitleFont, getProductDescriptionFont } from "@/lib/utils/font-utils"
 import Image from "next/image"
 import { useMemo } from "react"
 
@@ -47,24 +48,24 @@ export function FeatureHighlight({
                 
                 return (
                   <div key={feature.title} className="flex flex-col items-center justify-center min-w-0 px-2">
-                    <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white uppercase tracking-wider break-words leading-tight">
+                    <h3 className={getProductTitleFont("text-sm sm:text-base md:text-lg lg:text-xl text-white uppercase tracking-wider break-words leading-tight")}>
                       {feature.title}
                     </h3>
                     {hasStarRating ? (
                       <div className="flex items-center justify-center gap-1 mt-2">
                         {Array.from({ length: parseInt(starMatch[1]) }).map((_, i) => (
-                          <span key={i} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-light">
+                          <span key={i} className={getProductDescriptionFont("text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white")}>
                             ★
                           </span>
                         ))}
                         {Array.from({ length: 5 - parseInt(starMatch[1]) }).map((_, i) => (
-                          <span key={`empty-${i}`} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/30 font-light">
+                          <span key={`empty-${i}`} className={getProductDescriptionFont("text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/30")}>
                             ★
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/95 font-light italic mt-2 break-words">
+                      <p className={getProductDescriptionFont("text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/95 italic mt-2 break-words")}>
                         {feature.value}
                       </p>
                     )}
