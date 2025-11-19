@@ -1,6 +1,7 @@
 "use client"
 
 import { formatCurrency } from "@/lib/utils/currency-utils"
+import { getProductDescriptionFont, getProductTitleFont } from "@/lib/utils/font-utils"
 import { type Product } from "@/lib/product-service"
 import { useCart } from "@/lib/cart-context"
 import { ShoppingCart } from "lucide-react"
@@ -99,12 +100,17 @@ export function ProductCard({
         {/* Product Info */}
         <div className="space-y-1">
           <h3
-            className="text-lg font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate"
+            className={getProductTitleFont(
+              "text-lg text-gray-900 group-hover:text-stone-600 transition-colors truncate leading-tight uppercase"
+            )}
             title={product.name}
           >
             {product.name}
           </h3>
-          <p className="text-sm text-gray-600 truncate" title={product.tagline}>
+          <p
+            className={getProductDescriptionFont("text-sm text-gray-600 truncate leading-snug")}
+            title={product.tagline}
+          >
             {product.tagline}
           </p>
 

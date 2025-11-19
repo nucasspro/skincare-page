@@ -1,6 +1,7 @@
 "use client"
 
 import { getHeroHeadlineClass } from "@/lib/utils/typography-utils"
+import { getHeroVideoHeadingFont, getHeroVideoSloganFont } from "@/lib/utils/font-utils"
 import { useEffect, useRef, useState } from "react"
 
 export function VideoHero() {
@@ -74,8 +75,12 @@ export function VideoHero() {
           preload="none"
           className="absolute inset-0 h-full w-full object-cover"
           suppressHydrationWarning
+          poster="/videos/1.mp4"
         >
-          <source src="/videos/1.mov" type="video/mp4" />
+          <source src="/videos/1.webm" type="video/webm" />
+          <source src="/videos/1.mp4" type="video/mp4" />
+          {/* Fallback thông báo nếu trình duyệt không hỗ trợ */}
+          Trình duyệt của bạn không hỗ trợ phát video.
         </video>
       ) : (
         // Placeholder background while video is not loaded
@@ -90,11 +95,19 @@ export function VideoHero() {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl text-white px-4">
             <h2 className="font-light tracking-tight">
-              <span className={`${getHeroHeadlineClass("text-white")} drop-shadow-lg whitespace-nowrap`}>
-                "BRIGHT BEAUTY"
+              <span
+                className={getHeroVideoHeadingFont(
+                  `${getHeroHeadlineClass("text-white uppercase tracking-[0.3em]")} drop-shadow-lg whitespace-nowrap text-[40px] sm:text-[56px] md:text-[64px]`
+                )}
+              >
+                BRIGHT BEAUTY
               </span>
             </h2>
-            <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/85 leading-relaxed">
+            <p
+              className={getHeroVideoSloganFont(
+                "mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/85 leading-relaxed uppercase tracking-[0.2em]"
+              )}
+            >
               Vẻ đẹp sáng khỏe, tự hào thương hiệu Việt.
             </p>
             <a

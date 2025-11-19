@@ -4,6 +4,7 @@ import { CartDropdown } from "@/components/cart/cart-dropdown"
 import { SearchModal } from "@/components/search/search-modal"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import { getNavigationFont } from "@/lib/utils/font-utils"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -23,11 +24,19 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
   const [isSticky, setIsSticky] = useState(false)
   const [passedBanner, setPassedBanner] = useState(false) // true khi scroll qua 30px
   const [isHeaderHovered, setIsHeaderHovered] = useState(false) // track hover state
-  const menuLinkClass = isSticky
-    ? "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-    : isTransparent
-      ? "relative font-air text-base md:text-lg font-medium text-white hover:text-black group-hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
-      : "relative font-air text-base md:text-lg font-medium text-gray-800 hover:text-black transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+
+  const menuBaseClass =
+    "relative text-base md:text-lg font-semibold tracking-wide uppercase transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+
+  const menuLinkClass = getNavigationFont(
+    `${menuBaseClass} ${
+      isSticky
+        ? "text-gray-800 hover:text-black"
+        : isTransparent
+          ? "text-white hover:text-black group-hover:text-black"
+          : "text-gray-800 hover:text-black"
+    }`
+  )
 
   // Determine logo based on isHomePage, sticky state, and hover state
   const logoSrc = isHomePage && !isSticky && !isHeaderHovered ? "/logo/logo-white.svg" : "/logo/logo-black.svg"
@@ -165,7 +174,9 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
               {/* Products Link */}
               <Link
                 href="/products"
-                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                className={getNavigationFont(
+                  "relative block py-2 text-base font-semibold uppercase tracking-wide text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t.nav.products}
@@ -173,7 +184,9 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
 
               <Link
                 href="/brand-story"
-                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                className={getNavigationFont(
+                  "relative block py-2 text-base font-semibold uppercase tracking-wide text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t.nav.brandStory}
@@ -181,7 +194,9 @@ export function Navigation({ isTransparent = true, isHomePage = false, disableSt
 
               <Link
                 href="/contact"
-                className="relative font-air block py-2 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                className={getNavigationFont(
+                  "relative block py-2 text-base font-semibold uppercase tracking-wide text-gray-700 hover:text-gray-900 transition-colors after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 hover:after:w-full after:bg-gray-900 after:transition-all after:duration-300"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Liên hệ

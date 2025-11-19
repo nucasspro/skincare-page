@@ -1,5 +1,7 @@
 "use client"
 
+import { getCategoryFont } from "@/lib/utils/font-utils"
+
 export interface NavigationFilterBarProps {
   categories: Record<string, string>
   selectedCategory: string
@@ -48,7 +50,9 @@ export function NavigationFilterBar({
             <button
               key={key}
               onClick={() => onCategoryChange(key)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm font-medium transition-all flex-shrink-0 ${
+              className={`${getCategoryFont(
+                "px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all flex-shrink-0 tracking-wide uppercase"
+              )} ${
                 selectedCategory === key
                   ? "bg-stone-900 text-white shadow-md"
                   : "bg-stone-100 text-stone-700 hover:bg-stone-200"

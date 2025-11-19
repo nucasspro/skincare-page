@@ -6,9 +6,10 @@
 /**
  * Hero headline style - Large, bold, uppercase text
  * Used for main headlines in hero sections and brand story
+ * Uses Quicksand bold (same as product titles)
  */
 export const heroHeadlineClass =
-  "font-bold tracking-tight uppercase leading-[1.2] sm:leading-[1.3] text-2xl sm:text-3xl md:text-5xl lg:text-6xl"
+  "font-quicksand font-bold tracking-tight uppercase leading-[1.2] sm:leading-[1.3] text-2xl sm:text-3xl md:text-5xl lg:text-6xl"
 
 /**
  * Get hero headline classes with custom text color

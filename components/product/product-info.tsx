@@ -5,6 +5,7 @@ import { useProduct } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
 import { formatCurrency } from "@/lib/utils/currency-utils"
+import { getProductDescriptionFont, getProductTitleFont } from "@/lib/utils/font-utils"
 import { Check, Minus, Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -48,7 +49,13 @@ export function ProductInfo({ productId }: ProductInfoProps) {
       {/* Product Title & Price */}
       <div className="space-y-1.5 sm:space-y-2">
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-light text-gray-900 text-balance">{product.name}</h1>
+          <h3
+            className={getProductTitleFont(
+              "text-xl sm:text-2xl md:text-3xl lg:text-3xl text-gray-900 text-balance uppercase"
+            )}
+          >
+            {product.name}
+          </h3>
           {isBrightMatte && (
             <span className="inline-flex items-center justify-center px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs md:text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-lg animate-pulse">
               NEW ARRIVAL
@@ -56,7 +63,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
           )}
         </div>
         {product.tagline && (
-          <p className="text-xs sm:text-sm md:text-base lg:text-base text-stone-600">
+          <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base lg:text-base text-stone-600")}>
             {isBrightMatte
               ? "Bảo vệ và kiểm soát dầu hiệu quả"
               : product.tagline
@@ -65,9 +72,13 @@ export function ProductInfo({ productId }: ProductInfoProps) {
         )}
         <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-2.5 gap-y-1 sm:gap-y-1.5 pt-1 sm:pt-1.5">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-medium text-gray-900">{formatCurrency(product.price)}</span>
+            <span className={getProductDescriptionFont("text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold text-gray-900")}>
+              {formatCurrency(product.price)}
+            </span>
             {product.originalPrice && (
-              <span className="text-sm sm:text-base md:text-lg lg:text-lg text-stone-500 line-through">{formatCurrency(product.originalPrice)}</span>
+              <span className={getProductDescriptionFont("text-sm sm:text-base md:text-lg lg:text-lg text-stone-500 line-through")}>
+                {formatCurrency(product.originalPrice)}
+              </span>
             )}
           </div>
           {product.discount && product.discount > 0 && (
@@ -84,41 +95,53 @@ export function ProductInfo({ productId }: ProductInfoProps) {
           {isBrightMatte ? (
             <>
               <div className="space-y-1.5 sm:space-y-2">
-                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wide">Công dụng:</h3>
-                <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed">
+                <h3 className={getProductTitleFont("text-xs sm:text-sm text-gray-900 uppercase tracking-wide")}>
+                  Công dụng:
+                </h3>
+                <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed")}>
                   Kem chống nắng nâng tone với màng lọc nano siêu mịn SPF50+ PA++++, bảo vệ da toàn diện suốt 8 giờ. Kết hợp PDRN phục hồi da, giúp sáng khỏe và mịn màng.
                 </p>
               </div>
 
               <div className="space-y-1.5 sm:space-y-2">
-                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wide">Lợi ích:</h3>
-                <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed">
+                <h3 className={getProductTitleFont("text-xs sm:text-sm text-gray-900 uppercase tracking-wide")}>
+                  Lợi ích:
+                </h3>
+                <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed")}>
                   Kem chống nắng kiềm dầu, nâng tone
                 </p>
               </div>
 
               <div className="space-y-1.5 sm:space-y-2">
-                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wide">Loại da:</h3>
-                <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed">
+                <h3 className={getProductTitleFont("text-xs sm:text-sm text-gray-900 uppercase tracking-wide")}>
+                  Loại da:
+                </h3>
+                <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed")}>
                   Da thường da dầu, Da nhạy cảm
                 </p>
               </div>
 
               <div className="space-y-1.5 sm:space-y-2">
-                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wide">Thành phần:</h3>
-                <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed">
+                <h3 className={getProductTitleFont("text-xs sm:text-sm text-gray-900 uppercase tracking-wide")}>
+                  Thành phần:
+                </h3>
+                <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed")}>
                   Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate, PDRN, Lavender Extract, Propanediol.
                 </p>
               </div>
             </>
           ) : (
             <>
-              <h3 className="text-xs sm:text-sm font-medium text-gray-900 uppercase tracking-wide">{t.productDetail.keyBenefits}</h3>
-              <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm md:text-base text-stone-700">
+              <h3
+                className={getProductTitleFont("text-xs sm:text-sm text-gray-900 uppercase tracking-wide")}
+              >
+                {t.productDetail.keyBenefits}
+              </h3>
+              <ul className={getProductDescriptionFont("space-y-1.5 sm:space-y-2 text-xs sm:text-sm md:text-base text-stone-700")}>
                 {product.benefits.map((benefit: string, index: number) => (
                   <li key={index} className="flex items-start gap-2">
                     <span className="text-stone-400 mt-1 flex-shrink-0">•</span>
-                    <span>{benefit}</span>
+                    <span className="leading-relaxed">{benefit}</span>
                   </li>
                 ))}
               </ul>
@@ -141,7 +164,9 @@ export function ProductInfo({ productId }: ProductInfoProps) {
             <circle cx="6" cy="13" r="1" fill="currentColor" opacity="0.6" />
             <circle cx="18" cy="14" r="1" fill="currentColor" opacity="0.6" />
           </svg>
-          <p className="text-[10px] sm:text-xs font-medium text-gray-900 leading-tight px-1">Cho da dầu mụn</p>
+          <p className={getProductDescriptionFont("text-[10px] sm:text-xs font-semibold text-gray-900 leading-tight px-1 uppercase")}>
+            Cho da dầu mụn
+          </p>
         </div>
 
         {/* Icon 2: Kiểm soát dầu thông minh */}
@@ -153,7 +178,9 @@ export function ProductInfo({ productId }: ProductInfoProps) {
             <circle cx="12" cy="12" r="2.5" fill="currentColor" opacity="0.2" />
             <circle cx="12" cy="12" r="1" fill="currentColor" />
           </svg>
-          <p className="text-[10px] sm:text-xs font-medium text-gray-900 leading-tight px-1">Kiểm soát dầu thông minh</p>
+          <p className={getProductDescriptionFont("text-[10px] sm:text-xs font-semibold text-gray-900 leading-tight px-1 uppercase text-center")}>
+            Kiểm soát dầu thông minh
+          </p>
         </div>
 
         {/* Icon 3: PDRN phục hồi tế bào da */}
@@ -170,7 +197,9 @@ export function ProductInfo({ productId }: ProductInfoProps) {
             <path d="M10.5 10.5l3 3M13.5 10.5l-3 3" strokeWidth="1.5" />
             <path d="M7 14l10-10M17 14L7 4" strokeWidth="1" opacity="0.4" />
           </svg>
-          <p className="text-[10px] sm:text-xs font-medium text-gray-900 leading-tight px-1">PDRN phục hồi tế bào da</p>
+          <p className={getProductDescriptionFont("text-[10px] sm:text-xs font-semibold text-gray-900 leading-tight px-1 uppercase text-center")}>
+            PDRN phục hồi tế bào da
+          </p>
         </div>
       </div>
 
@@ -195,11 +224,7 @@ export function ProductInfo({ productId }: ProductInfoProps) {
               <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </button>
           </div>
-          {isBrightMatte && (
-            <span className="inline-flex items-center justify-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold text-white bg-red-500 rounded-md shadow-md">
-              Mua 1 tặng 1 giá 219K
-            </span>
-          )}
+          {/* Promo badge removed per request */}
         </div>
       </div>
 

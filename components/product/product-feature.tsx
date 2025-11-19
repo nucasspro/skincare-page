@@ -3,6 +3,7 @@
 import { useProducts } from "@/hooks/use-products"
 import { useSettings } from "@/hooks/use-settings"
 import { PRODUCT_FEATURE_SETTING_KEYS, SETTING_GROUPS } from "@/lib/constants/setting-keys"
+import { getProductTitleFont, getProductDescriptionFont } from "@/lib/utils/font-utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -140,10 +141,10 @@ export function ProductFeature() {
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6 md:gap-8">
           {/* Right: Text (desktop) - 50% */}
           <div className="space-y-3 sm:space-y-4 md:order-2 md:pl-8 lg:pl-12 flex flex-col justify-center text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold uppercase text-gray-900 leading-tight">
+            <h3 className={getProductTitleFont("text-2xl sm:text-3xl md:text-4xl uppercase text-gray-900 leading-tight")}>
               {title}
             </h3>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed px-4 md:px-0">
+            <p className={getProductDescriptionFont("text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed px-4 md:px-0")}>
               {description}
             </p>
             <div className="pt-2">

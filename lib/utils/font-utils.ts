@@ -14,24 +14,24 @@
 
 /**
  * Font class for main headings/key content
- * Uses Air font (normal weight)
+ * Uses Quicksand font (bold weight)
  * Size: text-4xl (36px) - approximately 2.25x larger than body content
  */
-export const fontKeyHeading = "font-air font-normal text-4xl"
+export const fontKeyHeading = "font-quicksand font-bold text-4xl"
 
 /**
  * Font class for body content
- * Uses Air font (italic style)
+ * Uses Quicksand font (regular weight)
  * Size: text-base (16px)
  */
-export const fontBodyContent = "font-air italic text-base"
+export const fontBodyContent = "font-quicksand font-normal text-base"
 
 /**
  * Font class for navigation buttons
- * Uses Air font (italic style)
+ * Uses Quicksand font (semibold weight)
  * Size: text-base (16px) or text-lg (18px)
  */
-export const fontNavigation = "font-air italic text-base"
+export const fontNavigation = "font-quicksand font-medium text-base"
 
 /**
  * Font class for decorative/design elements on rest pages
@@ -39,6 +39,36 @@ export const fontNavigation = "font-air italic text-base"
  * Size: Variable, typically larger for decorative purposes
  */
 export const fontDecorative = "font-fragment"
+
+/**
+ * Font class for category labels/filter chips
+ * Uses Kodchasan font (light)
+ */
+export const fontCategory = "font-kodchasan font-light"
+
+/**
+ * Font class for hero headings in video section
+ * Uses Aeonik Extended Pro (local font)
+ */
+export const fontHeroVideoHeading = "font-hero-video font-normal"
+
+/**
+ * Font class for hero slogan in video section
+ * Uses Quicksand variable font
+ */
+export const fontHeroVideoSlogan = "font-quicksand font-light"
+
+/**
+ * Font class for product titles
+ * Uses Quicksand variable font, bold weight
+ */
+export const fontProductTitle = "font-quicksand font-bold"
+
+/**
+ * Font class for product descriptions
+ * Uses Quicksand variable font
+ */
+export const fontProductDescription = "font-quicksand font-normal"
 
 /**
  * Get font class for main headings/key content
@@ -74,6 +104,43 @@ export function getNavigationFont(additionalClasses: string = ""): string {
  */
 export function getDecorativeFont(additionalClasses: string = ""): string {
   return `${fontDecorative} ${additionalClasses}`.trim()
+}
+
+/**
+ * Get font class for category labels
+ * @param additionalClasses - Optional additional Tailwind classes
+ * @returns Combined font classes
+ */
+export function getCategoryFont(additionalClasses: string = ""): string {
+  return `${fontCategory} ${additionalClasses}`.trim()
+}
+
+/**
+ * Get font class for hero video heading
+ */
+export function getHeroVideoHeadingFont(additionalClasses: string = ""): string {
+  return `${fontHeroVideoHeading} ${additionalClasses}`.trim()
+}
+
+/**
+ * Get font class for hero video slogan
+ */
+export function getHeroVideoSloganFont(additionalClasses: string = ""): string {
+  return `${fontHeroVideoSlogan} ${additionalClasses}`.trim()
+}
+
+/**
+ * Get font class for product titles
+ */
+export function getProductTitleFont(additionalClasses: string = ""): string {
+  return `${fontProductTitle} ${additionalClasses}`.trim()
+}
+
+/**
+ * Get font class for product descriptions
+ */
+export function getProductDescriptionFont(additionalClasses: string = ""): string {
+  return `${fontProductDescription} ${additionalClasses}`.trim()
 }
 
 /**
@@ -133,25 +200,25 @@ export const fontPresets = {
    * Main heading style - Large, bold, uppercase
    * Size: text-4xl (36px) - 2.25x larger than body
    */
-  mainHeading: `${fontKeyHeading} font-bold uppercase tracking-tight`,
+  mainHeading: `${fontKeyHeading} uppercase tracking-tight`,
 
   /**
    * Main heading style - Extra Large
    * Size: text-5xl (48px) - 2.5x larger than body
    */
-  mainHeadingXL: `font-air font-normal text-5xl font-bold uppercase tracking-tight`,
+  mainHeadingXL: `font-quicksand font-bold text-5xl uppercase tracking-tight`,
 
   /**
    * Main heading style - Medium
    * Size: text-3xl (30px) - 2x larger than body
    */
-  mainHeadingMd: `font-air font-normal text-3xl font-bold uppercase tracking-tight`,
+  mainHeadingMd: `font-quicksand font-bold text-3xl uppercase tracking-tight`,
 
   /**
    * Subheading style - Medium size
    * Size: text-2xl (24px) - 1.5x larger than body
    */
-  subHeading: `font-air font-normal text-2xl font-semibold`,
+  subHeading: `font-quicksand font-semibold text-2xl`,
 
   /**
    * Body text style - Regular content
@@ -163,13 +230,13 @@ export const fontPresets = {
    * Body text style - Large
    * Size: text-lg (18px)
    */
-  bodyTextLg: `font-air italic text-lg leading-relaxed`,
+  bodyTextLg: `font-quicksand text-lg leading-relaxed`,
 
   /**
    * Navigation link style
    * Size: text-base (16px)
    */
-  navLink: `${fontNavigation} font-medium`,
+  navLink: `${fontNavigation}`,
 
   /**
    * Navigation button style
@@ -181,7 +248,7 @@ export const fontPresets = {
    * Navigation button style - Large
    * Size: text-lg (18px)
    */
-  navButtonLg: `font-air italic text-lg font-semibold`,
+  navButtonLg: `font-quicksand text-lg font-semibold`,
 
   /**
    * Decorative text style - For design elements
@@ -199,7 +266,7 @@ export const fontPresets = {
    * Tag/label style - Small decorative text
    * Size: text-sm (14px)
    */
-  tag: `font-air italic text-sm uppercase tracking-wider`,
+  tag: `font-quicksand text-sm uppercase tracking-wider`,
 
   /**
    * Slogan style - Large decorative text

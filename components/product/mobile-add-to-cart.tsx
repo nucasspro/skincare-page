@@ -3,6 +3,7 @@
 import { useProduct } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
+import { getProductTitleFont } from "@/lib/utils/font-utils"
 import { Check, ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -23,10 +24,10 @@ export function MobileAddToCart({ productId }: MobileAddToCartProps) {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-gray-900 px-4 py-4 shadow-lg">
         <button
           disabled
-          className="w-full h-14 text-lg bg-gray-700 text-white rounded-full cursor-not-allowed flex items-center justify-center"
+          className={getProductTitleFont("w-full h-14 text-lg bg-gray-700 text-white rounded-full cursor-not-allowed flex items-center justify-center")}
         >
           <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" />
-          <span className="text-lg font-medium">Đang tải...</span>
+          <span className="text-lg">Đang tải...</span>
         </button>
       </div>
     )
@@ -55,22 +56,22 @@ export function MobileAddToCart({ productId }: MobileAddToCartProps) {
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-gray-900 px-4 py-4 shadow-lg">
       <button
         onClick={handleAddToCart}
-        className="w-full h-8 text-lg bg-gray-900 hover:bg-gray-800 text-white rounded-full font-semibold transition-colors flex items-center justify-center"
+        className={getProductTitleFont("w-full h-8 text-lg bg-gray-900 hover:bg-gray-800 text-white rounded-full transition-colors flex items-center justify-center uppercase")}
       >
         {isAdded ? (
           <>
             <Check className="w-6 h-6 mr-3 stroke-[2.5]" />
-            <span className="text-lg font-semibold">Đã thêm vào giỏ</span>
+            <span className="text-lg">Đã thêm vào giỏ</span>
           </>
         ) : isInCart ? (
           <>
             <ShoppingCart className="w-6 h-6 mr-3 stroke-[2.5]" />
-            <span className="text-lg font-semibold">Mua hàng</span>
+            <span className="text-lg">Mua hàng</span>
           </>
         ) : (
           <>
             <ShoppingCart className="w-6 h-6 mr-3 stroke-[2.5]" />
-            <span className="text-lg font-semibold">{t.productDetail.addToCart || "Thêm vào giỏ"}</span>
+            <span className="text-lg">{t.productDetail.addToCart || "Thêm vào giỏ"}</span>
           </>
         )}
       </button>

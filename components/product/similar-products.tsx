@@ -4,7 +4,13 @@ import { useProduct, useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import type { Product } from "@/lib/product-service"
 import { formatCurrency } from "@/lib/utils/currency-utils"
-import { getBodyContentFont, getKeyHeadingFont, getNavigationFont } from "@/lib/utils/font-utils"
+import {
+  getBodyContentFont,
+  getKeyHeadingFont,
+  getNavigationFont,
+  getProductDescriptionFont,
+  getProductTitleFont,
+} from "@/lib/utils/font-utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo } from "react"
@@ -112,13 +118,22 @@ export function SimilarProducts({ productId }: SimilarProductsProps) {
               </div>
               <div className="space-y-0.5 sm:space-y-1 mt-2 sm:mt-3 md:mt-4 w-full">
                 <h3
-                  className={getKeyHeadingFont("text-sm sm:text-base font-medium text-gray-900 group-hover:text-stone-600 transition-colors truncate")}
+                  className={getProductTitleFont(
+                    "text-sm sm:text-base text-gray-900 group-hover:text-stone-600 transition-colors truncate leading-tight uppercase"
+                  )}
                   title={product.name}
                 >
                   {product.name}
                 </h3>
-                <p className={getBodyContentFont("text-xs sm:text-sm text-stone-600 truncate")} title={product.tagline}>{product.tagline}</p>
-                <p className={getBodyContentFont("text-base sm:text-lg font-medium text-gray-900")}>{formatCurrency(product.price)}</p>
+                <p
+                  className={getProductDescriptionFont("text-xs sm:text-sm text-stone-600 truncate leading-snug")}
+                  title={product.tagline}
+                >
+                  {product.tagline}
+                </p>
+                <p className={getProductDescriptionFont("text-base sm:text-lg font-semibold text-gray-900")}>
+                  {formatCurrency(product.price)}
+                </p>
               </div>
             </Link>
             {!isHydrated ? (

@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 
 import { useReviewsByProductId } from "@/hooks/use-reviews"
-import { getKeyHeadingFont } from "@/lib/utils/font-utils"
+import { getKeyHeadingFont, getProductTitleFont, getProductDescriptionFont } from "@/lib/utils/font-utils"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 import Image from "next/image"
 
@@ -100,7 +100,7 @@ function BeforeAfterSlider({
       <div className="absolute inset-0">
         <Image src={afterImage || "/placeholder.svg"} alt={afterLabel} fill className="object-cover" />
         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
-          <span className="text-sm font-medium text-gray-900">{afterLabel}</span>
+          <span className={getProductTitleFont("text-sm text-gray-900 uppercase")}>{afterLabel}</span>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ function BeforeAfterSlider({
       <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
         <Image src={beforeImage || "/placeholder.svg"} alt={beforeLabel} fill className="object-cover" />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
-          <span className="text-sm font-medium text-gray-900">{beforeLabel}</span>
+          <span className={getProductTitleFont("text-sm text-gray-900 uppercase")}>{beforeLabel}</span>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ function BeforeAfterSlider({
 
       {/* Instruction Text */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full">
-        <span className="text-xs font-medium text-white">{dragLabel}</span>
+        <span className={getProductDescriptionFont("text-xs text-white")}>{dragLabel}</span>
       </div>
     </div>
   )
@@ -184,7 +184,7 @@ export function RealResults({ productId }: { productId: string }) {
           {/* Show message if no reviews */}
           {reviews.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-stone-600 text-lg">Chưa có đánh giá nào cho sản phẩm này.</p>
+              <p className={getProductDescriptionFont("text-stone-600 text-lg")}>Chưa có đánh giá nào cho sản phẩm này.</p>
             </div>
           ) : (
           <div className="relative">
@@ -220,9 +220,9 @@ export function RealResults({ productId }: { productId: string }) {
                 {/* Review Content */}
                 <div className="p-3 sm:p-4 md:p-5 space-y-1.5 sm:space-y-2 md:space-y-2.5 flex flex-col flex-1">
                   {renderRatingStars(review.rating)}
-                  <p className="text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed flex-1">{review.review}</p>
-                  <div className="flex items-center justify-between text-[10px] sm:text-xs md:text-sm mt-auto">
-                    <span className="font-medium sm:font-bold text-gray-900">{review.name}</span>
+                  <p className={getProductDescriptionFont("text-xs sm:text-sm md:text-base text-stone-700 leading-relaxed flex-1")}>{review.review}</p>
+                  <div className={getProductDescriptionFont("flex items-center justify-between text-[10px] sm:text-xs md:text-sm mt-auto")}>
+                    <span className={getProductTitleFont("text-gray-900")}>{review.name}</span>
                     <span className="text-stone-500">{review.date}</span>
                   </div>
                 </div>

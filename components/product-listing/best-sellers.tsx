@@ -3,7 +3,12 @@
 import { useProducts } from "@/hooks/use-products"
 import { useCart } from "@/lib/cart-context"
 import { useI18n } from "@/lib/i18n-context"
-import { getBodyContentFont, getKeyHeadingFont, getNavigationFont } from "@/lib/utils/font-utils"
+import {
+  getKeyHeadingFont,
+  getNavigationFont,
+  getProductDescriptionFont,
+  getProductTitleFont,
+} from "@/lib/utils/font-utils"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -122,12 +127,15 @@ export function BestSellers() {
                   {/* Product Info - Padding như Facebook */}
                   <div className="space-y-2 px-4 sm:px-6 py-4 sm:py-5">
                     <h3
-                      className={getKeyHeadingFont("text-xl sm:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors")}
+                      className={getProductTitleFont("text-xl sm:text-2xl text-gray-900 group-hover:text-stone-600 transition-colors")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className={getBodyContentFont("text-sm sm:text-base text-gray-600 leading-relaxed")} title={product.tagline}>
+                    <p
+                      className={getProductDescriptionFont("text-sm sm:text-base text-gray-600 leading-relaxed")}
+                      title={product.tagline}
+                    >
                       {product.tagline}
                     </p>
                   </div>
@@ -211,12 +219,15 @@ export function BestSellers() {
                   {/* Product Info */}
                   <div className="space-y-2 mt-5">
                     <h3
-                      className={getKeyHeadingFont("text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2")}
+                      className={getProductTitleFont("text-lg lg:text-xl xl:text-2xl text-gray-900 group-hover:text-stone-600 transition-colors line-clamp-2")}
                       title={product.name}
                     >
                       {product.name}
                     </h3>
-                    <p className={getBodyContentFont("text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2")} title={product.tagline}>
+                    <p
+                      className={getProductDescriptionFont("text-base lg:text-lg text-gray-600 leading-relaxed line-clamp-2")}
+                      title={product.tagline}
+                    >
                       {product.tagline}
                     </p>
                   </div>
