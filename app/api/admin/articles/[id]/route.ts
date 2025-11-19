@@ -4,7 +4,6 @@ import { articleDataService } from '@/lib/services/article-data-service'
 import { errorResponse, successResponse } from '@/lib/utils/api-response'
 import { getCurrentUser } from '@/lib/utils/auth'
 import { generateSlug } from '@/lib/utils/slug-util'
-import { processArticleContent } from '@/lib/utils/process-article-content'
 import { createArticleSchema } from '@/lib/validations/article'
 
 const MAX_ARTICLE_CONTENT_BYTES = 8 * 1024 * 1024
@@ -92,8 +91,12 @@ export const PUT = withAuth(async (
       })
     }
 
-    // Process content: extract base64 images and upload them
-    const processedContent = await processArticleContent(validatedData.content, id)
+    // Process content: extract base64 images and upload them (dynamic import to reduce bundle size)
+    let processedContent = validatedData.content
+    if (processedContent && processedContent.includes('data:image')) {
+      const { processArticleContent } = await import('@/lib/utils/process-article-content')
+      processedContent = await processArticleContent(processedContent, id)
+    }
     ensureContentWithinLimit(processedContent)
 
     const article = await articleDataService.updateArticle({

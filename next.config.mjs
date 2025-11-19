@@ -20,6 +20,11 @@ const nextConfig = {
       },
     ],
   },
+  // Externalize sharp to reduce serverless function size
+  // This prevents sharp from being bundled into API routes that don't need it
+  experimental: {
+    serverComponentsExternalPackages: ['sharp'],
+  },
   // Removed react-dom shim aliases - react-quill-new works with React 19 without shims
   // Turbopack on Vercel doesn't support absolute paths in resolveAlias anyway
 }
