@@ -10,11 +10,15 @@ import { notFound } from "next/navigation"
 function formatDate(timestamp?: number | null) {
   if (!timestamp) return null
   try {
+    // publishedAt is stored as Unix timestamp in seconds, convert to milliseconds
+    const date = timestamp > 1_000_000_000_000
+      ? new Date(timestamp) // Already in milliseconds
+      : new Date(timestamp * 1000) // Convert seconds to milliseconds
     return new Intl.DateTimeFormat("vi-VN", {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }).format(new Date(timestamp))
+    }).format(date)
   } catch {
     return null
   }
