@@ -117,6 +117,58 @@ function StatsBarItem({ label, percentage, color }: StatsBarItemProps) {
     )
 }
 
+interface PDRNInfoBarProps {
+    imageSrc: string
+    imagePosition: 'left' | 'right'
+    imageWidth: number
+    imageHeight: number
+    title: string
+    description: string
+}
+
+function PDRNInfoBar({ imageSrc, imagePosition, imageWidth, imageHeight, title, description }: PDRNInfoBarProps) {
+    const isImageLeft = imagePosition === 'left'
+
+    return (
+        <div className="flex flex-col md:flex-row overflow-hidden gap-0" style={{ backgroundColor: '#92CEE3' }}>
+            {isImageLeft && (
+                <div className="w-full md:w-[20%] h-48 md:h-auto flex-shrink-0 relative m-0 p-0 overflow-hidden">
+                    <Image
+                        src={imageSrc}
+                        alt={title}
+                        width={imageWidth}
+                        height={imageHeight}
+                        className="object-contain w-full h-full"
+                        quality={100}
+                        unoptimized
+                    />
+                </div>
+            )}
+            <div className="w-full md:w-[80%] p-4 md:p-6 flex flex-col justify-center text-left">
+                <h3 className="section-content text-2xl font-extrabold uppercase font-heading">
+                    {title}
+                </h3>
+                <p className="section-content-small">
+                    {description}
+                </p>
+            </div>
+            {!isImageLeft && (
+                <div className="w-full md:w-[20%] h-48 md:h-auto flex-shrink-0 relative m-0 p-0 overflow-hidden">
+                    <Image
+                        src={imageSrc}
+                        alt={title}
+                        width={imageWidth}
+                        height={imageHeight}
+                        className="object-cover w-full h-full"
+                        quality={100}
+                        unoptimized
+                    />
+                </div>
+            )}
+        </div>
+    )
+}
+
 interface StatsGraphProps {
     items: Array<{ label: string; percentage: number; color: string }>
 }
@@ -529,50 +581,37 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 5: PDRN INFO */}
-            <section className="py-16 bg-white relative z-10">
-                <div className="max-w-5xl mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-[#2F5C91] text-center mb-12 uppercase font-heading">
+            <section className="py-20 bg-slate-50 relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-4 text-center">
+                    <h2 className="section-title font-extrabold uppercase mb-8">
                         PDRN - Có thể bạn chưa biết?
                     </h2>
 
                     <div className="flex flex-col gap-6">
-                        {/* Bar 1: Skin Tone Gradient */}
-                        <div className="flex flex-col md:flex-row overflow-hidden rounded-r-2xl">
-                            <div className="md:w-48 h-32 md:h-auto flex-shrink-0 relative bg-gradient-to-br from-blue-100 to-blue-50"></div>
-                            <div className="flex-1 bg-gradient-to-r from-[#81C3D7] to-[#A0D2EB] p-6 md:p-8 flex flex-col justify-center text-white md:rounded-r-2xl">
-                                <h3 className="text-xl font-bold uppercase mb-2 text-[#164e63] font-heading">
-                                    Hỗ trợ tái tạo tế bào da
-                                </h3>
-                                <p className="text-[#0e7490] font-medium">
-                                    Kích thích sự tăng sinh của tế bào sừng và nguyên bào sợi, giúp phục hồi da bị tổn thương.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Bar 2: Light Orange Gradient */}
-                        <div className="flex flex-col md:flex-row overflow-hidden rounded-l-2xl">
-                            <div className="flex-1 bg-gradient-to-r from-[#FBC3BC] to-[#F7D9C4] p-6 md:p-8 flex flex-col justify-center text-white order-2 md:order-1 md:rounded-l-2xl">
-                                <h3 className="text-xl font-bold uppercase mb-2 text-[#9a3412] font-heading">
-                                    Phục hồi làn da tổn thương (Wound healing)
-                                </h3>
-                                <p className="text-[#c2410c] font-medium">
-                                    Kích hoạt quá trình tăng sinh và tái tạo mô bị tổn thương. Kích thích VEGF và Angiopoietin nhằm
-                                    thúc đẩy quá trình khét miệng vết thương.
-                                </p>
-                            </div>
-                            <div className="md:w-48 h-32 md:h-auto flex-shrink-0 relative bg-gradient-to-br from-orange-100 to-orange-50 order-1 md:order-2"></div>
-                        </div>
-
-                        {/* Bar 3: Blue Gradient */}
-                        <div className="flex flex-col md:flex-row overflow-hidden rounded-r-2xl">
-                            <div className="md:w-48 h-32 md:h-auto flex-shrink-0 relative bg-gradient-to-br from-cyan-100 to-cyan-50"></div>
-                            <div className="flex-1 bg-gradient-to-r from-[#98C1D9] to-[#E0FBFC] p-6 md:p-8 flex flex-col justify-center text-white md:rounded-r-2xl">
-                                <h3 className="text-xl font-bold uppercase mb-2 text-[#1e3a8a] font-heading">Bảo vệ tế bào trước tia UVB</h3>
-                                <p className="text-[#1d4ed8] font-medium">
-                                    Tăng khả năng sống của tế bào và giảm thiểu tác hại oxy hóa, hỗ trợ củng cố hàng rào da.
-                                </p>
-                            </div>
-                        </div>
+                        <PDRNInfoBar
+                            imageSrc="/landing-page/PAGE 5/31.png"
+                            imagePosition="left"
+                            imageWidth={300}
+                            imageHeight={300}
+                            title="Hỗ trợ tái tạo tế bào da"
+                            description="Kích thích sự tăng sinh của tế bào sừng và nguyên bào sợi, giúp phục hồi da bị tổn thương."
+                        />
+                        <PDRNInfoBar
+                            imageSrc="/landing-page/PAGE 5/32.png"
+                            imagePosition="right"
+                            imageWidth={250}
+                            imageHeight={250}
+                            title="Phục hồi làn da tổn thương (Wound healing)"
+                            description="Kích hoạt quá trình tăng sinh và tái tạo mô bị tổn thương. Kích thích VEGF và Angiopoietin nhằm thúc đẩy quá trình khét miệng vết thương."
+                        />
+                        <PDRNInfoBar
+                            imageSrc="/landing-page/PAGE 5/33.png"
+                            imagePosition="left"
+                            imageWidth={300}
+                            imageHeight={300}
+                            title="Bảo vệ tế bào trước tia UVB"
+                            description="Tăng khả năng sống của tế bào và giảm thiểu tác hại oxy hóa, hỗ trợ củng cố hàng rào da."
+                        />
                     </div>
                 </div>
             </section>
