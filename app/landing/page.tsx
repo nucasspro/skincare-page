@@ -1,6 +1,6 @@
 "use client"
 
-import { Droplet, Shield, Star, SunMedium } from "lucide-react"
+import { Shield, Star } from "lucide-react"
 import Image from "next/image"
 import { ManropeFont, MontserratFont, QuicksandFont } from "../fonts"
 
@@ -169,6 +169,60 @@ function PDRNInfoBar({ imageSrc, imagePosition, imageWidth, imageHeight, title, 
     )
 }
 
+interface BenefitItemProps {
+    imageSrc: string
+    text: string
+}
+
+function BenefitItem({ imageSrc, text }: BenefitItemProps) {
+    return (
+        <div className="flex flex-col md:flex-row gap-8 items-center max-w-[90%] mx-auto my-4">
+            <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 border-4 border-blue-100 overflow-hidden">
+                <Image
+                    src={imageSrc}
+                    alt=""
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    quality={100}
+                    unoptimized
+                />
+            </div>
+            <p className="section-content text-lg md:text-xl leading-relaxed pr-30">
+                {text}
+            </p>
+        </div>
+    )
+}
+
+interface BenefitsContainerProps {
+    items: Array<{ imageSrc: string; text: string }>
+    backgroundImage: string
+}
+
+function BenefitsContainer({ items, backgroundImage }: BenefitsContainerProps) {
+    return (
+        <div className="relative rounded-[3rem] md:p-10 space-y-16 mb-10">
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src={backgroundImage}
+                    alt=""
+                    fill
+                    // className="object-cover"
+                    style={{ transform: 'scale(2.15)' }}
+                    quality={100}
+                    unoptimized
+                />
+            </div>
+            <div className="relative z-10">
+                {items.map((item, index) => (
+                    <BenefitItem key={index} imageSrc={item.imageSrc} text={item.text} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
 interface StatsGraphProps {
     items: Array<{ label: string; percentage: number; color: string }>
 }
@@ -250,12 +304,6 @@ export default function LandingPage() {
           color: #3a76a5;
           line-height: 1.96;
         }
-        .section-content {
-          font-family: ${montserratFamily}, 'Montserrat', sans-serif;
-          font-size: 20px;
-          color: #3a76a5;
-          line-height: 1.96;
-        }
       `}</style>
 
             {/* HERO SECTION */}
@@ -263,12 +311,9 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     {/* Header Text */}
                     <div className="text-center mb-4 md:mb-8">
-                        <h2 className="text-xl md:text-2xl font-bold tracking-[0.2em] text-slate-400 uppercase mb-1 font-heading">
-                            Cellic
+                        <h2 className="text-xl md:text-2xl font-bold tracking-[0.2em] uppercase mb-1 font-heading section-title">
+                            Cellic<br />Bright Matte Sunscreen
                         </h2>
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[#2F5C91] uppercase tracking-tight mb-2 font-heading">
-                            Bright Matte Sunscreen
-                        </h1>
                         <p className="text-sm md:text-base font-semibold text-slate-500 uppercase tracking-wide">
                             <span className="font-extrabold text-[#2276D3]">X10</span> Hiệu quả chống nắng - Tái tạo phục hồi da
                         </p>
@@ -457,7 +502,7 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 3: 3-LAYER PROTECTION */}
-            <section className="py-16 px-4 relative z-10">
+            <section className="py-20 px-4 relative z-10">
                 <div className="max-w-6xl mx-auto bg-[#E6F4FA] rounded-[3rem] p-8 md:p-16 relative overflow-hidden shadow-sm">
                     {/* Background Swirl */}
                     <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/60 to-transparent opacity-50 pointer-events-none"></div>
@@ -521,7 +566,7 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 4: INGREDIENTS */}
-            <section className="py-24 bg-white relative z-10">
+            <section className="py-20 bg-white relative z-10">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="bg-[#F1F5F9] rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
                         {/* Left Visual: Podiums */}
@@ -617,58 +662,57 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 6: 3C (USES) */}
-            <section className="py-24 relative overflow-hidden bg-[#F8FAFC] z-10">
-                <div className="absolute -left-20 top-0 text-[20rem] font-black text-[#E2E8F0]/40 leading-none select-none pointer-events-none z-0 font-heading">
-                    3
+            <section className="py-20 relative z-10">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/landing-page/PAGE 6/BACKGROUND.png"
+                        alt=""
+                        fill
+                        className="object-cover"
+                        quality={100}
+                        unoptimized
+                    />
                 </div>
 
                 <div className="max-w-6xl mx-auto px-4 relative z-10">
-                    <div className="flex flex-col md:flex-row items-center justify-between mb-16">
-                        {/* The "3" title alignment fix */}
-                        <div className="w-full md:w-1/3 h-40"></div> {/* Spacer for absolute 3 */}
-                        <div className="w-full md:w-2/3">
-                            <h2 className="text-3xl md:text-5xl font-extrabold text-[#2F5C91] uppercase tracking-tight text-right md:text-left font-heading">
-                                Công dụng "Không Tưởng"<br />của CELLIC Matte Sunscreen
+                    {/* Container with 3C, Header and BenefitsContainer - All same width */}
+                    <div className="max-w-6xl relative">
+                        {/* Large "3C" - On top */}
+                        <div className="absolute top-20 left-[-30] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '256px' }}>
+                            3
+                        </div>
+                        <div className="absolute top-32 left-[115] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '130px' }}>
+                            C
+                        </div>
+
+                        {/* Header - On top, below 3C */}
+                        <div className="relative z-20 top-4 left-[220] mb-16 pt-32">
+                            <h2 className="text-right md:text-left font-heading uppercase tracking-tight" style={{ fontSize: '35px' }}>
+                                <span className="font-normal text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
+                                <br />
+                                <span className="font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
                             </h2>
                         </div>
-                    </div>
 
-                    <div className="bg-[#EBF8FF] rounded-[3rem] p-8 md:p-16 space-y-12">
-                        {/* Item 1 */}
-                        <div className="flex flex-col md:flex-row gap-8 items-center">
-                            <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 border-4 border-blue-100">
-                                <div className="w-12 h-12 rounded-full bg-[#2F5C91]/20 flex items-center justify-center">
-                                    <Shield className="w-6 h-6 text-[#2F5C91] opacity-50" />
-                                </div>
-                            </div>
-                            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                                Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo
-                                vệ tự nhiên.
-                            </p>
-                        </div>
-                        {/* Item 2 */}
-                        <div className="flex flex-col md:flex-row gap-8 items-center">
-                            <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 border-4 border-blue-100">
-                                <div className="w-12 h-12 rounded-full bg-[#2F5C91]/20 flex items-center justify-center">
-                                    <SunMedium className="w-6 h-6 text-[#2F5C91] opacity-50" />
-                                </div>
-                            </div>
-                            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                                Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp.
-                            </p>
-                        </div>
-                        {/* Item 3 */}
-                        <div className="flex flex-col md:flex-row gap-8 items-center">
-                            <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 border-4 border-blue-100">
-                                <div className="w-12 h-12 rounded-full bg-[#2F5C91]/20 flex items-center justify-center">
-                                    <Droplet className="w-6 h-6 text-[#2F5C91] opacity-50" />
-                                </div>
-                            </div>
-                            <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
-                                Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống
-                                nắng.
-                            </p>
-                        </div>
+                        {/* BenefitsContainer - Background below */}
+                        <BenefitsContainer
+                            backgroundImage="/landing-page/PAGE 6/35.png"
+                            items={[
+                                {
+                                    imageSrc: "/landing-page/PAGE 6/36.png",
+                                    text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
+                                },
+                                {
+                                    imageSrc: "/landing-page/PAGE 6/37.png",
+                                    text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
+                                },
+                                {
+                                    imageSrc: "/landing-page/PAGE 6/38.png",
+                                    text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
+                                }
+                            ]}
+                        />
                     </div>
                 </div>
             </section>
@@ -679,23 +723,21 @@ export default function LandingPage() {
                     <div className="bg-[#EFF6FF] rounded-[3rem] p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                         {/* Left Visual with Text Overlay */}
                         <div className="relative h-[500px] rounded-[2rem] overflow-hidden group">
-                            <div className="w-full h-full bg-gradient-to-br from-blue-200 via-blue-100 to-blue-50 transition-transform duration-700 group-hover:scale-105"></div>
-                            <div className="absolute inset-0 bg-blue-900/10 mix-blend-overlay"></div>
                             <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
-                                <h2 className="text-3xl md:text-5xl font-extrabold text-[#2F5C91] uppercase drop-shadow-lg leading-tight font-heading">
+                                <h2 className="section-title font-extrabold uppercase text-center">
                                     Bảo vệ<br />chuyên sâu và<br />nuôi dưỡng<br />chỉ trong<br />1 bước
                                 </h2>
                             </div>
                         </div>
 
                         {/* Right Text Content */}
-                        <div className="space-y-8">
+                        <div className="space-y-2">
                             <div>
-                                <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-2 font-heading">
+                                <h3 className="section-content font-extrabold uppercase text-left">
                                     4 Màng Lọc Chống Nắng Hiện Đại
                                 </h3>
-                                <p className="text-slate-600 leading-relaxed">
-                                    Với <span className="font-bold text-[#2F5C91]">2 màng lọc Ultrafine Titanium Dioxide & Nano Zinc Oxide</span>{" "}
+                                <p className="section-content-small leading-relaxed">
+                                    Với <span className="font-bold">2 màng lọc Ultrafine Titanium Dioxide & Nano Zinc Oxide</span>{" "}
                                     chống nắng thế hệ mới mang lại hiệu quả bảo vệ đa tầng:<br />
                                     1. Bảo vệ da trước tác động của tia UVA, UVB, HEV.<br />
                                     2. Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn.<br />
@@ -704,18 +746,18 @@ export default function LandingPage() {
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-2 font-heading">
+                                <h3 className="section-content font-extrabold uppercase text-left">
                                     Công Nghệ Smart Oil Control Kết Hợp Công Nghệ Hạt Nano
                                 </h3>
-                                <p className="text-slate-600 leading-relaxed">
+                                <p className="section-content-small leading-relaxed">
                                     Duy trì cảm giác thoáng da - ráo mặt - không bóng nhờn suốt 8 giờ. Tạo hiệu ứng soft focus, che phủ
                                     khuyết điểm nhẹ nhàng, cho Finish mỏng nhẹ, mịn đẹp.
                                 </p>
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-2 font-heading">Công Nghệ Microbiome</h3>
-                                <p className="text-slate-600 leading-relaxed">
+                                <h3 className="section-content font-extrabold uppercase text-left">Công Nghệ Microbiome</h3>
+                                <p className="section-content-small leading-relaxed">
                                     Làm dịu và cân bằng hệ vi sinh, bảo vệ làn da nhạy cảm.
                                 </p>
                             </div>
@@ -725,7 +767,7 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 8: CERTIFICATE */}
-            <section className="py-24 relative overflow-visible z-10">
+            <section className="py-20 relative overflow-visible z-10">
                 <div className="w-[80vw] h-[20vh] mx-auto px-4 relative z-10">
                     {/* Certificate Image - Positioned separately, larger, overlapping left */}
                     <div className="absolute left-[-100px] md:left-[-450px] top-1/2 -translate-y-1/2 z-20 w-[800px] md:w-[1000px] lg:w-[1200px] rounded-lg">
