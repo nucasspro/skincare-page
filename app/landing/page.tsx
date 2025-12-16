@@ -718,13 +718,28 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 7: DEEP PROTECTION */}
-            <section className="py-20 bg-white relative z-10 w-full">
-                <div className="w-[80vw] mx-auto px-4">
-                    <div className="bg-[#EFF6FF] rounded-[3rem] p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <section className="py-20 bg-white relative z-10 w-full overflow-visible mt-[100px]">
+                <div className="w-[80vw] mx-auto px-4 relative">
+                    {/* Image at top left, overlapping border */}
+                    <div className="absolute top-[-100px] left-[-40px] md:left-[-80px] z-20">
+                        <Image
+                            src="/landing-page/PAGE 7/42.png"
+                            alt=""
+                            width={200}
+                            height={200}
+                            className="w-[250px] md:w-[300px] h-auto object-contain"
+                            quality={100}
+                            unoptimized
+                        />
+                    </div>
+                    <div className="bg-[#EFF6FF] rounded-[3rem] p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
                         {/* Left Visual with Text Overlay */}
-                        <div className="relative h-[500px] rounded-[2rem] overflow-hidden group">
-                            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
-                                <h2 className="section-title font-extrabold uppercase text-center">
+                        <div className="relative rounded-[2rem] group">
+                            <div>
+                                <h2
+                                    className="section-title font-extrabold uppercase text-center"
+                                    style={{ lineHeight: "1.5" }}
+                                >
                                     Bảo vệ<br />chuyên sâu và<br />nuôi dưỡng<br />chỉ trong<br />1 bước
                                 </h2>
                             </div>
@@ -733,10 +748,10 @@ export default function LandingPage() {
                         {/* Right Text Content */}
                         <div className="space-y-2">
                             <div>
-                                <h3 className="section-content font-extrabold uppercase text-left">
+                                <h3 className="section-content font-extrabold uppercase text-left" style={{ lineHeight: "1.3" }}>
                                     4 Màng Lọc Chống Nắng Hiện Đại
                                 </h3>
-                                <p className="section-content-small leading-relaxed">
+                                <p className="section-content-small leading-relaxed" style={{ lineHeight: "1.3" }}>
                                     Với <span className="font-bold">2 màng lọc Ultrafine Titanium Dioxide & Nano Zinc Oxide</span>{" "}
                                     chống nắng thế hệ mới mang lại hiệu quả bảo vệ đa tầng:<br />
                                     1. Bảo vệ da trước tác động của tia UVA, UVB, HEV.<br />
@@ -746,18 +761,18 @@ export default function LandingPage() {
                             </div>
 
                             <div>
-                                <h3 className="section-content font-extrabold uppercase text-left">
+                                <h3 className="section-content font-extrabold uppercase text-left" style={{ lineHeight: "1.3" }}>
                                     Công Nghệ Smart Oil Control Kết Hợp Công Nghệ Hạt Nano
                                 </h3>
-                                <p className="section-content-small leading-relaxed">
+                                <p className="section-content-small leading-relaxed" style={{ lineHeight: "1.3" }}>
                                     Duy trì cảm giác thoáng da - ráo mặt - không bóng nhờn suốt 8 giờ. Tạo hiệu ứng soft focus, che phủ
                                     khuyết điểm nhẹ nhàng, cho Finish mỏng nhẹ, mịn đẹp.
                                 </p>
                             </div>
 
                             <div>
-                                <h3 className="section-content font-extrabold uppercase text-left">Công Nghệ Microbiome</h3>
-                                <p className="section-content-small leading-relaxed">
+                                <h3 className="section-content font-extrabold uppercase text-left" style={{ lineHeight: "1.3" }}>Công Nghệ Microbiome</h3>
+                                <p className="section-content-small leading-relaxed" style={{ lineHeight: "1.3" }}>
                                     Làm dịu và cân bằng hệ vi sinh, bảo vệ làn da nhạy cảm.
                                 </p>
                             </div>
@@ -767,33 +782,53 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 8: CERTIFICATE */}
-            <section className="py-20 relative overflow-visible z-10">
-                <div className="w-[80vw] h-[20vh] mx-auto px-4 relative z-10">
-                    {/* Certificate Image - Positioned separately, larger, overlapping left */}
-                    <div className="absolute left-[-100px] md:left-[-450px] top-1/2 -translate-y-1/2 z-20 w-[800px] md:w-[1000px] lg:w-[1200px] rounded-lg">
+            <section className="py-20 relative overflow-visible z-10 mt-[60px]">
+                <div className="w-[80vw] mx-auto px-4 relative z-10">
+                    {/* Image at top right corner of border */}
+                    <div className="absolute top-[-140px] right-[-170px] z-30">
                         <Image
-                            src="/landing-page/PAGE 7/43.png"
-                            alt="Phiếu Kiểm Nghiệm"
-                            width={1200}
-                            height={1680}
-                            className="w-full h-auto object-contain drop-shadow-2xl"
+                            src="/landing-page/PAGE 1/4.png"
+                            alt=""
+                            width={250}
+                            height={250}
+                            className="w-[180px] md:w-[250px] h-auto object-contain"
+                            quality={100}
+                            unoptimized
                         />
                     </div>
 
-                    {/* Text Content with Border - Positioned to the right, image overlaps left */}
-                    <div className="relative ml-[300px] md:ml-[400px] lg:ml-[200px] border-2 border-[#3a76a5] rounded-lg p-8 md:p-12 space-y-6 bg-white z-10">
-                        <h2 className="section-title font-extrabold uppercase tracking-tight">
-                            PHIẾU KIỂM NGHIỆM
-                        </h2>
-                        <p className="section-content">
-                            Phiếu kết quả nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín.
-                        </p>
+                    {/* Text Content with Border - Flex layout 1:3 */}
+                    <div className="relative border-2 border-[#3a76a5] rounded-lg bg-white z-10 overflow-visible">
+                        <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-20 w-[150px] md:w-[250px] lg:w-[320px]">
+                            <Image
+                                src="/landing-page/PAGE 7/43.png"
+                                alt="Phiếu Kiểm Nghiệm"
+                                width={320}
+                                height={448}
+                                className="w-full h-auto object-contain rounded-lg"
+                                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2)' }}
+                                quality={100}
+                                unoptimized
+                            />
+                        </div>
+                        <div className="flex flex-col md:flex-row">
+                            <div className="w-full md:w-2/5"></div>
+
+                            <div className="w-full md:w-3/5 p-8 md:p-12 space-y-6 relative">
+                                <h2 className="section-title font-extrabold uppercase tracking-tight">
+                                    PHIẾU KIỂM NGHIỆM
+                                </h2>
+                                <p className="section-content">
+                                    Phiếu kết quả nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* SECTION 9: HOW TO USE */}
-            <section className="py-20 bg-slate-50 relative z-10 w-full">
+            <section className="py-20 bg-slate-50 relative z-10 w-full mt-[60px]">
                 <div className="w-[80vw] mx-auto px-4 text-center">
                     <h2 className="section-title font-extrabold uppercase mb-8">
                         HƯỚNG DẪN SỬ DỤNG
