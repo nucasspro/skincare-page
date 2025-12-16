@@ -566,56 +566,47 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 4: INGREDIENTS */}
-            <section className="py-20 bg-white relative z-10">
-                <div className="max-w-6xl mx-auto px-4">
+            <section className="py-20 bg-white relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-4 text-center">
                     <div className="bg-[#F1F5F9] rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
-                        {/* Left Visual: Podiums */}
-                        <div className="w-full md:w-5/12 relative h-80 flex items-end justify-center">
-                            {/* Podium 1 */}
-                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white rounded-t-full rounded-b-lg shadow-lg flex items-end justify-center pb-2 z-10">
-                                <div className="mb-4 transform -rotate-12 w-12 h-20 bg-gradient-to-b from-[#2F5C91] to-[#1e3a8a] rounded shadow-md"></div>
-                            </div>
-                            {/* Podium 2 (Center High) */}
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-40 bg-white rounded-t-full rounded-b-lg shadow-xl z-20 flex items-end justify-center pb-4">
-                                <div className="mb-4 w-16 h-32 bg-white border-2 border-[#2F5C91] rounded shadow-md flex items-center justify-center">
-                                    <span className="text-[#2F5C91] text-xs font-bold">CELLIC</span>
-                                </div>
-                            </div>
-                            {/* Podium 3 */}
-                            <div className="absolute bottom-0 right-0 w-24 h-16 bg-white rounded-t-full rounded-b-lg shadow-lg flex items-end justify-center pb-2 z-10">
-                                <div className="mb-2 transform rotate-12 w-14 h-16 bg-gradient-to-b from-[#2F5C91] to-[#1e3a8a] rounded shadow-md"></div>
-                            </div>
-                            {/* Floor Shadow */}
-                            <div className="absolute -bottom-4 w-full h-8 bg-slate-300/30 blur-lg rounded-full"></div>
+                        {/* Left Visual: Product Images */}
+                        <div className="w-full md:w-5/12 relative h-80 flex items-center justify-center">
+                            <Image
+                                src="/landing-page/PAGE 4/product.png"
+                                alt="Cellic Products"
+                                width={800}
+                                height={800}
+                                className="w-full max-w-[700px] md:max-w-[700px] h-auto object-contain"
+                                quality={100}
+                                unoptimized
+                            />
                         </div>
 
                         {/* Right Content */}
-                        <div className="w-full md:w-7/12 space-y-8">
-                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#2F5C91] uppercase tracking-tight font-heading">
+                        <div className="w-full md:w-7/12 space-y-2">
+                            <h2 className="section-title font-extrabold uppercase tracking-tight">
                                 Thành Phần
                             </h2>
 
-                            <div className="space-y-6">
+                            <div className="space-y-2">
                                 <div>
-                                    <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-1 font-heading">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">
                                         Màng lọc chống nắng hiện đại
                                     </h3>
-                                    <p className="text-slate-600 leading-relaxed">
+                                    <p className="section-content-small leading-relaxed">
                                         Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate
                                     </p>
                                 </div>
-                                <div className="w-full h-px bg-slate-200"></div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-1 font-heading">PDRN Thực Vật</h3>
-                                    <p className="text-slate-600 leading-relaxed">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">PDRN Thực Vật</h3>
+                                    <p className="section-content-small leading-relaxed">
                                         Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm,
                                         giảm kích ứng.
                                     </p>
                                 </div>
-                                <div className="w-full h-px bg-slate-200"></div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-[#2F5C91] uppercase mb-1 font-heading">Propanediol</h3>
-                                    <p className="text-slate-600 leading-relaxed">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">Propanediol</h3>
+                                    <p className="section-content-small leading-relaxed">
                                         Có độ tinh khiết cao và mang lại hiệu quả bền vững.
                                     </p>
                                 </div>
