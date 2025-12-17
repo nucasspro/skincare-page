@@ -1,6 +1,6 @@
 "use client"
 
-import { Shield, Star } from "lucide-react"
+import { Star } from "lucide-react"
 import Image from "next/image"
 import { ManropeFont, MontserratFont, QuicksandFont } from "../fonts"
 
@@ -497,63 +497,78 @@ export default function LandingPage() {
 
             {/* SECTION 3: 3-LAYER PROTECTION */}
             <section className="py-20 px-4 relative z-10">
-                <div className="max-w-6xl mx-auto bg-[#E6F4FA] rounded-[3rem] p-8 md:p-16 relative overflow-hidden shadow-sm">
-                    {/* Background Swirl */}
-                    <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/60 to-transparent opacity-50 pointer-events-none"></div>
-
-                    <div className="text-center mb-12 relative z-10">
-                        <h2 className="text-2xl md:text-4xl font-extrabold text-[#2F5C91] uppercase tracking-tight font-heading">
+                <div className="max-w-6xl mx-auto">
+                    {/* Header - Centered Top */}
+                    <div className="text-center relative z-10">
+                        <h2 className="section-title text-2xl md:text-4xl font-extrabold text-[#2F5C91] uppercase tracking-tight font-heading">
                             Tính năng bảo vệ 3 lớp toàn diện
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center relative z-10">
-                        {/* Content Left */}
-                        <div className="space-y-10 pl-4 md:pl-8">
-                            {/* Item 1 */}
-                            <div className="relative group">
-                                <div className="hidden md:block absolute -right-20 top-1/2 w-20 h-px bg-blue-300 transform rotate-12 origin-left"></div>
-                                <h3 className="text-lg font-bold text-slate-600 mb-1 font-heading">
-                                    Bảo vệ da trước tác động<br />của tia UVA, UVB, HEV
-                                </h3>
-                            </div>
-                            {/* Item 2 */}
-                            <div className="relative group">
-                                <div className="hidden md:block absolute -right-20 top-1/2 w-20 h-px bg-blue-300"></div>
-                                <h3 className="text-lg font-bold text-slate-600 mb-1 font-heading">
-                                    Bảo vệ khỏi tác động từ<br />ô nhiễm môi trường và bụi mịn
-                                </h3>
-                            </div>
-                            {/* Item 3 */}
-                            <div className="relative group">
-                                <div className="hidden md:block absolute -right-20 top-1/2 w-20 h-px bg-blue-300 transform -rotate-12 origin-left"></div>
-                                <h3 className="text-lg font-bold text-slate-600 mb-1 font-heading">
-                                    Bảo vệ song song<br />nuôi dưỡng hệ vi sinh
-                                </h3>
-                            </div>
-
-                            <div className="pt-4">
-                                <button className="px-10 py-3 rounded-full bg-transparent border-2 border-[#2F5C91] text-[#2F5C91] font-bold uppercase hover:bg-[#2F5C91] hover:text-white transition-colors font-heading">
-                                    Xem thêm
-                                </button>
+                    {/* Card Container */}
+                    <div className="relative bg-white overflow-visible min-h-[600px] md:min-h-[700px]">
+                        {/* Background Image */}
+                        <div className="absolute inset-0 z-0 flex justify-center w-full h-full">
+                            <div className="w-[80vw] h-full relative">
+                                <Image
+                                    src="/landing-page/PAGE 3/17.png"
+                                    alt="Background"
+                                    fill
+                                    className="object-cover rounded-[5rem]"
+                                    unoptimized
+                                />
                             </div>
                         </div>
 
-                        {/* Visual Right */}
-                        <div className="relative flex justify-center md:justify-end">
-                            <div className="w-80 h-80 md:w-96 md:h-96 rounded-full bg-white/40 backdrop-blur-md border border-white/60 flex items-center justify-center p-6 shadow-xl relative overflow-hidden">
-                                {/* Model holding product - Placeholder */}
-                                <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-50 opacity-90 rounded-full"></div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent"></div>
-                                {/* Overlay Product */}
-                                <div className="absolute bottom-4 right-10 w-24 h-48 bg-white transform rotate-6 shadow-lg rounded-xl z-20 border border-white flex items-center justify-center">
-                                    <span className="text-[#2F5C91] text-xs font-bold">CELLIC</span>
-                                </div>
-                                {/* Shield Icons Overlay */}
-                                <div className="absolute top-10 left-10 p-2 bg-white/80 rounded-full shadow-sm">
-                                    <Shield className="w-6 h-6 text-blue-500" />
+                        <div className="absolute inset-0 z-10 w-full h-full">
+                            {/* Model Image - Large, can overflow */}
+                            <div className="absolute right-[-10%] md:right-0 top-[30%] md:top-[15%] z-10 pointer-events-none">
+                                <div className="w-[400px] md:w-[600px] lg:w-[700px] xl:w-[900px] relative">
+                                    <Image
+                                        src="/landing-page/PAGE 3/2_1.png"
+                                        alt="Model Protection"
+                                        width={1100}
+                                        height={1540}
+                                        className="w-full h-auto object-contain drop-shadow-2xl"
+                                        unoptimized
+                                    />
                                 </div>
                             </div>
+
+                            {/* Left: Text Items - Positioned Top-Left */}
+                            <div className="absolute top-[10%] md:top-[15%] left-0 z-10 flex flex-col justify-start pl-8 md:pl-16 space-y-6 md:space-y-10">
+
+                                {/* Item 1 */}
+                                <div className="flex items-center gap-4">
+                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                        Bảo vệ da trước tác động<br />của tia UVA, UVB, HEV
+                                    </h3>
+                                </div>
+                                {/* Item 2 */}
+                                <div className="flex items-center gap-4">
+                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                        Bảo vệ khỏi tác động từ<br />ô nhiễm môi trường và bụi mịn
+                                    </h3>
+                                </div>
+                                {/* Item 3 */}
+                                <div className="flex items-center gap-4">
+                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                        Bảo vệ song song<br />nuôi dưỡng hệ vi sinh
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Button - Left Bottom */}
+                        <div className="absolute bottom-8 md:bottom-12 left-0 z-10 flex justify-start pl-4 md:pl-8">
+                            <button className="relative group w-[200px] md:w-[280px] h-12 md:h-14 rounded-full bg-[#CFE5F5] border-[2px] border-[#2F5C91] shadow-lg overflow-hidden transition-transform hover:scale-105">
+                                {/* Inner White Border */}
+                                <div className="absolute inset-[3px] border-2 border-white rounded-full pointer-events-none"></div>
+                                {/* Text */}
+                                <span className="relative z-10 text-[#2F5C91] font-bold text-base md:text-xl uppercase font-heading">
+                                    Xem thêm
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
