@@ -292,6 +292,12 @@ export default function LandingPage() {
           color: #3a76a5;
           line-height: 1.96;
         }
+        .section-title-25 {
+          font-family: ${montserratFamily}, 'Montserrat', sans-serif;
+          font-size: 25px;
+          color: #3a76a5;
+          line-height: 1.96;
+        }
         .section-content {
           font-family: ${montserratFamily}, 'Montserrat', sans-serif;
           font-size: 20px;
@@ -395,120 +401,93 @@ export default function LandingPage() {
             <section className="py-20 bg-[#F0F9FF] relative overflow-hidden z-10">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-16 relative z-10">
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-[#2F5C91] uppercase mb-3 font-heading">
+                        <h2 className="section-title text-3xl md:text-4xl font-extrabold text-[#2F5C91] uppercase mb-3 font-heading">
                             Kem Chống Nắng Thế Hệ Mới
                         </h2>
-                        <div className="inline-block border border-[#BFDBFE] bg-white/50 backdrop-blur-sm px-6 py-2 rounded-full">
-                            <p className="text-[#2563EB] font-semibold text-sm uppercase tracking-wider">
+                        <div className="inline-block border-[#BFDBFE] bg-white backdrop-blur-sm px-6 py-2">
+                            <p className="section-content-small text-[#2563EB] text-sm uppercase tracking-wider">
                                 Thấu hiểu và đồng hành cùng làn da Việt
                             </p>
                         </div>
                     </div>
 
-                    <div className="relative h-[600px] flex items-center justify-center">
-                        {/* Connecting Lines SVG */}
-                        <svg
-                            className="absolute inset-0 w-full h-full pointer-events-none hidden md:block"
-                            style={{ zIndex: 0 }}
-                        >
-                            {/* Left Curves */}
-                            <path
-                                d="M50% 50% Q 30% 30% 20% 20%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            <path
-                                d="M50% 50% Q 25% 50% 15% 50%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            <path
-                                d="M50% 50% Q 30% 70% 20% 80%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            {/* Right Curves */}
-                            <path
-                                d="M50% 50% Q 70% 30% 80% 20%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            <path
-                                d="M50% 50% Q 75% 50% 85% 50%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            <path
-                                d="M50% 50% Q 70% 70% 80% 80%"
-                                fill="none"
-                                stroke="#BFDBFE"
-                                strokeWidth="2"
-                                strokeDasharray="6 6"
-                            ></path>
-                            {/* Dots */}
-                            <circle cx="20%" cy="20%" r="6" fill="#BFDBFE"></circle>
-                            <circle cx="15%" cy="50%" r="6" fill="#BFDBFE"></circle>
-                            <circle cx="20%" cy="80%" r="6" fill="#BFDBFE"></circle>
-                            <circle cx="80%" cy="20%" r="6" fill="#BFDBFE"></circle>
-                            <circle cx="85%" cy="50%" r="6" fill="#BFDBFE"></circle>
-                            <circle cx="80%" cy="80%" r="6" fill="#BFDBFE"></circle>
-                        </svg>
+                    <div className="relative h-full w-full flex items-center justify-center">
+                        {/* Layer 1: Background Molecules (10.png) */}
+                        <div className="absolute inset-0 flex items-center justify-center z-0 w-full h-full">
+                            <Image
+                                src="/landing-page/PAGE 2/10.png"
+                                alt="Background Molecules"
+                                width={1000}
+                                height={600}
+                                className="w-full h-full object-contain"
+                                priority
+                                unoptimized
+                            />
+                        </div>
 
-                        {/* Center Product */}
-                        <div className="relative z-10 w-48 md:w-64 transform -rotate-6">
-                            <div className="w-full aspect-[1/2] bg-white drop-shadow-2xl rounded-2xl border border-blue-100 flex items-center justify-center">
-                                <div className="text-center">
-                                    <div className="text-[#2F5C91] text-lg md:text-2xl font-extrabold">CELLIC</div>
-                                    <div className="text-[#2F5C91] text-xs md:text-sm font-bold mt-1">SPF 50+</div>
-                                </div>
+                        {/* Layer 2: Water/Circle Effect (8.png) */}
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                            <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] transform -translate-y-[10%]">
+                                <Image
+                                    src="/landing-page/PAGE 2/8.png"
+                                    alt="Water Effect"
+                                    fill
+                                    className="object-contain"
+                                    priority
+                                    unoptimized
+                                />
                             </div>
-                            {/* Ring Effect */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[80%] border border-blue-200 rounded-full opacity-50 animate-pulse pointer-events-none"></div>
+                        </div>
+
+                        {/* Layer 3: Product (9.png) */}
+                        <div className="relative z-20 w-40 md:w-64 transform translate-y-[-10%]">
+                            <div className="relative w-full aspect-[2/5]">
+                                <Image
+                                    src="/landing-page/PAGE 2/9.png"
+                                    alt="Product"
+                                    fill
+                                    className="object-contain drop-shadow-2xl"
+                                    priority
+                                    unoptimized
+                                />
+                            </div>
                         </div>
 
                         {/* Features - Absolutely Positioned for Desktop */}
+                        {/* Adjust widths to prevent 3 lines */}
+
                         {/* Left Top */}
-                        <div className="absolute top-10 left-10 md:left-20 w-40 text-center md:text-right">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">
+                        <div className="absolute top-[0%] left-[5%] md:left-[2%] w-auto max-w-[250px] text-center md:text-right z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
                                 4 Màng Lọc<br />Thế Hệ Mới
                             </h3>
                         </div>
                         {/* Left Middle */}
-                        <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-10 w-40 text-center md:text-right">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">PDRN</h3>
+                        <div className="absolute top-[30%] left-0 md:left-[5%] w-auto max-w-[250px] text-center md:text-right z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">PDRN</h3>
                         </div>
                         {/* Left Bottom */}
-                        <div className="absolute bottom-10 left-10 md:left-20 w-40 text-center md:text-right">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">
+                        <div className="absolute bottom-[30%] left-[5%] md:left-[2%] w-auto max-w-[250px] text-center md:text-right z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
                                 Lành Tính<br />Dịu Nhẹ
                             </h3>
                         </div>
 
                         {/* Right Top */}
-                        <div className="absolute top-10 right-10 md:right-20 w-40 text-center md:text-left">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">
+                        <div className="absolute top-[-5%] right-[5%] md:right-[5%] w-auto max-w-[280px] text-center md:text-left z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
                                 Kiềm Dầu Suốt 8h
                             </h3>
                         </div>
                         {/* Right Middle */}
-                        <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-10 w-40 text-center md:text-left">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">
+                        <div className="absolute top-[20%] right-0 md:right-[5%] w-auto max-w-[250px] text-center md:text-left z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
                                 Nâng Tone<br />Tự Nhiên
                             </h3>
                         </div>
                         {/* Right Bottom */}
-                        <div className="absolute bottom-10 right-10 md:right-20 w-40 text-center md:text-left">
-                            <h3 className="font-bold text-[#2F5C91] text-lg uppercase leading-tight font-heading">
+                        <div className="absolute bottom-[25%] right-[5%] md:right-[8%] w-auto max-w-[250px] text-center md:text-left z-30">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
                                 Phục Hồi<br />Tổn Thương
                             </h3>
                         </div>
