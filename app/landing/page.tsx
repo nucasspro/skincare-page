@@ -307,70 +307,85 @@ export default function LandingPage() {
       `}</style>
 
             {/* HERO SECTION */}
-            <header className="relative bg-gradient-to-b from-[#D8EBF9] via-[#E8F4FC] to-white pb-10 pt-10 md:pt-16 overflow-hidden z-10">
-                <div className="max-w-7xl mx-auto px-4 relative z-10">
-                    {/* Header Text */}
-                    <div className="text-center mb-4 md:mb-8">
-                        <h2 className="text-xl md:text-2xl font-bold tracking-[0.2em] uppercase mb-1 font-heading section-title">
-                            Cellic<br />Bright Matte Sunscreen
-                        </h2>
-                        <p className="text-sm md:text-base font-semibold text-slate-500 uppercase tracking-wide">
-                            <span className="font-extrabold text-[#2276D3]">X10</span> Hiệu quả chống nắng - Tái tạo phục hồi da
-                        </p>
-                    </div>
+            <header className="relative w-full h-[600px] md:h-[800px] overflow-hidden bg-[#EAF6FD]">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/landing-page/PAGE 1/1.png"
+                        alt="Background"
+                        fill
+                        className="object-cover object-[center_60%]"
+                        priority
+                        unoptimized
+                    />
+                </div>
 
-                    {/* Hero Visual */}
-                    <div className="relative w-full h-[400px] md:h-[500px] mt-8">
-                        {/* Water Surface Effect */}
-                        <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-[#BDE0FE]/60 to-transparent"></div>
-
-                        <div className="absolute inset-0 flex items-end justify-center">
-                            {/* Product Group (Left/Center) */}
-                            <div className="relative z-20 transform md:-translate-x-20 mb-10 flex items-end gap-2 md:gap-4">
-                                {/* Small Tube */}
-                                <div className="w-16 md:w-20 transform -rotate-12 translate-y-4">
-                                    <div className="w-full aspect-[2/5] bg-gradient-to-b from-white to-[#E8F4FC] shadow-lg rounded-b-lg opacity-90 border border-blue-100 flex items-center justify-center">
-                                        <span className="text-[#2F5C91] text-[8px] font-bold">CELLIC</span>
-                                    </div>
-                                </div>
-                                {/* Main Tube */}
-                                <div className="w-24 md:w-32 z-10 transform translate-y-8">
-                                    <div className="w-full aspect-[2/5] bg-white shadow-2xl rounded-b-lg border-b-4 border-blue-200 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <div className="text-[#2F5C91] text-xs md:text-sm font-extrabold">CELLIC</div>
-                                            <div className="text-[#2F5C91] text-[8px] md:text-[10px] font-bold mt-1">SPF 50+</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Another Tube */}
-                                <div className="w-16 md:w-20 transform rotate-12 translate-y-4">
-                                    <div className="w-full aspect-[2/5] bg-gradient-to-b from-white to-[#E8F4FC] shadow-lg rounded-b-lg opacity-90 border border-blue-100 flex items-center justify-center">
-                                        <span className="text-[#2F5C91] text-[8px] font-bold">CELLIC</span>
-                                    </div>
-                                </div>
-                                {/* Reflection Shadow */}
-                                <div className="absolute -bottom-16 left-0 right-0 h-16 bg-blue-900/20 blur-xl rounded-[100%]"></div>
-                            </div>
-
-                            {/* Model (Right) - Placeholder for now */}
-                            <div className="absolute right-0 md:right-10 bottom-0 z-10 w-1/2 md:w-1/3 h-[90%] flex items-end">
-                                <div className="w-full h-full bg-gradient-to-t from-blue-100 to-transparent rounded-t-full opacity-50"></div>
-                            </div>
+                <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto flex flex-col md:flex-row">
+                    {/* Left Section: Text & Product (3/4) */}
+                    <div className="relative w-full md:w-3/4 h-full flex flex-col items-center md:pt-20">
+                        {/* Header Text */}
+                        <div className="text-center px-4 z-40 mb-8 md:mb-12">
+                            <h2 className="section-title text-3xl md:text-5xl font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
+                                Cellic
+                            </h2>
+                            <h2 className="section-title text-xl md:text-4xl font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
+                                Bright Matte Sunscreen
+                            </h2>
+                            <p className="section-content-small text-xs md:text-xl font-medium text-[#537AA8] uppercase tracking-wide">
+                                <span className="font-extrabold text-[#2F5C91]">X10</span> Hiệu quả chống nắng - Tái tạo phục hồi da
+                            </p>
                         </div>
 
-                        {/* Water Ripples */}
-                        <div className="absolute bottom-0 left-0 w-full">
-                            <svg
-                                className="w-full h-24 text-[#E0F2FE] opacity-80"
-                                viewBox="0 0 1440 320"
-                                preserveAspectRatio="none"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    fillOpacity="1"
-                                    d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                                ></path>
-                            </svg>
+                        {/* Product Image */}
+                        <div className="relative w-[200px] md:w-[350px] z-30 group">
+                            <div className="relative w-full aspect-[4/3]">
+                                <Image
+                                    src="/landing-page/PAGE 1/3.png"
+                                    alt="Products"
+                                    fill
+                                    className="object-contain drop-shadow-2xl"
+                                    priority
+                                    unoptimized
+                                />
+                            </div>
+                            <div className="absolute top-full left-0 w-full h-full transform scale-y-[-1] opacity-40 origin-top mt-80 pointer-events-none -z-10 bg-gradient-to-b from-transparent to-white/20"
+                                style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1), transparent)' }}>
+                                <Image
+                                    src="/landing-page/PAGE 1/3.png"
+                                    alt="Products Reflection"
+                                    fill
+                                    className="object-contain"
+                                    priority
+                                    unoptimized
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Section: Model (1/4) */}
+                    <div className="relative w-full md:w-1/4 h-full">
+                        {/* Model Image - Right */}
+                        <div className="absolute top-[20%] md:top-[15%] left-1/2 -translate-x-1/2 w-[80%] md:w-full h-[50%] md:h-[70%] z-20">
+                            <Image
+                                src="/landing-page/PAGE 1/2.png"
+                                alt="Model"
+                                fill
+                                className="object-contain object-bottom drop-shadow-2xl"
+                                priority
+                                unoptimized
+                            />
+                            {/* Model Reflection - Show reflection */}
+                            <div className="absolute bottom-0 left-0 w-full h-full transform scale-y-[-1] origin-bottom translate-y-[20%] opacity-50 pointer-events-none -z-10"
+                                style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1), transparent 80%)' }}>
+                                <Image
+                                    src="/landing-page/PAGE 1/2.png"
+                                    alt="Model Reflection"
+                                    fill
+                                    className="object-contain object-bottom blur-[1px]"
+                                    priority
+                                    unoptimized
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
