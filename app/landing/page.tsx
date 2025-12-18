@@ -130,7 +130,7 @@ function PDRNInfoBar({ imageSrc, imagePosition, imageWidth, imageHeight, title, 
     const isImageLeft = imagePosition === 'left'
 
     return (
-        <div className="flex flex-col md:flex-row overflow-hidden gap-0" style={{ backgroundColor: '#92CEE3' }}>
+        <div className="flex flex-col md:flex-row overflow-hidden gap-0 items-stretch" style={{ backgroundColor: '#92CEE3' }}>
             {isImageLeft && (
                 <div className="w-full md:w-[20%] h-48 md:h-auto flex-shrink-0 relative m-0 p-0 overflow-hidden">
                     <Image
@@ -138,17 +138,17 @@ function PDRNInfoBar({ imageSrc, imagePosition, imageWidth, imageHeight, title, 
                         alt={title}
                         width={imageWidth}
                         height={imageHeight}
-                        className="object-contain w-full h-full"
+                        className="object-cover w-full h-full"
                         quality={100}
                         unoptimized
                     />
                 </div>
             )}
-            <div className="w-full md:w-[80%] p-4 md:p-6 flex flex-col justify-center text-left">
-                <h3 className="section-content text-2xl font-extrabold uppercase font-heading">
+            <div className="w-full md:w-[80%] p-1 md:p-3 flex flex-col justify-center text-left h-full mb-4">
+                <h3 className="section-content text-2xl font-extrabold font-heading">
                     {title}
                 </h3>
-                <p className="section-content-small">
+                <p className="section-content-small" style={{ lineHeight: '1.69' }}>
                     {description}
                 </p>
             </div>
@@ -177,7 +177,7 @@ interface BenefitItemProps {
 function BenefitItem({ imageSrc, text }: BenefitItemProps) {
     return (
         <div className="flex flex-col md:flex-row gap-8 items-center max-w-[90%] mx-auto my-4">
-            <div className="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 border-4 border-blue-100 overflow-hidden">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
                 <Image
                     src={imageSrc}
                     alt=""
@@ -188,7 +188,7 @@ function BenefitItem({ imageSrc, text }: BenefitItemProps) {
                     unoptimized
                 />
             </div>
-            <p className="section-content text-lg md:text-xl leading-relaxed pr-30">
+            <p className="section-content text-left text-lg md:text-xl leading-relaxed pr-30" style={{ lineHeight: '1.5' }}>
                 {text}
             </p>
         </div>
@@ -292,28 +292,23 @@ export default function LandingPage() {
           color: #3a76a5;
           line-height: 1.96;
         }
+        /* Section Typography Sizes (Scaled based on 1440px with min limits) */
+        .section-title {
+          font-size: clamp(18px, 2.43vw, 35px);
+        }
         .section-title-25 {
-          font-family: ${montserratFamily}, 'Montserrat', sans-serif;
-          font-size: 25px;
-          color: #3a76a5;
-          line-height: 1.96;
+          font-size: clamp(14px, 1.74vw, 25px);
         }
         .section-content {
-          font-family: ${montserratFamily}, 'Montserrat', sans-serif;
-          font-size: 20px;
-          color: #3a76a5;
-          line-height: 1.96;
+          font-size: clamp(12px, 1.39vw, 20px);
         }
         .section-content-small {
-          font-family: ${montserratFamily}, 'Montserrat', sans-serif;
-          font-size: 18px;
-          color: #3a76a5;
-          line-height: 1.96;
+          font-size: clamp(10px, 1.25vw, 18px);
         }
       `}</style>
 
             {/* HERO SECTION */}
-            <header className="relative w-full h-[600px] md:h-[800px] overflow-hidden bg-[#EAF6FD]">
+            <header className="relative w-full h-[55.5vw] overflow-hidden bg-[#EAF6FD]">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <Image
@@ -326,24 +321,24 @@ export default function LandingPage() {
                     />
                 </div>
 
-                <div className="relative z-10 w-full h-full max-w-[1440px] mx-auto flex flex-col md:flex-row">
+                <div className="relative z-10 w-full h-full max-w-[100vw] mx-auto flex flex-row">
                     {/* Left Section: Text & Product (3/4) */}
-                    <div className="relative w-full md:w-3/4 h-full flex flex-col items-center md:pt-20">
+                    <div className="relative w-3/4 h-full flex flex-col items-center pt-[5.5vw]">
                         {/* Header Text */}
-                        <div className="text-center px-4 z-40 mb-8 md:mb-12">
-                            <h2 className="section-title text-3xl md:text-5xl font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
+                        <div className="text-center px-[1.1vw] z-40 mb-[3.3vw]">
+                            <h2 className="section-title text-[clamp(24px,3.5vw,50px)] font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
                                 Cellic
                             </h2>
-                            <h2 className="section-title text-xl md:text-4xl font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
+                            <h2 className="section-title text-[clamp(18px,2.8vw,40px)] font-extrabold tracking-widest uppercase font-heading text-[#2F5C91]">
                                 Bright Matte Sunscreen
                             </h2>
-                            <p className="section-content-small text-xs md:text-xl font-medium text-[#537AA8] uppercase tracking-wide">
+                            <p className="section-content-small text-[clamp(10px,1.4vw,20px)] font-medium text-[#537AA8] uppercase tracking-wide">
                                 <span className="font-extrabold text-[#2F5C91]">X10</span> Hiệu quả chống nắng - Tái tạo phục hồi da
                             </p>
                         </div>
 
                         {/* Product Image */}
-                        <div className="relative w-[200px] md:w-[350px] z-30 group">
+                        <div className="relative w-[24.3vw] z-30 group">
                             <div className="relative w-full aspect-[4/3]">
                                 <Image
                                     src="/landing-page/PAGE 1/3.png"
@@ -354,7 +349,7 @@ export default function LandingPage() {
                                     unoptimized
                                 />
                             </div>
-                            <div className="absolute top-full left-0 w-full h-full transform scale-y-[-1] opacity-40 origin-top mt-80 pointer-events-none -z-10 bg-gradient-to-b from-transparent to-white/20"
+                            <div className="absolute top-full left-0 w-full h-full transform scale-y-[-1] opacity-40 origin-top mt-[22vw] pointer-events-none -z-10 bg-gradient-to-b from-transparent to-white/20"
                                 style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1), transparent)' }}>
                                 <Image
                                     src="/landing-page/PAGE 1/3.png"
@@ -369,9 +364,9 @@ export default function LandingPage() {
                     </div>
 
                     {/* Right Section: Model (1/4) */}
-                    <div className="relative w-full md:w-1/4 h-full">
+                    <div className="relative w-1/4 h-full">
                         {/* Model Image - Right */}
-                        <div className="absolute top-[20%] md:top-[15%] left-1/2 -translate-x-1/2 w-[80%] md:w-full h-[50%] md:h-[70%] z-20">
+                        <div className="absolute top-[15%] left-1/2 -translate-x-1/2 w-full h-[70%] z-20">
                             <Image
                                 src="/landing-page/PAGE 1/2.png"
                                 alt="Model"
@@ -398,13 +393,13 @@ export default function LandingPage() {
             </header>
 
             {/* SECTION 2: NEW GEN SUNSCREEN (Radial Layout) */}
-            <section className="py-20 bg-[#F0F9FF] relative overflow-hidden z-10">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="text-center mb-16 relative z-10">
-                        <h2 className="section-title text-3xl md:text-4xl font-extrabold text-[#2F5C91] uppercase mb-3 font-heading">
+            <section className="py-[5.5vw] bg-[#F0F9FF] relative overflow-hidden z-10">
+                <div className="max-w-[100vw] mx-auto px-[1.1vw]">
+                    <div className="text-center mb-[4.4vw] relative z-10">
+                        <h2 className="section-title text-[clamp(20px,2.8vw,40px)] font-extrabold text-[#2F5C91] uppercase mb-[0.8vw] font-heading">
                             Kem Chống Nắng Thế Hệ Mới
                         </h2>
-                        <div className="inline-block border-[#BFDBFE] bg-white backdrop-blur-sm px-6 py-2">
+                        <div className="inline-block border-[#BFDBFE] bg-white backdrop-blur-sm px-[1.6vw] py-[0.5vw]">
                             <p className="section-content-small text-[#2563EB] text-sm uppercase tracking-wider">
                                 Thấu hiểu và đồng hành cùng làn da Việt
                             </p>
@@ -427,7 +422,7 @@ export default function LandingPage() {
 
                         {/* Layer 2: Water/Circle Effect (8.png) */}
                         <div className="absolute inset-0 flex items-center justify-center z-10">
-                            <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] transform -translate-y-[10%]">
+                            <div className="relative w-[27.7vw] h-[27.7vw] transform -translate-y-[10%]">
                                 <Image
                                     src="/landing-page/PAGE 2/8.png"
                                     alt="Water Effect"
@@ -440,7 +435,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Layer 3: Product (9.png) */}
-                        <div className="relative z-20 w-40 md:w-64 transform translate-y-[-10%]">
+                        <div className="relative z-20 w-[17.7vw] transform translate-y-[-10%]">
                             <div className="relative w-full aspect-[2/5]">
                                 <Image
                                     src="/landing-page/PAGE 2/9.png"
@@ -458,36 +453,36 @@ export default function LandingPage() {
 
                         {/* Left Top */}
                         <div className="absolute top-[0%] left-[5%] md:left-[2%] w-auto max-w-[250px] text-center md:text-right z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">
                                 4 Màng Lọc<br />Thế Hệ Mới
                             </h3>
                         </div>
                         {/* Left Middle */}
                         <div className="absolute top-[30%] left-0 md:left-[5%] w-auto max-w-[250px] text-center md:text-right z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">PDRN</h3>
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">PDRN</h3>
                         </div>
                         {/* Left Bottom */}
                         <div className="absolute bottom-[30%] left-[5%] md:left-[2%] w-auto max-w-[250px] text-center md:text-right z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">
                                 Lành Tính<br />Dịu Nhẹ
                             </h3>
                         </div>
 
                         {/* Right Top */}
                         <div className="absolute top-[-5%] right-[5%] md:right-[5%] w-auto max-w-[280px] text-center md:text-left z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">
                                 Kiềm Dầu Suốt 8h
                             </h3>
                         </div>
                         {/* Right Middle */}
                         <div className="absolute top-[20%] right-0 md:right-[5%] w-auto max-w-[250px] text-center md:text-left z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">
                                 Nâng Tone<br />Tự Nhiên
                             </h3>
                         </div>
                         {/* Right Bottom */}
                         <div className="absolute bottom-[25%] right-[5%] md:right-[8%] w-auto max-w-[250px] text-center md:text-left z-30">
-                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-lg md:text-2xl uppercase leading-tight font-heading">
+                            <h3 className="section-title-25 text-center font-bold text-[#2F5C91] text-[clamp(10px,1.7vw,24px)] md:text-2xl uppercase leading-tight font-heading">
                                 Phục Hồi<br />Tổn Thương
                             </h3>
                         </div>
@@ -496,17 +491,17 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 3: 3-LAYER PROTECTION */}
-            <section className="py-20 px-4 relative z-10">
-                <div className="max-w-6xl mx-auto">
+            <section className="py-[5.5vw] px-[1.1vw] relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-[1.1vw] text-center">
                     {/* Header - Centered Top */}
                     <div className="text-center relative z-10">
-                        <h2 className="section-title text-2xl md:text-4xl font-extrabold text-[#2F5C91] uppercase tracking-tight font-heading">
+                        <h2 className="section-title text-[clamp(20px,2.8vw,40px)] font-extrabold text-[#2F5C91] uppercase tracking-tight font-heading">
                             Tính năng bảo vệ 3 lớp toàn diện
                         </h2>
                     </div>
 
                     {/* Card Container */}
-                    <div className="relative bg-white overflow-visible min-h-[600px] md:min-h-[700px]">
+                    <div className="relative bg-white overflow-visible min-h-[48.6vw]">
                         {/* Background Image */}
                         <div className="absolute inset-0 z-0 flex justify-center w-full h-full">
                             <div className="w-[80vw] h-full relative">
@@ -522,8 +517,8 @@ export default function LandingPage() {
 
                         <div className="absolute inset-0 z-10 w-full h-full">
                             {/* Model Image - Large, can overflow */}
-                            <div className="absolute right-[-10%] md:right-0 top-[30%] md:top-[15%] z-10 pointer-events-none">
-                                <div className="w-[400px] md:w-[600px] lg:w-[700px] xl:w-[900px] relative">
+                            <div className="absolute right-0 top-[15%] z-10 pointer-events-none">
+                                <div className="w-[62.5vw] relative">
                                     <Image
                                         src="/landing-page/PAGE 3/2_1.png"
                                         alt="Model Protection"
@@ -536,23 +531,23 @@ export default function LandingPage() {
                             </div>
 
                             {/* Left: Text Items - Positioned Top-Left */}
-                            <div className="absolute top-[10%] md:top-[15%] left-0 z-10 flex flex-col justify-start pl-8 md:pl-16 space-y-6 md:space-y-10">
+                            <div className="absolute top-[15%] left-0 z-10 flex flex-col justify-start pl-[2.2vw] space-y-[2.7vw]">
 
                                 {/* Item 1 */}
-                                <div className="flex items-center gap-4">
-                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                <div className="flex items-center gap-[1.1vw]">
+                                    <h3 className="section-content text-left text-[clamp(10px,1.7vw,24px)] font-bold text-[#2F5C91] font-heading leading-relaxed">
                                         Bảo vệ da trước tác động<br />của tia UVA, UVB, HEV
                                     </h3>
                                 </div>
                                 {/* Item 2 */}
-                                <div className="flex items-center gap-4">
-                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                <div className="flex items-center gap-[1.1vw]">
+                                    <h3 className="section-content text-left text-[clamp(10px,1.7vw,24px)] font-bold text-[#2F5C91] font-heading leading-relaxed">
                                         Bảo vệ khỏi tác động từ<br />ô nhiễm môi trường và bụi mịn
                                     </h3>
                                 </div>
                                 {/* Item 3 */}
-                                <div className="flex items-center gap-4">
-                                    <h3 className="section-content text-left text-lg md:text-2xl font-bold text-[#2F5C91] font-heading leading-relaxed">
+                                <div className="flex items-center gap-[1.1vw]">
+                                    <h3 className="section-content text-left text-[clamp(10px,1.7vw,24px)] font-bold text-[#2F5C91] font-heading leading-relaxed">
                                         Bảo vệ song song<br />nuôi dưỡng hệ vi sinh
                                     </h3>
                                 </div>
@@ -560,12 +555,12 @@ export default function LandingPage() {
                         </div>
 
                         {/* Button - Left Bottom */}
-                        <div className="absolute bottom-8 md:bottom-12 left-0 z-10 flex justify-start pl-4 md:pl-8">
-                            <button className="relative group w-[200px] md:w-[280px] h-12 md:h-14 rounded-full bg-[#CFE5F5] border-[2px] border-[#2F5C91] shadow-lg overflow-hidden transition-transform hover:scale-105">
+                        <div className="absolute bottom-[3.3vw] left-0 z-10 flex justify-start pl-[2.2vw]">
+                            <button className="relative group w-[20.8vw] h-[3.9vw] rounded-full bg-[#CFE5F5] border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform">
                                 {/* Inner White Border */}
-                                <div className="absolute inset-[3px] border-2 border-white rounded-full pointer-events-none"></div>
+                                <div className="absolute inset-[0.2vw] border-[0.14vw] border-white rounded-full pointer-events-none"></div>
                                 {/* Text */}
-                                <span className="relative z-10 text-[#2F5C91] font-bold text-base md:text-xl uppercase font-heading">
+                                <span className="relative z-10 text-[#2F5C91] font-bold text-[clamp(10px,1.4vw,20px)] uppercase font-heading">
                                     Xem thêm
                                 </span>
                             </button>
@@ -575,47 +570,47 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 4: INGREDIENTS */}
-            <section className="py-20 bg-white relative z-10 w-full">
-                <div className="w-[80vw] mx-auto px-4 text-center">
-                    <div className="bg-[#F1F5F9] rounded-[2.5rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
+            <section className="py-[5.5vw] bg-white relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-[1.1vw] text-center">
+                    <div className="bg-[#F1F5F9] rounded-[2.8vw] p-[0.5vw] flex flex-row items-center gap-[4.4vw] relative overflow-hidden">
                         {/* Left Visual: Product Images */}
-                        <div className="w-full md:w-5/12 relative h-80 flex items-center justify-center">
+                        <div className="w-5/12 relative h-[22.2vw] flex items-center justify-center overflow-hidden">
                             <Image
                                 src="/landing-page/PAGE 4/product.png"
                                 alt="Cellic Products"
-                                width={800}
-                                height={800}
-                                className="w-full max-w-[700px] md:max-w-[700px] h-auto object-contain"
+                                width={900}
+                                height={900}
+                                className="w-full max-w-[55.5vw] h-auto object-contain"
                                 quality={100}
                                 unoptimized
                             />
                         </div>
 
                         {/* Right Content */}
-                        <div className="w-full md:w-7/12 space-y-2">
+                        <div className="w-7/12 space-y-[0.55vw]">
                             <h2 className="section-title font-extrabold uppercase tracking-tight">
                                 Thành Phần
                             </h2>
 
-                            <div className="space-y-2">
+                            <div className="space-y-[0.55vw]">
                                 <div>
-                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading text-left">
                                         Màng lọc chống nắng hiện đại
                                     </h3>
-                                    <p className="section-content-small leading-relaxed">
+                                    <p className="section-content-small leading-relaxed text-left" style={{ lineHeight: '1.69' }}>
                                         Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">PDRN Thực Vật</h3>
-                                    <p className="section-content-small leading-relaxed">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading text-left">PDRN Thực Vật</h3>
+                                    <p className="section-content-small leading-relaxed text-left" style={{ lineHeight: '1.69' }}>
                                         Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm,
                                         giảm kích ứng.
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading">Propanediol</h3>
-                                    <p className="section-content-small leading-relaxed">
+                                    <h3 className="section-content font-extrabold uppercase mb-1 font-heading text-left">Propanediol</h3>
+                                    <p className="section-content-small leading-relaxed text-left" style={{ lineHeight: '1.69' }}>
                                         Có độ tinh khiết cao và mang lại hiệu quả bền vững.
                                     </p>
                                 </div>
@@ -626,13 +621,13 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 5: PDRN INFO */}
-            <section className="py-20 bg-slate-50 relative z-10 w-full">
-                <div className="w-[80vw] mx-auto px-4 text-center">
-                    <h2 className="section-title font-extrabold uppercase mb-8">
+            <section className="py-[5.5vw] bg-slate-50 relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-[1.1vw] text-center">
+                    <h2 className="section-title font-extrabold uppercase mb-[2.2vw]">
                         PDRN - Có thể bạn chưa biết?
                     </h2>
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-[1.6vw]">
                         <PDRNInfoBar
                             imageSrc="/landing-page/PAGE 5/31.png"
                             imagePosition="left"
@@ -662,77 +657,80 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 6: 3C (USES) */}
-            <section className="py-20 relative z-10">
-                {/* Background Image */}
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src="/landing-page/PAGE 6/BACKGROUND.png"
-                        alt=""
-                        fill
-                        className="object-cover"
-                        quality={100}
-                        unoptimized
-                    />
-                </div>
+            <section className="py-[5.5vw] relative z-10 w-full">
+                <div className="w-[80vw] mx-auto px-[1.1vw] text-center">
 
-                <div className="max-w-6xl mx-auto px-4 relative z-10">
-                    {/* Container with 3C, Header and BenefitsContainer - All same width */}
-                    <div className="max-w-6xl relative">
-                        {/* Large "3C" - On top */}
-                        <div className="absolute top-20 left-[-30] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '256px' }}>
-                            3
-                        </div>
-                        <div className="absolute top-32 left-[115] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '130px' }}>
-                            C
-                        </div>
-
-                        {/* Header - On top, below 3C */}
-                        <div className="relative z-20 top-4 left-[220] mb-16 pt-32">
-                            <h2 className="text-right md:text-left font-heading uppercase tracking-tight" style={{ fontSize: '35px' }}>
-                                <span className="font-normal text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
-                                <br />
-                                <span className="font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
-                            </h2>
-                        </div>
-
-                        {/* BenefitsContainer - Background below */}
-                        <BenefitsContainer
-                            backgroundImage="/landing-page/PAGE 6/35.png"
-                            items={[
-                                {
-                                    imageSrc: "/landing-page/PAGE 6/36.png",
-                                    text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
-                                },
-                                {
-                                    imageSrc: "/landing-page/PAGE 6/37.png",
-                                    text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
-                                },
-                                {
-                                    imageSrc: "/landing-page/PAGE 6/38.png",
-                                    text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
-                                }
-                            ]}
+                    {/* Background Image */}
+                    <div className="absolute inset-0 z-0">
+                        <Image
+                            src="/landing-page/PAGE 6/BACKGROUND.png"
+                            alt=""
+                            fill
+                            className="object-cover"
+                            quality={100}
+                            unoptimized
                         />
+                    </div>
+
+                    <div className="max-w-[100vw] mx-auto px-[1.1vw] relative z-10">
+                        {/* Container with 3C, Header and BenefitsContainer - All same width */}
+                        <div className="max-w-[100vw] relative">
+                            {/* Large "3C" - On top */}
+                            <div className="absolute top-[5.5vw] left-[-2vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '17.7vw' }}>
+                                3
+                            </div>
+                            <div className="absolute top-[8.8vw] left-[8vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '9vw' }}>
+                                C
+                            </div>
+
+                            {/* Header - On top, below 3C */}
+                            <div className="relative z-20 top-[1.1vw] left-[15.2vw] mb-[4.4vw] pt-[8.8vw]">
+                                <h2 className="text-left font-heading uppercase tracking-tight" style={{ fontSize: 'clamp(16px, 2.4vw, 35px)' }}>
+                                    <span className="font-normal text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
+                                    <br />
+                                    <span className="font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
+                                </h2>
+                            </div>
+
+                            {/* BenefitsContainer - Background below */}
+                            <BenefitsContainer
+                                backgroundImage="/landing-page/PAGE 6/35.png"
+                                items={[
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/36.png",
+                                        text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
+                                    },
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/37.png",
+                                        text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
+                                    },
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/38.png",
+                                        text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
+                                    }
+                                ]}
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* SECTION 7: DEEP PROTECTION */}
-            <section className="py-20 bg-white relative z-10 w-full overflow-visible mt-[100px]">
-                <div className="w-[80vw] mx-auto px-4 relative">
+            <section className="py-[5.5vw] bg-white relative z-10 w-full overflow-visible mt-[6.9vw]">
+                <div className="w-[80vw] mx-auto px-[1.1vw] relative">
                     {/* Image at top left, overlapping border */}
-                    <div className="absolute top-[-100px] left-[-40px] md:left-[-80px] z-20">
+                    <div className="absolute top-[-6.9vw] left-[-5.5vw] z-20">
                         <Image
                             src="/landing-page/PAGE 7/42.png"
                             alt=""
                             width={200}
                             height={200}
-                            className="w-[250px] md:w-[300px] h-auto object-contain"
+                            className="w-[20.8vw] h-auto object-contain"
                             quality={100}
                             unoptimized
                         />
                     </div>
-                    <div className="bg-[#EFF6FF] rounded-[3rem] p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+                    <div className="bg-[#EFF6FF] rounded-[3.3vw] p-[3.3vw] grid grid-cols-2 gap-[3.3vw] items-center relative z-10">
                         {/* Left Visual with Text Overlay */}
                         <div className="relative rounded-[2rem] group">
                             <div>
@@ -782,39 +780,39 @@ export default function LandingPage() {
             </section>
 
             {/* SECTION 8: CERTIFICATE */}
-            <section className="py-20 relative overflow-visible z-10 mt-[60px]">
-                <div className="w-[80vw] mx-auto px-4 relative z-10">
+            <section className="py-[5.5vw] relative overflow-visible z-10 mt-[4.1vw]">
+                <div className="w-[80vw] mx-auto px-[1.1vw] relative z-10">
                     {/* Image at top right corner of border */}
-                    <div className="absolute top-[-140px] right-[-170px] z-30">
+                    <div className="absolute top-[-9.7vw] right-[-11.8vw] z-30">
                         <Image
                             src="/landing-page/PAGE 1/4.png"
                             alt=""
                             width={250}
                             height={250}
-                            className="w-[180px] md:w-[250px] h-auto object-contain"
+                            className="w-[17.3vw] h-auto object-contain"
                             quality={100}
                             unoptimized
                         />
                     </div>
 
                     {/* Text Content with Border - Flex layout 1:3 */}
-                    <div className="relative border-2 border-[#3a76a5] rounded-lg bg-white z-10 overflow-visible">
-                        <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-20 w-[150px] md:w-[250px] lg:w-[320px]">
+                    <div className="relative border-2 border-[#3a76a5] rounded-[0.55vw] bg-white z-10 overflow-visible">
+                        <div className="absolute left-[-1.4vw] top-1/2 -translate-y-1/2 z-20 w-[22.2vw]">
                             <Image
                                 src="/landing-page/PAGE 7/43.png"
                                 alt="Phiếu Kiểm Nghiệm"
                                 width={320}
                                 height={448}
-                                className="w-full h-auto object-contain rounded-lg"
+                                className="w-full h-auto object-contain rounded-[0.55vw]"
                                 style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2)' }}
                                 quality={100}
                                 unoptimized
                             />
                         </div>
-                        <div className="flex flex-col md:flex-row">
-                            <div className="w-full md:w-2/5"></div>
+                        <div className="flex flex-row">
+                            <div className="w-2/5"></div>
 
-                            <div className="w-full md:w-3/5 p-8 md:p-12 space-y-6 relative">
+                            <div className="w-3/5 p-[3.3vw] space-y-[1.6vw] relative">
                                 <h2 className="section-title font-extrabold uppercase tracking-tight">
                                     PHIẾU KIỂM NGHIỆM
                                 </h2>
@@ -897,9 +895,9 @@ export default function LandingPage() {
             </section>
 
             {/* FOOTER / BRAND STORY */}
-            <footer className="py-32 relative overflow-hidden z-10">
+            <footer className="py-[8.8vw] relative overflow-hidden z-10">
                 {/* Logo Image - Independent container */}
-                <div className="flex justify-center mb-[-100px]">
+                <div className="flex justify-center mb-[-6.9vw]">
                     <div className="relative">
                         <Image
                             src="/landing-page/PAGE 10/53.png"
@@ -914,11 +912,11 @@ export default function LandingPage() {
 
                 {/* Brand Story Box with CSS Gradient - Independent container */}
                 <div className="w-[60vw] max-w-none mx-auto text-center relative z-10">
-                    <div className="relative overflow-hidden rounded-t-[4rem] bg-gradient-to-b from-[#D1E9FC] to-white py-12 md:py-16 lg:py-20 px-8 md:px-12 lg:px-16">
-                        <h2 className="text-[35px] font-extrabold text-[#2b6493] tracking-tight uppercase mb-6 md:mb-8 font-heading">
+                    <div className="relative overflow-hidden rounded-t-[4.4vw] bg-gradient-to-b from-[#D1E9FC] to-white py-[3.3vw] px-[2.2vw]">
+                        <h2 className="text-[clamp(18px, 2.4vw, 35px)] font-extrabold text-[#2b6493] tracking-tight uppercase mb-[2.2vw] font-heading">
                             Câu Chuyện Thương Hiệu
                         </h2>
-                        <div className="text-[20px] text-[#235e8f] leading-relaxed max-w-3xl mx-auto font-medium">
+                        <div className="text-[clamp(12px, 1.38vw, 20px)] text-[#235e8f] leading-relaxed max-w-[50vw] mx-auto font-medium">
                             <p style={{ fontFamily: montserratFamily }}>
                                 Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
                             </p>
