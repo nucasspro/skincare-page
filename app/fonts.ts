@@ -1,3 +1,4 @@
+import { Manrope, Montserrat } from "next/font/google"
 import localFont from "next/font/local"
 
 export const Air = localFont({
@@ -36,4 +37,16 @@ export const QuicksandFont = localFont({
   display: "swap",
 })
 
+export const MontserratFont = Montserrat({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
+  display: "swap",
+})
 
+export const ManropeFont = Manrope({
+  subsets: ["latin", "vietnamese"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-manrope",
+  display: "swap",
+})
