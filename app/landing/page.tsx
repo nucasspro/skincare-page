@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react"
 import Image from "next/image"
+import { useState } from "react"
 import { ManropeFont, MontserratFont, QuicksandFont } from "../fonts"
 
 interface StepProps {
@@ -84,7 +85,7 @@ function ReviewCard({ rating, review, author, date }: ReviewCardProps) {
             <div className="mb-4">
                 <StarRating rating={rating} size={16} />
             </div>
-            <p className="text-sm text-slate-600 mb-6 leading-relaxed flex-grow text-left">
+            <p className="text-sm text-slate-600 mb-6 leading-relaxed flex-grow text-left" style={{ fontFamily: ManropeFont.style.fontFamily }}>
                 {review}
             </p>
             <div className="flex justify-between items-center pt-4">
@@ -99,19 +100,97 @@ interface StatsBarItemProps {
     label: string
     percentage: number
     color: string
+    index: number
+    hoveredIndex: number | null
+    hoveredPart: 'percentage1' | 'percentage2' | null
+    onMouseEnterPercentage1: () => void
+    onMouseLeavePercentage1: () => void
+    onMouseEnterPercentage2: () => void
+    onMouseLeavePercentage2: () => void
+    value1: number
+    percentage1: number
+    value2: number
+    percentage2: number
 }
 
-function StatsBarItem({ label, percentage, color }: StatsBarItemProps) {
+function StatsBarItem({ label, percentage, color, index, hoveredIndex, hoveredPart, onMouseEnterPercentage1, onMouseLeavePercentage1, onMouseEnterPercentage2, onMouseLeavePercentage2, value1, percentage1, value2, percentage2 }: StatsBarItemProps) {
+    const isHovered = hoveredIndex === index
+    const isOtherHovered = hoveredIndex !== null && hoveredIndex !== index
+    const opacity = isOtherHovered ? 0.3 : 1
+    const isHoveredPercentage1 = isHovered && hoveredPart === 'percentage1'
+    const isHoveredPercentage2 = isHovered && hoveredPart === 'percentage2'
+    // When hovering percentage 2, reduce opacity of percentage 1
+    const percentage1Opacity = isHoveredPercentage2 ? 0.3 : 1
+
     return (
         <div className="flex items-center gap-4">
             <span
-                className="text-slate-500 whitespace-nowrap flex-shrink-0 w-24 text-right"
-                style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}
+                className="text-slate-500 whitespace-nowrap flex-shrink-0 w-24 text-right transition-opacity duration-200"
+                style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px', opacity }}
             >
                 {label}
             </span>
-            <div className="flex-1 h-16 bg-slate-200/50 relative">
-                <div className="absolute top-0 left-0 h-full" style={{ width: `${percentage}%`, backgroundColor: color }}></div>
+            <div
+                className="flex-1 h-16 bg-slate-200/50 relative transition-opacity duration-200"
+                style={{ opacity }}
+            >
+                {/* Vertical grid lines */}
+                {[20, 40, 60, 80].map((mark) => (
+                    <div
+                        key={mark}
+                        className="absolute top-0 bottom-0 w-px bg-slate-300/50"
+                        style={{ left: `${mark}%` }}
+                    ></div>
+                ))}
+
+                {/* Percentage 1 bar (main bar) */}
+                <div
+                    className="absolute top-0 left-0 h-full transition-opacity duration-200 z-10 cursor-pointer"
+                    style={{ width: `${percentage1}%`, backgroundColor: color, opacity: percentage1Opacity }}
+                    onMouseEnter={onMouseEnterPercentage1}
+                    onMouseLeave={onMouseLeavePercentage1}
+                ></div>
+
+                {/* Percentage 2 bar (remaining part) */}
+                <div
+                    className="absolute top-0 left-0 h-full transition-all duration-200 z-10 cursor-pointer"
+                    style={{
+                        left: `${percentage1}%`,
+                        width: `${percentage2}%`,
+                        backgroundColor: isHoveredPercentage2 ? '#cbd5e1' : '#e2e8f0',
+                        borderLeft: '0.5px solid #cbd5e1'
+                    }}
+                    onMouseEnter={onMouseEnterPercentage2}
+                    onMouseLeave={onMouseLeavePercentage2}
+                ></div>
+
+                {/* Tooltip for percentage 1 */}
+                {isHoveredPercentage1 && (
+                    <div
+                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
+                        style={{ left: `${percentage1}%` }}
+                    >
+                        <div className="font-semibold">{label}:</div>
+                        <div className="text-xs">{value1} ({percentage1.toFixed(1)}%)</div>
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                        ></div>
+                    </div>
+                )}
+
+                {/* Tooltip for percentage 2 */}
+                {isHoveredPercentage2 && (
+                    <div
+                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
+                        style={{ left: `${percentage1 + percentage2}%` }}
+                    >
+                        <div className="font-semibold">{label}:</div>
+                        <div className="text-xs">{value2} ({percentage2.toFixed(1)}%)</div>
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                        ></div>
+                    </div>
+                )}
             </div>
         </div>
     )
@@ -224,12 +303,15 @@ function BenefitsContainer({ items, backgroundImage }: BenefitsContainerProps) {
 }
 
 interface StatsGraphProps {
-    items: Array<{ label: string; percentage: number; color: string }>
+    items: Array<{ label: string; percentage: number; color: string; value1: number; percentage1: number; value2: number; percentage2: number }>
 }
 
 function StatsGraph({ items }: StatsGraphProps) {
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+    const [hoveredPart, setHoveredPart] = useState<'percentage1' | 'percentage2' | null>(null)
+
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="w-full md:w-[80%] mx-auto">
             <div className="space-y-4">
                 {items.map((item, index) => (
                     <StatsBarItem
@@ -237,16 +319,39 @@ function StatsGraph({ items }: StatsGraphProps) {
                         label={item.label}
                         percentage={item.percentage}
                         color={item.color}
+                        index={index}
+                        hoveredIndex={hoveredIndex}
+                        hoveredPart={hoveredPart}
+                        onMouseEnterPercentage1={() => {
+                            setHoveredIndex(index)
+                            setHoveredPart('percentage1')
+                        }}
+                        onMouseLeavePercentage1={() => {
+                            setHoveredIndex(null)
+                            setHoveredPart(null)
+                        }}
+                        onMouseEnterPercentage2={() => {
+                            setHoveredIndex(index)
+                            setHoveredPart('percentage2')
+                        }}
+                        onMouseLeavePercentage2={() => {
+                            setHoveredIndex(null)
+                            setHoveredPart(null)
+                        }}
+                        value1={item.value1}
+                        percentage1={item.percentage1}
+                        value2={item.value2}
+                        percentage2={item.percentage2}
                     />
                 ))}
                 {/* Axis */}
                 <div className="flex pl-28 text-xs text-slate-500 justify-between pt-2">
                     <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>0%</span>
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>20%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>20%</span>
                     <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>40%</span>
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>60%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>60%</span>
                     <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>80%</span>
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>100%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>100%</span>
                 </div>
             </div>
         </div>
@@ -256,6 +361,8 @@ function StatsGraph({ items }: StatsGraphProps) {
 export default function LandingPage() {
     const montserratFamily = MontserratFont.style.fontFamily
     const manropeFamily = ManropeFont.style.fontFamily
+
+
 
     return (
         <div
@@ -834,7 +941,7 @@ export default function LandingPage() {
 
                     <div className="relative rounded-2xl overflow-hidden shadow-lg">
                         {/* Content Flex */}
-                        <div className="relative z-10 flex flex-col md:flex-row gap-12 md:gap-16 p-8 md:p-12 items-start justify-center bg-[#EFF6FF] rounded-2xl">
+                        <div className="relative z-10 flex flex-col md:flex-row gap-12 md:gap-16 p-8 md:p-12 items-start justify-center bg-[#D5E5EF] rounded-2xl">
                             <Step
                                 imageSrc="/landing-page/PAGE 8/47.png"
                                 alt="Step 1"
@@ -886,37 +993,37 @@ export default function LandingPage() {
                     {/* Stats Graph */}
                     <StatsGraph
                         items={[
-                            { label: "Hiệu Quả", percentage: 92, color: "#a7c1d3" },
-                            { label: "Dưỡng ẩm", percentage: 88, color: "#a7c1d3" },
-                            { label: "Kích ứng", percentage: 3, color: "#a7c1d3" },
+                            { label: "Hiệu Quả", percentage: 92.3, color: "#a7c1d3", value1: 12, percentage1: 92.3, value2: 1, percentage2: 7.7 },
+                            { label: "Dưỡng ẩm", percentage: 88.9, color: "#a7c1d3", value1: 8, percentage1: 88.9, value2: 1, percentage2: 11.1 },
+                            { label: "Kích ứng", percentage: 4, color: "#a7c1d3", value1: 1, percentage1: 4, value2: 12, percentage2: 96 },
                         ]}
                     />
                 </div>
             </section>
 
             {/* FOOTER / BRAND STORY */}
-            <footer className="py-[8.8vw] relative overflow-hidden z-10">
+            <footer className="py-0 md:py-[8.8vw] relative overflow-hidden z-10 bg-gradient-to-b from-[#DFEAF8] to-white">
                 {/* Logo Image - Independent container */}
-                <div className="flex justify-center mb-[-6.9vw]">
-                    <div className="relative">
+                <div className="flex justify-center mb-[-6vw] md:mb-[-6.9vw] px-[4vw] md:px-0">
+                    <div className="relative w-full md:w-auto">
                         <Image
                             src="/landing-page/PAGE 10/53.png"
                             alt="Cellic Logo"
                             width={1800}
                             height={500}
-                            className="w-full h-auto object-contain"
+                            className="w-full h-auto object-contain scale-110 md:scale-100"
                             priority
                         />
                     </div>
                 </div>
 
                 {/* Brand Story Box with CSS Gradient - Independent container */}
-                <div className="w-[60vw] max-w-none mx-auto text-center relative z-10">
-                    <div className="relative overflow-hidden rounded-t-[4.4vw] bg-gradient-to-b from-[#D1E9FC] to-white py-[3.3vw] px-[2.2vw]">
-                        <h2 className="text-[clamp(18px, 2.4vw, 35px)] font-extrabold text-[#2b6493] tracking-tight uppercase mb-[2.2vw] font-heading">
+                <div className="w-full md:w-[60vw] max-w-none mx-auto text-center relative z-10 px-[4vw] md:px-0">
+                    <div className="relative overflow-hidden rounded-t-[10vw] md:rounded-t-[4.4vw] bg-gradient-to-b from-[#D1E9FC] to-white py-[6vw] md:py-[3.3vw] px-[5vw] md:px-[2.2vw]">
+                        <h2 className="text-[40px] md:text-[clamp(18px, 2.4vw, 35px)] font-extrabold text-[#2b6493] tracking-tight uppercase mb-[4vw] md:mb-[2.2vw] font-heading">
                             Câu Chuyện Thương Hiệu
                         </h2>
-                        <div className="text-[clamp(12px, 1.38vw, 20px)] text-[#235e8f] leading-relaxed max-w-[50vw] mx-auto font-medium">
+                        <div className="text-[clamp(16px, 3.5vw, 20px)] md:text-[clamp(12px, 1.38vw, 20px)] text-[#235e8f] leading-relaxed max-w-full md:max-w-[50vw] mx-auto font-medium px-0">
                             <p style={{ fontFamily: montserratFamily }}>
                                 Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
                             </p>
