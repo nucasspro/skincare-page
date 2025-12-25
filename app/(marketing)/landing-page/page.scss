@@ -1,0 +1,572 @@
+// // DEPRECATED: This file is no longer used.
+// // The landing page has been migrated to Tailwind CSS.
+// // Typography classes are defined in app/globals.css using @apply.
+// // Layout and styling are now handled with Tailwind utility classes in page.tsx.
+
+// // Design Tokens
+// $color-primary: #000000;
+// $color-background: #ffffff;
+// $color-accent: #000000;
+// $font-base: 16px;
+// $spacing-base: 20px;
+// $spacing-section: 80px;
+
+// // Typography Tokens
+// $font-montserrat: var(--font-montserrat), sans-serif;
+
+// // Typography Colors
+// $color-text-dark: #333333;
+// $color-text-blue-dark: #3a76a5;
+// $color-text-blue-light: #A0C4E2;
+
+// // Typography Mixins
+// @mixin typography-base {
+//   font-family: $font-montserrat;
+//   margin: 0;
+// }
+
+// @mixin typography-heading-large {
+//   @include typography-base;
+//   font-size: 72px;
+//   font-weight: 700;
+//   line-height: 1.2;
+//   letter-spacing: 2px;
+//   text-transform: uppercase;
+//   color: $color-text-blue-dark;
+// }
+
+// @mixin typography-body {
+//   @include typography-base;
+//   font-size: 36px;
+//   font-weight: 400;
+//   line-height: 1.8;
+//   letter-spacing: 0.3px;
+//   color: $color-text-blue-dark;
+// }
+
+// // Base Styles
+// .landing {
+//   width: 100%;
+//   background-color: $color-background;
+//   color: $color-primary;
+//   font-size: $font-base;
+//   line-height: 1.6;
+// }
+
+// // Section 1: Hero
+// .landing__hero {
+//   position: relative;
+//   min-height: 100vh;
+//   width: 100%;
+//   overflow: hidden;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .landing__hero-background {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   z-index: 0;
+// }
+
+// .landing__hero-bg-image {
+//   object-fit: cover;
+//   object-position: center;
+// }
+
+// .landing__hero-content {
+//   position: relative;
+//   z-index: 1;
+//   width: 100%;
+//   height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: flex-start;
+//   padding: 100px 40px 0;
+// }
+
+// .landing__hero-text {
+//   text-align: center;
+//   width: 100%;
+//   max-width: 1200px;
+//   order: 1;
+// }
+
+// .landing__hero-title {
+//   @include typography-heading-large;
+//   margin: 0;
+//   margin-bottom: 20px;
+//   text-align: center;
+// }
+
+// .landing__hero-subtitle {
+//   @include typography-body;
+//   margin: 0;
+//   margin-top: 16px;
+// }
+
+// .landing__hero-image-wrapper {
+//   display: flex;
+//   align-items: flex-end;
+//   justify-content: center;
+//   width: 100%;
+//   max-width: 650px;
+//   order: 2;
+//   margin-top: auto;
+//   padding-bottom: 0;
+// }
+
+// .landing__hero-image {
+//   width: 100%;
+//   height: 100%;
+//   max-height: 70vh;
+//   object-fit: contain;
+//   object-position: center;
+// }
+
+// .landing__hero-cta {
+//   font-family: var(--font-montserrat), sans-serif;
+//   padding: 20px 56px;
+//   font-size: 20px;
+//   font-weight: 600;
+//   background-color: #4A90A4;
+//   color: #ffffff;
+//   border: none;
+//   border-radius: 50px;
+//   cursor: pointer;
+//   letter-spacing: 0.8px;
+//   transition: background-color 0.3s ease;
+//   margin-top: 20px;
+
+//   &:hover {
+//     background-color: #3a7a8a;
+//   }
+// }
+
+// // Section 2: New Generation Sunscreen
+// .landing__benefits {
+//   width: 100%;
+//   min-height: 100vh;
+//   padding: 120px 40px;
+//   background: linear-gradient(to bottom, #E8F4F8 0%, #FFFFFF 100%);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .landing__benefits-inner {
+//   width: 100%;
+//   max-width: 1400px;
+//   margin: 0 auto;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 80px;
+// }
+
+// .landing__benefits-heading {
+//   text-align: center;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 20px;
+// }
+
+// .landing__benefits-title {
+//   @include typography-heading-large;
+//   font-size: 52px;
+//   font-weight: 800;
+//   letter-spacing: 1px;
+//   text-align: center;
+// }
+
+// .landing__benefits-subtitle {
+//   @include typography-body;
+//   font-size: 22px;
+//   color: #666666;
+//   line-height: 1.5;
+//   text-align: center;
+// }
+
+// .landing__benefits-content {
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 80px;
+// }
+
+// .landing__benefits-left {
+//   flex: 0 0 auto;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+//   text-align: left;
+
+//   p {
+//     @include typography-base;
+//     font-size: 24px;
+//     font-weight: 600;
+//     color: $color-text-blue-dark;
+//     margin: 0;
+//     line-height: 1.4;
+//   }
+// }
+
+// .landing__benefits-visual {
+//   position: relative;
+//   flex: 0 0 auto;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 550px;
+//   height: 550px;
+// }
+
+// .landing__benefits-water {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   object-fit: contain;
+//   z-index: 1;
+// }
+
+// .landing__benefits-tube {
+//   position: absolute;
+//   width: 70%;
+//   height: auto;
+//   object-fit: contain;
+//   z-index: 2;
+//   transform: rotate(-8deg);
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%) rotate(-8deg);
+// }
+
+// .landing__benefits-right {
+//   flex: 0 0 auto;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+//   text-align: right;
+
+//   p {
+//     @include typography-base;
+//     font-size: 24px;
+//     font-weight: 600;
+//     color: $color-text-blue-dark;
+//     margin: 0;
+//     line-height: 1.4;
+//   }
+// }
+
+// // Section 3: Ingredients
+// .landing__ingredients {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__ingredients-image {
+//   flex: 1;
+//   height: 400px;
+//   background-color: #f0f0f0;
+// }
+
+// .landing__ingredients-card {
+//   flex: 1;
+//   padding: $spacing-base * 2;
+//   background-color: #f9f9f9;
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+// }
+
+// .landing__ingredients-title {
+//   font-size: 36px;
+//   font-weight: bold;
+// }
+
+// .landing__ingredients-description {
+//   font-size: 16px;
+// }
+
+// // Section 4: PDRN - Did you know?
+// .landing__pdrn {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__pdrn-title {
+//   font-size: 36px;
+//   font-weight: bold;
+//   text-align: center;
+// }
+
+// .landing__pdrn-cards {
+//   display: flex;
+//   gap: $spacing-base;
+//   width: 100%;
+//   max-width: 1200px;
+// }
+
+// .landing__pdrn-card {
+//   flex: 1;
+//   padding: $spacing-base * 2;
+//   background-color: #f9f9f9;
+//   min-height: 200px;
+// }
+
+// // Section 5: 3C Unbelievable Benefits
+// .landing__threec {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   align-items: center;
+//   gap: $spacing-base * 3;
+// }
+
+// .landing__threec-graphic {
+//   flex: 1;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .landing__threec-number {
+//   font-size: 120px;
+//   font-weight: bold;
+//   color: $color-accent;
+// }
+
+// .landing__threec-content {
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+// }
+
+// .landing__threec-title {
+//   font-size: 36px;
+//   font-weight: bold;
+// }
+
+// .landing__threec-description {
+//   font-size: 16px;
+// }
+
+// // Section 6: Deep Protection & Nourishment
+// .landing__deep-protection {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__deep-protection-image {
+//   flex: 1;
+//   height: 500px;
+//   background-color: #f0f0f0;
+// }
+
+// .landing__deep-protection-content {
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+// }
+
+// .landing__deep-protection-title {
+//   font-size: 36px;
+//   font-weight: bold;
+// }
+
+// .landing__deep-protection-description {
+//   font-size: 16px;
+// }
+
+// // Section 7: Test Report
+// .landing__lab-report {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__lab-report-image {
+//   flex: 1;
+//   height: 400px;
+//   background-color: #f0f0f0;
+// }
+
+// .landing__lab-report-content {
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+// }
+
+// .landing__lab-report-title {
+//   font-size: 36px;
+//   font-weight: bold;
+// }
+
+// .landing__lab-report-description {
+//   font-size: 16px;
+// }
+
+// // Section 8: Usage Instructions
+// .landing__usage {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__usage-title {
+//   font-size: 36px;
+//   font-weight: bold;
+//   text-align: center;
+// }
+
+// .landing__usage-steps {
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+//   width: 100%;
+//   max-width: 800px;
+// }
+
+// .landing__usage-step {
+//   padding: $spacing-base;
+//   background-color: #f9f9f9;
+//   min-height: 100px;
+// }
+
+// // Section 9: Customer Reviews
+// .landing__reviews {
+//   min-height: 100vh;
+//   padding: $spacing-section $spacing-base;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: $spacing-base * 2;
+// }
+
+// .landing__reviews-title {
+//   font-size: 36px;
+//   font-weight: bold;
+//   text-align: center;
+// }
+
+// .landing__reviews-cards {
+//   display: flex;
+//   gap: $spacing-base;
+//   width: 100%;
+//   max-width: 1200px;
+// }
+
+// .landing__reviews-card {
+//   flex: 1;
+//   padding: $spacing-base * 2;
+//   background-color: #f9f9f9;
+//   min-height: 250px;
+// }
+
+// .landing__reviews-chart {
+//   width: 100%;
+//   max-width: 800px;
+//   display: flex;
+//   flex-direction: column;
+//   gap: $spacing-base;
+// }
+
+// .landing__reviews-chart-item {
+//   display: flex;
+//   align-items: center;
+//   gap: $spacing-base;
+// }
+
+// .landing__reviews-chart-label {
+//   min-width: 100px;
+//   font-weight: bold;
+// }
+
+// .landing__reviews-chart-bar {
+//   flex: 1;
+//   height: 30px;
+//   background-color: #e0e0e0;
+// }
+
+// // Section 10: Brand Story
+// .landing__brand-story {
+//   width: 100%;
+//   min-height: 100vh;
+//   padding: 150px 40px;
+//   background: linear-gradient(to bottom, #E8F4F8 0%, #FFFFFF 100%);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// .landing__brand-story-inner {
+//   width: 100%;
+//   max-width: 1200px;
+//   margin: 0 auto;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 50px;
+// }
+
+// .landing__brand-story-wordmark {
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   margin: 0;
+// }
+
+// .landing__brand-story-wordmark-image {
+//   width: 100%;
+//   max-width: 650px;
+//   height: auto;
+//   object-fit: contain;
+// }
+
+// .landing__brand-story-card {
+//   width: 100%;
+//   max-width: 1000px;
+//   background: linear-gradient(to bottom, #BEE3F8 0%, #FFFFFF 100%);
+//   border-radius: 80px;
+//   padding: 70px 80px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 30px;
+// }
+
+// .landing__brand-story-title {
+//   @include typography-heading-large;
+//   text-align: center;
+// }
+
+// .landing__brand-story-text {
+//   @include typography-body;
+//   text-align: center;
+//   max-width: 850px;
+// }
