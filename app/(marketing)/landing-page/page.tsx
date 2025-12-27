@@ -52,7 +52,7 @@ function BenefitItem({ imageSrc, text }: BenefitItemProps) {
                     unoptimized
                 />
             </div>
-            <p className="section-content text-left text-lg md:text-xl leading-relaxed pr-30" style={{ lineHeight: '1.5' }}>
+            <p className="text-body-subtitle text-left leading-relaxed pr-30">
                 {text}
             </p>
         </div>
@@ -312,9 +312,9 @@ function StatsGraph({ items }: StatsGraphProps) {
 
 export default function LandingPage() {
   return (
-    <main className={`w-full bg-white text-black text-base leading-relaxed ${MontserratFont.variable}`}>
+    <main className={`w-full min-h-screen bg-gradient-to-b from-white via-[#DDECFA] to-white text-black text-base leading-relaxed ${MontserratFont.variable} overflow-y-scroll overflow-x-hidden snap-y snap-mandatory` }>
       {/* Section 1: Hero */}
-      <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
+      <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center snap-center z-10">
         <div className="absolute top-0 left-0 w-full h-full z-0">
           <Image
             src="/landing-page/PAGE 1/1.png"
@@ -352,7 +352,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 2: New Generation Sunscreen */}
-      <section className="w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center">
+      <section className="w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-center">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-20">
           <div className="text-center flex flex-col gap-5">
             <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
@@ -394,7 +394,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 3: 3-Layer Protection */}
-      <section className="landing__three-layer w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center">
+      <section className="landing__three-layer w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-y snap-mandatory">
         <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center">
           {/* Title */}
           <h2 className="text-heading-2 mb-10">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
@@ -439,7 +439,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 4: Ingredients */}
-      <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center relative overflow-hidden">
+      <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 flex items-center justify-center relative overflow-hidden">
         <div className="w-full max-w-[1600px] mx-auto relative">
           {/* Flex container with two columns */}
           <div className="flex relative">
@@ -490,7 +490,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 5: PDRN - Có thể bạn chưa biết? */}
-      <section className="landing__pdrn w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+      <section className="landing__pdrn w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
           {/* Section Title */}
           <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
@@ -563,122 +563,69 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 6: 3C Công dụng "Không tưởng" */}
-      <section className="landing__threec w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white relative">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/landing-page/PAGE 6/BACKGROUND.png"
-            alt=""
-            fill
-            className="object-cover"
-            quality={100}
-            unoptimized
-          />
-        </div>
 
-        <div className="w-full max-w-[1200px] mx-auto relative z-10">
-          {/* Top row: 3C + Heading */}
-          <div className="flex items-start mb-12">
-            {/* Large "3C" on left - overlapping style */}
-            <div className="relative flex-shrink-0 w-[300px] h-[300px]">
-              <span
-                className="absolute left-0 top-0 text-[#3a76a5] leading-none select-none pointer-events-none"
-                style={{ fontFamily: 'var(--font-montserrat)', fontWeight: '900', fontSize: '260px' }}
-              >
-                3
-              </span>
-              <span
-                className="absolute left-[90px] top-[60px] text-[#3a76a5] leading-none select-none pointer-events-none"
-                style={{ fontFamily: 'var(--font-montserrat)', fontWeight: '900', fontSize: '150px' }}
-              >
-                C
-              </span>
-            </div>
 
-            {/* Two-line heading on right - aligned with card below */}
-            <div className="flex flex-col gap-2 pt-8 ml-[-40px]">
-              <h2 className="text-heading-2 text-[32px] font-normal text-[#2F5C91]">CÔNG DỤNG 'KHÔNG TƯỞNG'</h2>
-              <h2 className="text-heading-2 text-[32px] font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</h2>
-            </div>
-          </div>
 
-          {/* Content card - aligned with heading */}
-          <div className="relative rounded-[40px] overflow-hidden ml-[260px]">
-            {/* Card background image */}
-            <div className="absolute inset-0 z-0">
-              <Image
-                src="/landing-page/PAGE 6/35.png"
-                alt=""
-                fill
-                className="object-cover"
-                quality={100}
-                unoptimized
-              />
-            </div>
+      <section className="py-[120px] px-10">
+                <div className="w-full max-w-[1600px] mx-auto px-[1.1vw] text-center">
 
-            {/* Card content */}
-            <div className="relative z-10 p-12 flex flex-col gap-10">
-              {/* Feature Row 1 */}
-              <div className="flex items-center gap-6">
-                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    src="/landing-page/PAGE 6/36.png"
-                    alt="Protection icon"
-                    width={96}
-                    height={96}
-                    className="w-full h-full object-cover"
-                    quality={100}
-                    unoptimized
-                  />
+                    {/* Background Image */}
+                    <div className="absolute inset-0 z-0">
+                        <Image
+                            src="/landing-page/PAGE 6/BACKGROUND.png"
+                            alt=""
+                            fill
+                            className="object-cover"
+                            quality={100}
+                            unoptimized
+                        />
+                    </div>
+
+                    <div className="max-w-[100vw] mx-auto px-[1.1vw] relative z-10">
+                        {/* Container with 3C, Header and BenefitsContainer - All same width */}
+                        <div className="max-w-[100vw] relative">
+                            {/* Large "3C" - On top */}
+                            <div className="absolute top-[5.5vw] left-[-2vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '17.7vw' }}>
+                                3
+                            </div>
+                            <div className="absolute top-[8.8vw] left-[8vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '9vw' }}>
+                                C
+                            </div>
+
+                            {/* Header - On top, below 3C */}
+                            <div className="relative z-20 top-[1.1vw] left-[15.2vw] mb-[4.4vw] pt-[8.8vw]">
+                                <h2 className="text-left font-heading uppercase tracking-tight" style={{ fontSize: 'clamp(16px, 2.4vw, 35px)' }}>
+                                    <span className="font-normal text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
+                                    <br />
+                                    <span className="font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
+                                </h2>
+                            </div>
+
+                            {/* BenefitsContainer - Background below */}
+                            <BenefitsContainer
+                                backgroundImage="/landing-page/PAGE 6/35.png"
+                                items={[
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/36.png",
+                                        text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
+                                    },
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/37.png",
+                                        text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
+                                    },
+                                    {
+                                        imageSrc: "/landing-page/PAGE 6/38.png",
+                                        text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
+                                    }
+                                ]}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <p className="text-body text-[#333333] flex-1">
-                  Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên.
-                </p>
-              </div>
-
-              {/* Feature Row 2 */}
-              <div className="flex items-center gap-6">
-                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    src="/landing-page/PAGE 6/37.png"
-                    alt="Soft focus icon"
-                    width={96}
-                    height={96}
-                    className="w-full h-full object-cover"
-                    quality={100}
-                    unoptimized
-                  />
-                </div>
-                <p className="text-body text-[#333333] flex-1">
-                  Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp.
-                </p>
-              </div>
-
-              {/* Feature Row 3 */}
-              <div className="flex items-center gap-6">
-                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    src="/landing-page/PAGE 6/38.png"
-                    alt="PDRN formula icon"
-                    width={96}
-                    height={96}
-                    className="w-full h-full object-cover"
-                    quality={100}
-                    unoptimized
-                  />
-                </div>
-                <p className="text-body text-[#333333] flex-1">
-                  Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
 
       {/* Section 7: Deep Protection & Nourishment */}
-      <section className="landing__deep-protection w-full py-[120px] px-10 bg-white">
+      <section className="landing__deep-protection w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto relative">
           {/* Floating mask image - positioned above and to the left of card */}
           <div className="absolute -top-34 -left-34 z-10 w-[500px] h-auto">
@@ -760,7 +707,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 8: Test Report */}
-      <section className="landing__lab-report w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+      <section className="landing__lab-report w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-16">
           <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
 
@@ -790,7 +737,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 8: Usage Instructions */}
-      <section className="landing__usage w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+      <section className="landing__usage w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
           <h2 className="text-heading-2 text-center">HƯỚNG DẪN SỬ DỤNG</h2>
 
@@ -817,7 +764,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 9: Customer Reviews */}
-      <section className="landing__reviews w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+      <section className="landing__reviews w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
           <h2 className="text-heading-2 text-center">ĐÁNH GIÁ TỪ KHÁCH HÀNG</h2>
 
@@ -856,7 +803,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section 10: Brand Story */}
-      <section className="w-full min-h-screen py-[150px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center">
+      <section className="w-full min-h-screen py-[150px] px-10 flex items-center justify-center">
         <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center gap-[50px]">
           <div className="w-full flex items-center justify-center m-0">
             <Image
