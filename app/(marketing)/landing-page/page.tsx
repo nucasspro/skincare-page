@@ -1,5 +1,314 @@
+"use client";
+
+import { Star } from 'lucide-react';
 import Image from 'next/image';
-import { MontserratFont } from '../../fonts';
+import { useState } from "react";
+import { MontserratFont, QuicksandFont } from '../../fonts';
+
+interface BenefitsContainerProps {
+    items: Array<{ imageSrc: string; text: string }>
+    backgroundImage: string
+}
+
+function BenefitsContainer({ items, backgroundImage }: BenefitsContainerProps) {
+    return (
+        <div className="relative rounded-[3rem] md:p-10 space-y-16 mb-10">
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src={backgroundImage}
+                    alt=""
+                    fill
+                    // className="object-cover"
+                    style={{ transform: 'scale(2.15)' }}
+                    quality={100}
+                    unoptimized
+                />
+            </div>
+            <div className="relative z-10">
+                {items.map((item, index) => (
+                    <BenefitItem key={index} imageSrc={item.imageSrc} text={item.text} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
+interface BenefitItemProps {
+    imageSrc: string
+    text: string
+}
+
+function BenefitItem({ imageSrc, text }: BenefitItemProps) {
+    return (
+        <div className="flex flex-col md:flex-row gap-8 items-center max-w-[90%] mx-auto my-4">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                <Image
+                    src={imageSrc}
+                    alt=""
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    quality={100}
+                    unoptimized
+                />
+            </div>
+            <p className="section-content text-left text-lg md:text-xl leading-relaxed pr-30" style={{ lineHeight: '1.5' }}>
+                {text}
+            </p>
+        </div>
+    )
+}
+
+
+interface StepProps {
+    imageSrc: string
+    alt: string
+    text: string
+}
+
+function Step({ imageSrc, alt, text }: StepProps) {
+    return (
+        <div className="flex flex-col items-center justify-start h-full flex-1">
+            <div className="flex-shrink-0 w-full">
+                <Image
+                    src={imageSrc}
+                    alt={alt}
+                    quality={100}
+                    width={600}
+                    height={600}
+                    className="w-full h-auto object-contain"
+                    unoptimized
+                />
+            </div>
+            <p className="text-body mt-4 text-center flex-grow w-full">{text}</p>
+        </div>
+    )
+}
+
+
+interface StarRatingProps {
+    rating: number
+    maxRating?: number
+    size?: number
+}
+
+function StarRating({ rating, maxRating = 5, size = 16 }: StarRatingProps) {
+    const stars = []
+    for (let i = 0; i < maxRating; i++) {
+        const starValue = i + 1
+        if (starValue <= Math.floor(rating)) {
+            // Full star
+            stars.push(
+                <Star key={i} className="fill-current text-amber-400" style={{ width: size, height: size }} />
+            )
+        } else if (starValue - 0.5 <= rating) {
+            // Half star
+            stars.push(
+                <div key={i} className="relative inline-block" style={{ width: size, height: size }}>
+                    <Star className="text-amber-400" style={{ width: size, height: size }} />
+                    <div
+                        className="absolute left-0 top-0 overflow-hidden"
+                        style={{
+                            width: '50%',
+                            height: '100%',
+                            clipPath: 'inset(0 50% 0 0)'
+                        }}
+                    >
+                        <Star className="fill-current text-amber-400" style={{ width: size, height: size }} />
+                    </div>
+                </div>
+            )
+        } else {
+            // Empty star
+            stars.push(
+                <Star key={i} className="text-amber-400" style={{ width: size, height: size }} />
+            )
+        }
+    }
+    return <div className="flex gap-1">{stars}</div>
+}
+
+interface ReviewCardProps {
+    rating: number
+    review: string
+    author: string
+    date: string
+}
+
+function ReviewCard({ rating, review, author, date }: ReviewCardProps) {
+    return (
+        <div className="bg-white p-8 rounded-lg border border-slate-100 flex flex-col flex-1 min-h-[300px]">
+            <div className="mb-4">
+                <StarRating rating={rating} size={16} />
+            </div>
+            <p className="text-body-subtitle mb-6 flex-grow text-left">
+                {review}
+            </p>
+            <div className="flex justify-between items-center pt-4">
+                <span className="text-body-subtitle font-semibold fo">{author}</span>
+                <span className="text-body-subtitle">{date}</span>
+            </div>
+        </div>
+    )
+}
+
+
+
+interface StatsBarItemProps {
+    label: string
+    percentage: number
+    color: string
+    index: number
+    hoveredIndex: number | null
+    hoveredPart: 'percentage1' | 'percentage2' | null
+    onMouseEnterPercentage1: () => void
+    onMouseLeavePercentage1: () => void
+    onMouseEnterPercentage2: () => void
+    onMouseLeavePercentage2: () => void
+    value1: number
+    percentage1: number
+    value2: number
+    percentage2: number
+}
+
+function StatsBarItem({ label, percentage, color, index, hoveredIndex, hoveredPart, onMouseEnterPercentage1, onMouseLeavePercentage1, onMouseEnterPercentage2, onMouseLeavePercentage2, value1, percentage1, value2, percentage2 }: StatsBarItemProps) {
+    const isHovered = hoveredIndex === index
+    const isOtherHovered = hoveredIndex !== null && hoveredIndex !== index
+    const opacity = isOtherHovered ? 0.3 : 1
+    const isHoveredPercentage1 = isHovered && hoveredPart === 'percentage1'
+    const isHoveredPercentage2 = isHovered && hoveredPart === 'percentage2'
+    // When hovering percentage 2, reduce opacity of percentage 1
+    const percentage1Opacity = isHoveredPercentage2 ? 0.3 : 1
+
+    return (
+        <div className="flex items-center gap-4">
+            <span
+                className="text-slate-500 whitespace-nowrap flex-shrink-0 w-24 text-right transition-opacity duration-200"
+                style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px', opacity }}
+            >
+                {label}
+            </span>
+            <div
+                className="flex-1 h-16 bg-slate-200/50 relative transition-opacity duration-200"
+                style={{ opacity }}
+            >
+                {/* Vertical grid lines */}
+                {[20, 40, 60, 80].map((mark) => (
+                    <div
+                        key={mark}
+                        className="absolute top-0 bottom-0 w-px bg-slate-300/50"
+                        style={{ left: `${mark}%` }}
+                    ></div>
+                ))}
+
+                {/* Percentage 1 bar (main bar) */}
+                <div
+                    className="absolute top-0 left-0 h-full transition-opacity duration-200 z-10 cursor-pointer"
+                    style={{ width: `${percentage1}%`, backgroundColor: color, opacity: percentage1Opacity }}
+                    onMouseEnter={onMouseEnterPercentage1}
+                    onMouseLeave={onMouseLeavePercentage1}
+                ></div>
+
+                {/* Percentage 2 bar (remaining part) */}
+                <div
+                    className="absolute top-0 left-0 h-full transition-all duration-200 z-10 cursor-pointer"
+                    style={{
+                        left: `${percentage1}%`,
+                        width: `${percentage2}%`,
+                        backgroundColor: isHoveredPercentage2 ? '#cbd5e1' : '#e2e8f0',
+                        borderLeft: '0.5px solid #cbd5e1'
+                    }}
+                    onMouseEnter={onMouseEnterPercentage2}
+                    onMouseLeave={onMouseLeavePercentage2}
+                ></div>
+
+                {/* Tooltip for percentage 1 */}
+                {isHoveredPercentage1 && (
+                    <div
+                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
+                        style={{ left: `${percentage1}%` }}
+                    >
+                        <div className="font-semibold">{label}:</div>
+                        <div className="text-xs">{value1} ({percentage1.toFixed(1)}%)</div>
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                        ></div>
+                    </div>
+                )}
+
+                {/* Tooltip for percentage 2 */}
+                {isHoveredPercentage2 && (
+                    <div
+                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
+                        style={{ left: `${percentage1 + percentage2}%` }}
+                    >
+                        <div className="font-semibold">{label}:</div>
+                        <div className="text-xs">{value2} ({percentage2.toFixed(1)}%)</div>
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                        ></div>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}
+
+interface StatsGraphProps {
+    items: Array<{ label: string; percentage: number; color: string; value1: number; percentage1: number; value2: number; percentage2: number }>
+}
+
+function StatsGraph({ items }: StatsGraphProps) {
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+    const [hoveredPart, setHoveredPart] = useState<'percentage1' | 'percentage2' | null>(null)
+
+    return (
+        <div className="w-full md:w-[80%] mx-auto">
+            <div className="space-y-4">
+                {items.map((item, index) => (
+                    <StatsBarItem
+                        key={index}
+                        label={item.label}
+                        percentage={item.percentage}
+                        color={item.color}
+                        index={index}
+                        hoveredIndex={hoveredIndex}
+                        hoveredPart={hoveredPart}
+                        onMouseEnterPercentage1={() => {
+                            setHoveredIndex(index)
+                            setHoveredPart('percentage1')
+                        }}
+                        onMouseLeavePercentage1={() => {
+                            setHoveredIndex(null)
+                            setHoveredPart(null)
+                        }}
+                        onMouseEnterPercentage2={() => {
+                            setHoveredIndex(index)
+                            setHoveredPart('percentage2')
+                        }}
+                        onMouseLeavePercentage2={() => {
+                            setHoveredIndex(null)
+                            setHoveredPart(null)
+                        }}
+                        value1={item.value1}
+                        percentage1={item.percentage1}
+                        value2={item.value2}
+                        percentage2={item.percentage2}
+                    />
+                ))}
+                {/* Axis */}
+                <div className="flex pl-28 text-xs text-slate-500 justify-between pt-2">
+                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>0%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>20%</span>
+                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>40%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>60%</span>
+                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>80%</span>
+                    <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>100%</span>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export default function LandingPage() {
   return (
@@ -19,7 +328,7 @@ export default function LandingPage() {
         </div>
         <div className="relative z-10 w-full h-screen flex flex-col items-center justify-start pt-[100px] px-10 pb-0">
           <div className="text-center w-full max-w-[1200px] order-1">
-            <h1 className="text-heading-1 mb-5">
+            <h1 className="text-heading-2 mb-5">
               CELLIC<br />
               BRIGHT MATTE SUNCREEN
             </h1>
@@ -46,14 +355,14 @@ export default function LandingPage() {
       <section className="w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-20">
           <div className="text-center flex flex-col gap-5">
-            <h2 className="text-heading-1">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
+            <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
             <p className="text-body-large">THẤU HIỂU VÀ ĐỒNG HÀNH CÙNG LÀN DA VIỆT</p>
           </div>
           <div className="w-full flex items-center justify-center gap-20">
             <div className="flex-none flex flex-col gap-4 text-left">
-              <p className="text-label">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
-              <p className="text-label">PDRN</p>
-              <p className="text-label">LÀNH TÍNH<br />DỊU NHẸ</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">PDRN</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">LÀNH TÍNH<br />DỊU NHẸ</p>
             </div>
             <div className="relative flex-none flex items-center justify-center w-[550px] h-[550px]">
               <Image
@@ -76,9 +385,9 @@ export default function LandingPage() {
               />
             </div>
             <div className="flex-none flex flex-col gap-4 text-right">
-              <p className="text-label">KIỀM DẦU SUỐT 8H</p>
-              <p className="text-label">NÂNG TONE<br />TỰ NHIÊN</p>
-              <p className="text-label">PHỤC HỒI<br />TỔN THƯƠNG</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">KIỀM DẦU SUỐT 8H</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">NÂNG TONE<br />TỰ NHIÊN</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">PHỤC HỒI<br />TỔN THƯƠNG</p>
             </div>
           </div>
         </div>
@@ -88,7 +397,7 @@ export default function LandingPage() {
       <section className="landing__three-layer w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center">
         <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center">
           {/* Title */}
-          <h2 className="text-heading-1 mb-10">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
+          <h2 className="text-heading-2 mb-10">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
 
           {/* Numbered List */}
           <div className="flex flex-col gap-5 w-full max-w-[900px] mb-10 mt-10">
@@ -129,111 +438,338 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 4: PDRN - Did you know? */}
-      <section className="landing__pdrn">
-        <h2 className="landing__pdrn-title">PDRN - Did you know?</h2>
-        <div className="landing__pdrn-cards">
-          <div className="landing__pdrn-card">
-            {/* Info card 1 */}
+      {/* Section 4: Ingredients */}
+      <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white flex items-center justify-center relative overflow-hidden">
+        <div className="w-full max-w-[1600px] mx-auto relative">
+          {/* Flex container with two columns */}
+          <div className="flex relative">
+            <div className="basis-1/5 flex-shrink-0"></div>
+            <div className="basis-4/5 flex-shrink-0 relative">
+
+              {/* Background Card */}
+              <div className="bg-gradient-to-b from-[#BEE3F8] to-[#FFFFFF] rounded-[60px] p-12 flex relative z-0">
+                <div className="basis-1/3 flex-shrink-0"></div>
+                <div className="basis-2/3 flex-shrink-0 flex flex-col gap-8">
+                  <h2 className="text-heading-2 text-left text-align-left">THÀNH PHẦN</h2>
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI</h3>
+                    <div className="flex flex-col gap-2">
+                      <p className="text-body text-[#6BA3C7]">Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN THỰC VẬT</h3>
+                    <p className="text-body text-[#6BA3C7]">
+                      Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm, giảm kích ứng.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PROPANEDIOL</h3>
+                    <p className="text-body text-[#6BA3C7]">
+                      Có độ tinh khiết cao và mang lại hiệu quả bền vững
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="landing__pdrn-card">
-            {/* Info card 2 */}
-          </div>
-          <div className="landing__pdrn-card">
-            {/* Info card 3 */}
+
+          {/* Product Image - positioned to overlap both columns */}
+          <div className="absolute -left-28 top-1/2 -translate-y-1/2 z-10 w-[50%] flex items-center justify-center">
+            <Image
+              src="/landing-page/PAGE 4/product.png"
+              alt="Cellic sunscreen products"
+              width={800}
+              height={1000}
+              className="w-full h-auto object-contain"
+              quality={100}
+              unoptimized
+            />
           </div>
         </div>
       </section>
 
-      {/* Section 5: 3C Unbelievable Benefits */}
-      <section className="landing__threec">
-        <div className="landing__threec-graphic">
-          <span className="landing__threec-number">3C</span>
-        </div>
-        <div className="landing__threec-content">
-          <h2 className="landing__threec-title">Unbelievable Benefits</h2>
-          <p className="landing__threec-description">
-            {/* Description text */}
-          </p>
+      {/* Section 5: PDRN - Có thể bạn chưa biết? */}
+      <section className="landing__pdrn w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
+          {/* Section Title */}
+          <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
+
+          {/* Row 1: Image LEFT, Text RIGHT */}
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+            <div className="w-1/3 h-[300px] flex-shrink-0">
+              <Image
+                src="/landing-page/PAGE 5/31.png"
+                alt="PDRN information"
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+                quality={100}
+                unoptimized
+              />
+            </div>
+            <div className="flex-1 p-10 flex flex-col justify-center">
+              {/* // TODO: longdang - In đậm h3 */}
+              <h3 className="text-body font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
+              <p className="text-body">
+                PDRN giúp kích thích quá trình tái tạo tế bào da, làm lành các tổn thương và cải thiện kết cấu da từ bên trong.
+              </p>
+            </div>
+          </div>
+
+          {/* Row 2: Text LEFT, Image RIGHT */}
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+            <div className="flex-1 p-10 flex flex-col justify-center">
+              {/* // TODO: longdang - In đậm h3 */}
+              <h3 className="text-body font-semibold text-[20px] text-[#3a76a5] mb-4">Cải thiện độ đàn hồi</h3>
+              <p className="text-body">
+                Thành phần PDRN giúp tăng cường sản xuất collagen và elastin, mang lại làn da săn chắc và đàn hồi hơn.
+              </p>
+            </div>
+            <div className="w-1/3 h-[300px] flex-shrink-0">
+              <Image
+                src="/landing-page/PAGE 5/32.png"
+                alt="PDRN benefits"
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+                quality={100}
+                unoptimized
+              />
+            </div>
+          </div>
+
+          {/* Row 3: Image LEFT, Text RIGHT */}
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+            <div className="w-1/3 h-[300px] flex-shrink-0">
+              <Image
+                src="/landing-page/PAGE 5/33.png"
+                alt="PDRN protection"
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+                quality={100}
+                unoptimized
+              />
+            </div>
+            <div className="flex-1 p-10 flex flex-col justify-center">
+              {/* // TODO: longdang - In đậm h3 */}
+              <h3 className="text-body font-semibold text-[20px] text-[#3a76a5] mb-4">Bảo vệ da khỏi tác hại môi trường</h3>
+              <p className="text-body">
+                PDRN tạo lớp bảo vệ tự nhiên, giúp da chống lại các tác động từ môi trường và duy trì độ ẩm cần thiết.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Section 6: Deep Protection & Nourishment */}
-      <section className="landing__deep-protection">
-        <div className="landing__deep-protection-image">
-          {/* Image on left */}
+      {/* Section 6: 3C Công dụng "Không tưởng" */}
+      <section className="landing__threec w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white relative">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/landing-page/PAGE 6/BACKGROUND.png"
+            alt=""
+            fill
+            className="object-cover"
+            quality={100}
+            unoptimized
+          />
         </div>
-        <div className="landing__deep-protection-content">
-          <h2 className="landing__deep-protection-title">Deep Protection & Nourishment</h2>
-          <p className="landing__deep-protection-description">
-            {/* Description text */}
-          </p>
+
+        <div className="w-full max-w-[1200px] mx-auto relative z-10">
+          {/* Top row: 3C + Heading */}
+          <div className="flex items-start mb-12">
+            {/* Large "3C" on left - overlapping style */}
+            <div className="relative flex-shrink-0 w-[300px] h-[300px]">
+              <span
+                className="absolute left-0 top-0 text-[#3a76a5] leading-none select-none pointer-events-none"
+                style={{ fontFamily: 'var(--font-montserrat)', fontWeight: '900', fontSize: '260px' }}
+              >
+                3
+              </span>
+              <span
+                className="absolute left-[90px] top-[60px] text-[#3a76a5] leading-none select-none pointer-events-none"
+                style={{ fontFamily: 'var(--font-montserrat)', fontWeight: '900', fontSize: '150px' }}
+              >
+                C
+              </span>
+            </div>
+
+            {/* Two-line heading on right - aligned with card below */}
+            <div className="flex flex-col gap-2 pt-8 ml-[-40px]">
+              <h2 className="text-heading-2 text-[32px] font-normal text-[#2F5C91]">CÔNG DỤNG 'KHÔNG TƯỞNG'</h2>
+              <h2 className="text-heading-2 text-[32px] font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</h2>
+            </div>
+          </div>
+
+          {/* Content card - aligned with heading */}
+          <div className="relative rounded-[40px] overflow-hidden ml-[260px]">
+            {/* Card background image */}
+            <div className="absolute inset-0 z-0">
+              <Image
+                src="/landing-page/PAGE 6/35.png"
+                alt=""
+                fill
+                className="object-cover"
+                quality={100}
+                unoptimized
+              />
+            </div>
+
+            {/* Card content */}
+            <div className="relative z-10 p-12 flex flex-col gap-10">
+              {/* Feature Row 1 */}
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
+                  <Image
+                    src="/landing-page/PAGE 6/36.png"
+                    alt="Protection icon"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    quality={100}
+                    unoptimized
+                  />
+                </div>
+                <p className="text-body text-[#333333] flex-1">
+                  Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên.
+                </p>
+              </div>
+
+              {/* Feature Row 2 */}
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
+                  <Image
+                    src="/landing-page/PAGE 6/37.png"
+                    alt="Soft focus icon"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    quality={100}
+                    unoptimized
+                  />
+                </div>
+                <p className="text-body text-[#333333] flex-1">
+                  Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp.
+                </p>
+              </div>
+
+              {/* Feature Row 3 */}
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 flex-shrink-0 rounded-full overflow-hidden">
+                  <Image
+                    src="/landing-page/PAGE 6/38.png"
+                    alt="PDRN formula icon"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    quality={100}
+                    unoptimized
+                  />
+                </div>
+                <p className="text-body text-[#333333] flex-1">
+                  Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Section 7: Test Report */}
-      <section className="landing__lab-report">
-        <div className="landing__lab-report-image">
-          {/* Certificate image */}
-        </div>
-        <div className="landing__lab-report-content">
-          <h2 className="landing__lab-report-title">Test Report</h2>
-          <p className="landing__lab-report-description">
-            {/* Explanation text */}
-          </p>
+      <section className="landing__lab-report w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-16">
+          <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
+
+          {/* Bordered box container - relative for absolute positioning of image */}
+          <div className="relative w-full border-2 border-[#3a76a5] rounded-[40px] p-12 min-h-[500px] flex items-center mt-30">
+            {/* Lab report image - positioned to overlap left side of border */}
+            <div className="absolute -left-8 -top-[50] z-10 w-[500px] h-auto">
+              <Image
+                src="/landing-page/PAGE 7/43.png"
+                alt="Phiếu kết quả thử nghiệm"
+                width={600}
+                height={800}
+                className="w-full h-auto object-contain drop-shadow-lg"
+                quality={100}
+                unoptimized
+              />
+            </div>
+
+            {/* Right content - text description */}
+            <div className="ml-[480px] flex-1 flex items-center">
+              <p className="text-body text-[#333333] leading-relaxed">
+                Phiếu kết quả thử nghiệm được Viện nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín và chất lượng của sản phẩm BRIGHT MATTE SUNSCREEN với chỉ số chống nắng SPF 50+ và PA++++.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Section 8: Usage Instructions */}
-      <section className="landing__usage">
-        <h2 className="landing__usage-title">Usage Instructions</h2>
-        <div className="landing__usage-steps">
-          <div className="landing__usage-step">
-            {/* Step 1 */}
+      <section className="landing__usage w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
+          <h2 className="text-heading-2 text-center">HƯỚNG DẪN SỬ DỤNG</h2>
+
+          <div className="w-full bg-[#D5E5EF] rounded-[40px] p-12">
+            <div className="flex flex-col md:flex-row gap-12 items-start justify-center">
+              <Step
+                imageSrc="/landing-page/PAGE 8/47.png"
+                alt="Step 1"
+                text="Sử dụng một lượng vừa đủ, đảm bảo che phủ toàn mặt và cổ."
+              />
+              <Step
+                imageSrc="/landing-page/PAGE 8/48.png"
+                alt="Step 2"
+                text="Thao tác thoa dàn trải từ trong ra ngoài, giúp kem dàn đều và thấm vào da."
+              />
+              <Step
+                imageSrc="/landing-page/PAGE 8/49.png"
+                alt="Step 3"
+                text="Sử dụng trước khi ra nắng 15 phút để có lớp bảo vệ tuyệt đối cho da."
+              />
+            </div>
           </div>
-          <div className="landing__usage-step">
-            {/* Step 2 */}
-          </div>
-          <div className="landing__usage-step">
-            {/* Step 3 */}
-          </div>
-          {/* Additional steps as needed */}
         </div>
       </section>
 
       {/* Section 9: Customer Reviews */}
-      <section className="landing__reviews">
-        <h2 className="landing__reviews-title">Customer Reviews</h2>
-        <div className="landing__reviews-cards">
-          <div className="landing__reviews-card">
-            {/* Review card 1 */}
-          </div>
-          <div className="landing__reviews-card">
-            {/* Review card 2 */}
-          </div>
-          <div className="landing__reviews-card">
-            {/* Review card 3 */}
-          </div>
-        </div>
-        <div className="landing__reviews-chart">
-          <div className="landing__reviews-chart-item">
-            <span className="landing__reviews-chart-label">Efficacy</span>
-            <div className="landing__reviews-chart-bar">
-              {/* Bar chart for efficacy */}
+      <section className="landing__reviews w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
+          <h2 className="text-heading-2 text-center">ĐÁNH GIÁ TỪ KHÁCH HÀNG</h2>
+
+          <div className="bg-gray-50 rounded-[40px] p-8 shadow-md">
+            <div className="flex flex-col md:flex-row gap-8">
+              <ReviewCard
+                rating={5}
+                review="Tone lên nhẹ, hợp dùng buổi sáng đi làm. Da mình hơi xỉn nên rất thích kiểu nâng tone nhẹ như em này. Không bị trắng bệch như mấy dòng Hàn, mà sáng kiểu tự nhiên, kiểu healthy skin. Mình hay makeup nhẹ sau đó, lớp nền bám khá ổn."
+                author="Kiều Oanh"
+                date="1 tuần trước"
+              />
+              <ReviewCard
+                rating={4.5}
+                review="Tốt nhưng nên cải thiện tốc độ thấm. Chống nắng ổn, không bị rát da khi ra nắng gắt, mà da cũng đỡ đổ dầu hơn. Tuy nhiên lúc mới bôi thì hơi dính nhẹ tầm 1-2 phút đầu mới set hẳn. Dù vậy, tổng thể rất đáng tiền."
+                author="Thảo Trang"
+                date="1 tháng trước"
+              />
+              <ReviewCard
+                rating={5}
+                review="Finish đẹp, mịn lì mà vẫn ẩm nhẹ. Ấn tượng đầu tiên là chất kem mịn, tán ra mượt, không để lại vệt trắng. Da mình dầu vùng T nhưng dùng cả buổi vẫn thấy kiềm dầu tốt. Mùi dễ chịu, kiểu rất nhẹ."
+                author="Diệu Linh"
+                date="3 tuần trước"
+              />
             </div>
           </div>
-          <div className="landing__reviews-chart-item">
-            <span className="landing__reviews-chart-label">Moisture</span>
-            <div className="landing__reviews-chart-bar">
-              {/* Bar chart for moisture */}
-            </div>
-          </div>
-          <div className="landing__reviews-chart-item">
-            <span className="landing__reviews-chart-label">Comfort</span>
-            <div className="landing__reviews-chart-bar">
-              {/* Bar chart for comfort */}
-            </div>
-          </div>
+
+          {/* Stats Graph */}
+          <StatsGraph
+            items={[
+              { label: "Hiệu Quả", percentage: 92.3, color: "#a7c1d3", value1: 12, percentage1: 92.3, value2: 1, percentage2: 7.7 },
+              { label: "Dưỡng ẩm", percentage: 88.9, color: "#a7c1d3", value1: 8, percentage1: 88.9, value2: 1, percentage2: 11.1 },
+              { label: "Kích ứng", percentage: 4, color: "#a7c1d3", value1: 1, percentage1: 4, value2: 12, percentage2: 96 },
+            ]}
+          />
         </div>
       </section>
 
@@ -244,15 +780,15 @@ export default function LandingPage() {
             <Image
               src="/landing-page/PAGE 10/53.png"
               alt="Cellic"
-              width={800}
-              height={300}
+              width={900}
+              height={400}
               className="w-full max-w-[1200px] h-auto object-contain"
               quality={100}
               unoptimized
             />
           </div>
           <div className="w-full bg-gradient-to-b from-[#BEE3F8] to-white rounded-[80px] py-[70px] px-20 flex flex-col items-center gap-[30px]">
-            <h2 className="text-heading-1">CÂU CHUYỆN THƯƠNG HIỆU</h2>
+            <h2 className="text-heading-2">CÂU CHUYỆN THƯƠNG HIỆU</h2>
             <p className="text-body-large text-center max-w-[850px]">
               Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
             </p>
