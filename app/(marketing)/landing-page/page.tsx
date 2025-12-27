@@ -677,7 +677,89 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 7: Test Report */}
+      {/* Section 7: Deep Protection & Nourishment */}
+      <section className="landing__deep-protection w-full py-[120px] px-10 bg-white">
+        <div className="w-full max-w-[1400px] mx-auto relative">
+          {/* Floating mask image - positioned above and to the left of card */}
+          <div className="absolute -top-34 -left-34 z-10 w-[500px] h-auto">
+            <Image
+              src="/landing-page/PAGE 7/42.png"
+              alt="Floating mask"
+              width={600}
+              height={700}
+              className="w-full h-auto object-contain"
+              quality={100}
+              unoptimized
+            />
+          </div>
+
+          {/* Main card */}
+          <div className="relative bg-[#E1F5FF] rounded-[40px] p-12 mt-32 flex">
+            {/* Left column - 40% for big title */}
+            <div className="basis-2/5 flex-shrink-0 flex items-center justify-center">
+              <h2 className="text-heading-2 font-bold uppercase text-center text-[#2F5C91] leading-tight">
+                BẢO VỆ<br />
+                CHUYÊN SÂU VÀ<br />
+                NUÔI DƯỠNG<br />
+                CHỈ TRONG<br />
+                1 BƯỚC
+              </h2>
+            </div>
+
+            {/* Right column - 60% for detailed content */}
+            <div className="basis-3/5 flex-shrink-0 flex flex-col gap-8 pl-8">
+              {/* 4 MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI */}
+              <div className="flex flex-col gap-4">
+                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
+                  4 MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI
+                </h3>
+                <p className="text-body text-[#333333]">
+                  Với 2 màng lọc <strong>Ultrafine Titanium Dioxide & Nano Zinc Oxide</strong> chống nắng thế hệ mới mang lại hiệu quả bảo vệ đa tầng
+                </p>
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex gap-3 items-start">
+                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">1.</span>
+                    <p className="text-body text-[#333333] flex-1">Bảo vệ da trước tác động của tia UVA, UVB, HEV.</p>
+                  </div>
+                  <div className="flex gap-3 items-start">
+                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">2.</span>
+                    <p className="text-body text-[#333333] flex-1">Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
+                  </div>
+                  <div className="flex gap-3 items-start">
+                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">3.</span>
+                    <p className="text-body text-[#333333] flex-1">Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CÔNG NGHỆ SMART OIL CONTROL KẾT HỢP */}
+              <div className="flex flex-col gap-4">
+                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
+                  CÔNG NGHỆ SMART OIL CONTROL KẾT HỢP
+                </h3>
+                <h4 className="text-body font-semibold text-[18px] text-[#3a76a5]">
+                  CÔNG NGHỆ HẠT NANO
+                </h4>
+                <p className="text-body text-[#333333]">
+                  Duy trì cảm giác thoáng da - ráo mặt - không bóng nhờn suốt 8 giờ. Tạo hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng, cho Finish mỏng nhẹ, mịn đẹp.
+                </p>
+              </div>
+
+              {/* CÔNG NGHỆ MICROBIOME */}
+              <div className="flex flex-col gap-4">
+                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
+                  CÔNG NGHỆ MICROBIOME
+                </h3>
+                <p className="text-body text-[#333333]">
+                  Làm dịu và cân bằng hệ vi sinh, bảo vệ làn da nhạy cảm
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 8: Test Report */}
       <section className="landing__lab-report w-full py-[120px] px-10 bg-gradient-to-b from-[#E8F4F8] to-white">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-16">
           <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
