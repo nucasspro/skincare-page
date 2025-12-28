@@ -332,7 +332,7 @@ export default function LandingPage() {
               CELLIC<br />
               BRIGHT MATTE SUNCREEN
             </h1>
-            <p className="text-body-large mt-4">
+            <p className="text-body-large mt-4 !leading-[1.1]">
               <strong>X10</strong> HIỆU QUẢ CHỐNG NẮNG - TÁI TẠO PHỤC HỒI DA
             </p>
           </div>
@@ -358,13 +358,13 @@ export default function LandingPage() {
             <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
             <p className="text-body-large">THẤU HIỂU VÀ ĐỒNG HÀNH CÙNG LÀN DA VIỆT</p>
           </div>
-          <div className="w-full flex items-center justify-center gap-20">
-            <div className="flex-none flex flex-col gap-10 text-center">
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">LÀNH TÍNH<br />DỊU NHẸ</p>
+          <div className="w-full flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20">
+            <div className="flex-none flex flex-col gap-6 md:gap-10 text-center order-1 md:order-none">
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">PDRN</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">LÀNH TÍNH<br />DỊU NHẸ</p>
             </div>
-            <div className="relative flex-none flex items-center justify-center w-[550px] h-[550px]">
+            <div className="relative flex-none flex items-center justify-center w-[300px] h-[300px] md:w-[550px] md:h-[550px] order-2 md:order-none">
               <Image
                 src="/landing-page/PAGE 2/8.png"
                 alt="Water background"
@@ -384,10 +384,10 @@ export default function LandingPage() {
                 unoptimized
               />
             </div>
-            <div className="flex-none flex flex-col gap-10 text-center">
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">KIỀM DẦU SUỐT 8H</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">NÂNG TONE<br />TỰ NHIÊN</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PHỤC HỒI<br />TỔN THƯƠNG</p>
+            <div className="flex-none flex flex-col gap-6 md:gap-10 text-center order-3 md:order-none">
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">KIỀM DẦU SUỐT 8H</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">NÂNG TONE<br />TỰ NHIÊN</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">PHỤC HỒI<br />TỔN THƯƠNG</p>
             </div>
           </div>
         </div>
@@ -397,31 +397,22 @@ export default function LandingPage() {
       <section className="landing__three-layer w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-y snap-mandatory">
         <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center">
           {/* Title */}
-          <h2 className="text-heading-2 mb-10">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
+          <h2 className="text-heading-2 mb-10 text-center">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
 
           {/* Numbered List */}
-          <div className="flex flex-col gap-5 w-full max-w-[900px] mb-10 mt-10">
-            <div className="flex gap-4 items-start">
-              <span className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">1.</span>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">Bảo vệ da trước tác động của tia UVA, UVB, HEV</p>
-            </div>
-            <div className="flex gap-4 items-start">
-              <span className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">2.</span>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
-            </div>
-            <div className="flex gap-4 items-start">
-              <span className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">3.</span>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
-            </div>
+          <div className="flex flex-col gap-5 w-full max-w-[900px] mt-10">
+            <p className="text-body-large !font-bold">1. Bảo vệ da trước tác động của tia UVA, UVB, HEV</p>
+            <p className="text-body-large !font-bold">2. Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
+            <p className="text-body-large !font-bold">3. Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
           </div>
 
           {/* CTA Button */}
-          <button className="mb-10 mt-10 relative group w-[20.8vw] h-[3.9vw] rounded-full bg-[#CFE5F5] border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform">
-                <div className="absolute inset-[0.2vw] border-[0.14vw] border-white rounded-full pointer-events-none"></div>
-                <span className="relative z-10 text-[#2F5C91] font-bold text-[clamp(10px,1.4vw,20px)] uppercase text-heading-3">
-                    Xem thêm
-                </span>
-            </button>
+          <button className="mb-10 mt-6 relative group w-[200px] h-[48px] md:w-[20.8vw] md:h-[3.9vw] rounded-full bg-[#CFE5F5] border-[2px] md:border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform">
+              <div className="absolute inset-[2px] md:inset-[0.2vw] border-[2px] md:border-[0.14vw] border-white rounded-full pointer-events-none"></div>
+              <span className="relative z-10 text-[#2F5C91] font-bold text-[14px] md:text-[clamp(10px,1.4vw,20px)] uppercase">
+                  Xem thêm
+              </span>
+          </button>
 
           {/* Model Image */}
           { /* TODO: longdang - Dung sai hinh */}
