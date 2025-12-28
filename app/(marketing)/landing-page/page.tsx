@@ -80,7 +80,7 @@ function Step({ imageSrc, alt, text }: StepProps) {
                     unoptimized
                 />
             </div>
-            <p className="text-body mt-4 text-center flex-grow w-full">{text}</p>
+            <p className="text-body md:mt-4 text-center flex-grow w-full">{text}</p>
         </div>
     )
 }
@@ -144,9 +144,9 @@ function ReviewCard({ rating, review, author, date }: ReviewCardProps) {
             <p className="text-body-subtitle mb-6 flex-grow text-left">
                 {review}
             </p>
-            <div className="flex justify-between items-center pt-4">
-                <span className="text-body-subtitle !font-semibold fo">{author}</span>
-                <span className="text-body-subtitle">{date}</span>
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center pt-4 gap-2 md:gap-0">
+                <span className="text-body-subtitle !font-semibold text-left">{author}</span>
+                <span className="text-body-subtitle text-left md:text-right">{date}</span>
             </div>
         </div>
     )
@@ -225,13 +225,16 @@ function StatsBarItem({ label, percentage, color, index, hoveredIndex, hoveredPa
                 {/* Tooltip for percentage 1 */}
                 {isHoveredPercentage1 && (
                     <div
-                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
-                        style={{ left: `${percentage1}%` }}
+                        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 md:top-1/2 md:bottom-auto md:-translate-y-1/2 md:left-full md:translate-x-0 md:ml-3 bg-gray-700 text-white px-3 py-2 md:px-3 md:py-2 rounded-lg text-sm md:text-sm whitespace-nowrap z-20"
+                        style={{
+                            left: `${percentage1}%`,
+                            maxWidth: 'calc(100vw - 2rem)',
+                        }}
                     >
                         <div className="font-semibold">{label}:</div>
-                        <div className="text-xs">{value1} ({percentage1.toFixed(1)}%)</div>
+                        <div className="text-xs md:text-xs">{value1} ({percentage1.toFixed(1)}%)</div>
                         <div
-                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                            className="absolute top-full left-1/2 -translate-x-1/2 md:top-1/2 md:left-0 md:translate-x-0 md:-translate-y-1/2 -mt-[2px] md:mt-0 md:-ml-[2px] border-[3px] border-transparent border-t-gray-700 md:border-t-transparent md:border-r-gray-700"
                         ></div>
                     </div>
                 )}
@@ -239,13 +242,16 @@ function StatsBarItem({ label, percentage, color, index, hoveredIndex, hoveredPa
                 {/* Tooltip for percentage 2 */}
                 {isHoveredPercentage2 && (
                     <div
-                        className="absolute top-1/2 -translate-y-1/2 left-full ml-3 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap z-20"
-                        style={{ left: `${percentage1 + percentage2}%` }}
+                        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 md:top-1/2 md:bottom-auto md:-translate-y-1/2 md:left-full md:translate-x-0 md:ml-3 bg-gray-700 text-white px-3 py-2 md:px-3 md:py-2 rounded-lg text-sm md:text-sm whitespace-nowrap z-20"
+                        style={{
+                            left: `${percentage1 + percentage2}%`,
+                            maxWidth: 'calc(100vw - 2rem)',
+                        }}
                     >
                         <div className="font-semibold">{label}:</div>
-                        <div className="text-xs">{value2} ({percentage2.toFixed(1)}%)</div>
+                        <div className="text-xs md:text-xs">{value2} ({percentage2.toFixed(1)}%)</div>
                         <div
-                            className="absolute top-1/2 -translate-y-1/2 -left-[2px] border-[3px] border-transparent border-r-gray-700"
+                            className="absolute top-full left-1/2 -translate-x-1/2 md:top-1/2 md:left-0 md:translate-x-0 md:-translate-y-1/2 -mt-[2px] md:mt-0 md:-ml-[2px] border-[3px] border-transparent border-t-gray-700 md:border-t-transparent md:border-r-gray-700"
                         ></div>
                     </div>
                 )}
@@ -298,11 +304,11 @@ function StatsGraph({ items }: StatsGraphProps) {
                 ))}
                 {/* Axis */}
                 <div className="flex pl-28 text-xs text-slate-500 justify-between pt-2">
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>0%</span>
+                    <span className="rotate-[-40deg] md:rotate-0" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>0%</span>
                     <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>20%</span>
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>40%</span>
+                    <span className="rotate-[-40deg] md:rotate-0" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>40%</span>
                     <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>60%</span>
-                    <span style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>80%</span>
+                    <span className="rotate-[-40deg] md:rotate-0" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>80%</span>
                     <span className="hidden md:inline" style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}>100%</span>
                 </div>
             </div>
@@ -311,6 +317,8 @@ function StatsGraph({ items }: StatsGraphProps) {
 }
 
 export default function LandingPage() {
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+
   return (
     <main className={`w-full min-h-screen bg-gradient-to-b from-white via-[#DDECFA] to-white text-black text-base leading-relaxed ${MontserratFont.variable} overflow-y-scroll overflow-x-hidden snap-y snap-mandatory` }>
       {/* Section 1: Hero */}
@@ -488,8 +496,8 @@ export default function LandingPage() {
           <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
 
           {/* Row 1: Image LEFT, Text RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="w-1/3 h-[300px] flex-shrink-0">
+          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
+            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-none">
               <Image
                 src="/landing-page/PAGE 5/31.png"
                 alt="PDRN information"
@@ -500,9 +508,9 @@ export default function LandingPage() {
                 unoptimized
               />
             </div>
-            <div className="flex-1 p-10 flex flex-col justify-center">
+            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
               {/* // TODO: longdang - In đậm h3 */}
-              <h3 className="text-body mb-4">Hỗ trợ tái tạo tế bào da</h3>
+              <h3 className="text-body !font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
               <p className="text-body">
                 PDRN giúp kích thích quá trình tái tạo tế bào da, làm lành các tổn thương và cải thiện kết cấu da từ bên trong.
               </p>
@@ -510,15 +518,8 @@ export default function LandingPage() {
           </div>
 
           {/* Row 2: Text LEFT, Image RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="flex-1 p-10 flex flex-col justify-center">
-              {/* // TODO: longdang - In đậm h3 */}
-              <h3 className="text-body font-semibold text-[20px] text-[#3a76a5] mb-4">Cải thiện độ đàn hồi</h3>
-              <p className="text-body">
-                Thành phần PDRN giúp tăng cường sản xuất collagen và elastin, mang lại làn da săn chắc và đàn hồi hơn.
-              </p>
-            </div>
-            <div className="w-1/3 h-[300px] flex-shrink-0">
+          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
+            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-2">
               <Image
                 src="/landing-page/PAGE 5/32.png"
                 alt="PDRN benefits"
@@ -529,11 +530,17 @@ export default function LandingPage() {
                 unoptimized
               />
             </div>
+            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-1">
+              <h3 className="text-body !font-semibold mb-4">Cải thiện độ đàn hồi</h3>
+              <p className="text-body">
+                Thành phần PDRN giúp tăng cường sản xuất collagen và elastin, mang lại làn da săn chắc và đàn hồi hơn.
+              </p>
+            </div>
           </div>
 
           {/* Row 3: Image LEFT, Text RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="w-1/3 h-[300px] flex-shrink-0">
+          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
+            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-none">
               <Image
                 src="/landing-page/PAGE 5/33.png"
                 alt="PDRN protection"
@@ -544,9 +551,8 @@ export default function LandingPage() {
                 unoptimized
               />
             </div>
-            <div className="flex-1 p-10 flex flex-col justify-center">
-              {/* // TODO: longdang - In đậm h3 */}
-              <h3 className="text-body font-semibold text-[20px] text-[#3a76a5] mb-4">Bảo vệ da khỏi tác hại môi trường</h3>
+            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
+              <h3 className="text-body !font-semibold mb-4">Bảo vệ da khỏi tác hại môi trường</h3>
               <p className="text-body">
                 PDRN tạo lớp bảo vệ tự nhiên, giúp da chống lại các tác động từ môi trường và duy trì độ ẩm cần thiết.
               </p>
@@ -695,26 +701,27 @@ export default function LandingPage() {
 
       {/* Section 8: Test Report */}
       <section className="landing__lab-report w-full py-[120px] px-10">
-        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-16">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-8 md:gap-16">
           <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
 
-          <div className="relative w-full border-2 border-[#3a76a5] rounded-[40px] p-12 min-h-[500px] flex items-center mt-30">
-            {/* Lab report image - positioned to overlap left side of border */}
-            <div className="absolute -left-8 -top-[50] z-10 w-[500px] h-auto">
+          <div className="relative w-full border-2 border-[#3a76a5] rounded-[40px] p-6 md:p-12 min-h-[300px] md:min-h-[500px] flex flex-col md:flex-row md:items-center md:mt-30">
+            {/* Lab report image - positioned to overlap left side of border on desktop, on top on mobile */}
+            <div
+              className="relative md:absolute md:-left-8 md:-top-[50] z-10 w-full max-w-[300px] md:w-[500px] md:max-w-[500px] h-auto order-1 md:order-none mb-6 md:mb-0 cursor-pointer mx-auto md:mx-0"
+              onClick={() => setIsImagePopupOpen(true)}
+            >
               <Image
                 src="/landing-page/PAGE 7/43.png"
                 alt="Phiếu kết quả thử nghiệm"
                 width={600}
                 height={800}
                 className="w-full h-auto object-contain drop-shadow-lg"
-                quality={100}
-                unoptimized
               />
             </div>
 
             {/* Right content - text description */}
-            <div className="ml-[480px] flex-1 flex items-center">
-              <p className="text-body leading-relaxed">
+            <div className="w-full md:ml-[480px] flex-1 flex items-center order-2 md:order-none">
+              <p className="text-body leading-relaxed text-center md:text-left">
                 Phiếu kết quả thử nghiệm  được Viện nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín
               </p>
             </div>
@@ -727,8 +734,8 @@ export default function LandingPage() {
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
           <h2 className="text-heading-2 text-center">HƯỚNG DẪN SỬ DỤNG</h2>
 
-          <div className="w-full bg-[#D5E5EF] rounded-[40px] p-12">
-            <div className="flex flex-col md:flex-row gap-12 items-start justify-center">
+          <div className="w-full bg-[#D5E5EF] rounded-[40px] p-6 md:p-12">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-12 items-start justify-center">
               <Step
                 imageSrc="/landing-page/PAGE 8/47.png"
                 alt="Step 1"
@@ -802,14 +809,44 @@ export default function LandingPage() {
               unoptimized
             />
           </div>
-          <div className="w-full bg-gradient-to-b from-[#9ED4E5] to-[#F1F8FB] rounded-[80px] py-[70px] px-20 flex flex-col items-center gap-[30px]">
-            <h2 className="text-heading-2">CÂU CHUYỆN THƯƠNG HIỆU</h2>
-            <p className="text-body-large text-center max-w-[850px]">
+          <div className="w-full bg-gradient-to-b from-[#9ED4E5] to-[#F1F8FB] rounded-[40px] md:rounded-[80px] py-[40px] px-6 md:py-[70px] md:px-20 flex flex-col items-center gap-[20px] md:gap-[30px]">
+            <h2 className="text-heading-2 text-center">CÂU CHUYỆN THƯƠNG HIỆU</h2>
+            <p className="text-body-large text-center max-w-full md:max-w-[850px]">
               Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
             </p>
           </div>
         </div>
       </section>
+
+      {/* Image Popup Modal */}
+      {isImagePopupOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+          onClick={() => setIsImagePopupOpen(false)}
+        >
+          <div
+            className="relative max-w-[90vw] max-h-[90vh] w-auto h-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute -top-10 right-0 text-white text-3xl font-bold hover:text-gray-300 transition-colors"
+              onClick={() => setIsImagePopupOpen(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <Image
+              src="/landing-page/PAGE 7/43.png"
+              alt="Phiếu kết quả thử nghiệm - Xem toàn màn hình"
+              width={1200}
+              height={1600}
+              className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
+              quality={100}
+              unoptimized
+            />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
