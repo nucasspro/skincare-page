@@ -440,31 +440,31 @@ export default function LandingPage() {
 
       {/* Section 4: Ingredients */}
       <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 flex items-center justify-center relative overflow-hidden">
-        <div className="w-full max-w-[1600px] mx-auto relative">
+        <div className="w-full max-w-[1600px] mx-auto relative flex flex-col md:block">
           {/* Flex container with two columns */}
-          <div className="flex relative">
-            <div className="basis-1/5 flex-shrink-0"></div>
-            <div className="basis-4/5 flex-shrink-0 relative">
+          <div className="flex relative order-1 md:order-none justify-center md:justify-start">
+            <div className="basis-1/5 flex-shrink-0 hidden md:block"></div>
+            <div className="w-full md:basis-4/5 flex-shrink-0 relative md:w-auto">
 
               {/* Background Card */}
-              <div className="bg-gradient-to-b from-[#D4E2EA] to-[#E9F2F6] rounded-[60px] p-12 flex relative z-0">
-                <div className="basis-1/3 flex-shrink-0"></div>
-                <div className="basis-2/3 flex-shrink-0 flex flex-col gap-8">
-                  <h2 className="text-heading-2 text-left text-align-left">THÀNH PHẦN</h2>
+              <div className="bg-gradient-to-b from-[#D4E2EA] to-[#E9F2F6] rounded-[40px] md:rounded-[60px] p-6 md:p-12 flex relative z-0 justify-center md:justify-start">
+                <div className="basis-1/3 flex-shrink-0 hidden md:block"></div>
+                <div className="w-full md:basis-2/3 flex-shrink-0 flex flex-col gap-6 md:gap-8 md:w-auto text-center md:text-left">
+                  <h2 className="text-heading-2">THÀNH PHẦN</h2>
                   <div className="flex flex-col gap-4">
-                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI</h3>
+                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI</h3>
                     <div className="flex flex-col gap-2">
                       <p className="text-body text-[#6BA3C7]">Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate</p>
                     </div>
                   </div>
                   <div className="flex flex-col gap-4">
-                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN THỰC VẬT</h3>
+                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN THỰC VẬT</h3>
                     <p className="text-body text-[#6BA3C7]">
                       Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm, giảm kích ứng.
                     </p>
                   </div>
                   <div className="flex flex-col gap-4">
-                    <h3 className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PROPANEDIOL</h3>
+                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PROPANEDIOL</h3>
                     <p className="text-body text-[#6BA3C7]">
                       Có độ tinh khiết cao và mang lại hiệu quả bền vững
                     </p>
@@ -474,8 +474,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Product Image - positioned to overlap both columns */}
-          <div className="absolute -left-28 top-1/2 -translate-y-1/2 z-10 w-[50%] flex items-center justify-center">
+          {/* Product Image - on bottom on mobile, absolute on desktop */}
+          <div className="relative md:absolute md:-left-28 md:top-1/2 md:-translate-y-1/2 z-10 max-w-[300px] md:w-[50%] md:max-w-none flex items-center justify-center mx-auto md:mx-0 mt-6 md:mt-0 order-2 md:order-none">
             <Image
               src="/landing-page/PAGE 4/product.png"
               alt="Cellic sunscreen products"
