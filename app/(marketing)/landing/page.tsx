@@ -60,6 +60,40 @@ function BenefitItem({ imageSrc, text }: BenefitItemProps) {
     )
 }
 
+interface PDRNRowProps {
+    imageSrc: string
+    imageAlt: string
+    title: string
+    description: string
+    imagePosition: 'left' | 'right'
+}
+
+function PDRNRow({ imageSrc, imageAlt, title, description, imagePosition }: PDRNRowProps) {
+    const isImageLeft = imagePosition === 'left';
+    const imageOrder = isImageLeft ? 'order-1 md:order-none' : 'order-1 md:order-2';
+    const contentOrder = isImageLeft ? 'order-2 md:order-none' : 'order-2 md:order-1';
+
+    return (
+        <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#B2DBED] to-[#C1E0F2] rounded-[20px] p-4 md:p-6 gap-4 md:gap-6">
+            <div className={`w-[120px] h-[120px] md:w-[180px] md:h-[180px] flex-shrink-0 mx-auto md:mx-0 ${imageOrder} justify-center items-center`}>
+                <Image
+                    src={imageSrc}
+                    alt={imageAlt}
+                    width={400}
+                    height={400}
+                    className="w-full h-full object-cover rounded-[20px]"
+                    quality={100}
+                    unoptimized
+                />
+            </div>
+            <div className={`flex-1 flex flex-col justify-center ${contentOrder}`}>
+                <h3 className="text-body !font-bold mb-1">{title}</h3>
+                <p className="text-body text-justify">{description}</p>
+            </div>
+        </div>
+    );
+}
+
 interface StepProps {
     imageSrc: string
     alt: string
@@ -334,11 +368,10 @@ export default function LandingPage() {
         <div className="relative z-10 w-full h-screen flex flex-col items-center justify-start pt-[100px] px-10 pb-0">
           <div className="text-center w-full max-w-[1200px] order-1">
             <h1 className="text-heading-2 mb-5">
-              CELLIC<br />
-              BRIGHT MATTE SUNCREEN
+              CELLIC BRIGHT MATTE SUNCREEN
             </h1>
             <p className="text-body-large mt-4 !leading-[1.1]">
-              <strong>X10</strong> HIỆU QUẢ CHỐNG NẮNG - TÁI TẠO PHỤC HỒI DA
+              2 IN 1 CHỐNG NẮNG VÀ PHỤC HỒI TRONG CÙNG 1 SẢN PHẨM
             </p>
           </div>
           <div className="flex items-end justify-center w-full max-w-[650px] order-2 mt-auto pb-0">
@@ -358,18 +391,18 @@ export default function LandingPage() {
 
       {/* Section 2: New Generation Sunscreen */}
       <section className="w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-center">
-        <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-20">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-8 md:gap-45">
           <div className="text-center flex flex-col gap-4">
             <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
             <p className="text-body-large">THẤU HIỂU VÀ ĐỒNG HÀNH CÙNG LÀN DA VIỆT</p>
           </div>
           <div className="w-full flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20">
             <div className="flex-none flex flex-col gap-6 md:gap-10 text-center order-1 md:order-none">
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">PDRN</p>
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">LÀNH TÍNH<br />DỊU NHẸ</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">4 MÀNG LỌC MỚI</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">PDRN</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">LÀNH TÍNH DỊU NHẸ</p>
             </div>
-            <div className="relative flex-none flex items-center justify-center w-[300px] h-[300px] md:w-[550px] md:h-[550px] order-2 md:order-none">
+            <div className="relative flex-none flex items-center justify-center w-[300px] h-[300px] md:w-[550px] md:h-[550px] order-2 md:order-none mt-[30px] md:mt-0">
               <Image
                 src="/landing-page/PAGE 2/8.png"
                 alt="Water background"
@@ -384,15 +417,15 @@ export default function LandingPage() {
                 alt="Cellic Sunscreen Tube"
                 width={400}
                 height={600}
-                className="absolute w-[70%] h-auto object-contain z-[2] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[8deg]"
+                className="absolute w-[60%] h-auto object-contain z-[2] top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[4deg]"
                 quality={100}
                 unoptimized
               />
             </div>
             <div className="flex-none flex flex-col gap-6 md:gap-10 text-center order-3 md:order-none">
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">KIỀM DẦU SUỐT 8H</p>
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">NÂNG TONE<br />TỰ NHIÊN</p>
-              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2]">PHỤC HỒI<br />TỔN THƯƠNG</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">KIỀM DẦU SUỐT 8H</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">NÂNG TONE TỰ NHIÊN</p>
+              <p className="text-[20px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] bg-white border border-[#3a76a5] rounded-lg px-6 py-3 md:px-8 md:py-4">PHỤC HỒI TỔN THƯƠNG</p>
             </div>
           </div>
         </div>
@@ -404,30 +437,31 @@ export default function LandingPage() {
           {/* Title */}
           <h2 className="text-heading-2 mb-10 text-center">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>
 
-          {/* Numbered List */}
-          <div className="flex flex-col gap-5 w-full max-w-[900px] mt-10">
-            <p className="text-body-large !font-bold">1. Bảo vệ da trước tác động của tia UVA, UVB, HEV</p>
-            <p className="text-body-large !font-bold">2. Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
-            <p className="text-body-large !font-bold">3. Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
+          {/* Card with Numbered List and CTA Button */}
+          <div className="bg-[#CCDFED] rounded-[40px] p-4 md:p-6 w-full max-w-[900px] flex flex-col items-center gap-6 md:gap-8">
+            {/* Numbered List */}
+            <div className="flex flex-col w-full">
+              <p className="text-body">1. Bảo vệ da trước tác động của tia UVA, UVB, HEV</p>
+              <p className="text-body">2. Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
+              <p className="text-body">3. Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
+            </div>
+
+            {/* CTA Button */}
+            <Link href="/" className="relative group w-[200px] h-[40px] md:w-[16vw] md:h-[2.5vw] rounded-full border-[2px] md:border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform flex items-center justify-center">
+                <span className="relative z-10 text-body !font-bold uppercase">
+                    Xem thêm
+                </span>
+            </Link>
           </div>
 
-          {/* CTA Button */}
-          <Link href="/" className="mb-10 mt-6 relative group w-[200px] h-[48px] md:w-[20.8vw] md:h-[3.9vw] rounded-full bg-[#CFE5F5] border-[2px] md:border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform flex items-center justify-center">
-              <div className="absolute inset-[2px] md:inset-[0.2vw] border-[2px] md:border-[0.14vw] border-white rounded-full pointer-events-none"></div>
-              <span className="relative z-10 text-body-large !font-bold">
-                  Xem thêm
-              </span>
-          </Link>
-
           {/* Model Image */}
-          { /* TODO: longdang - Dung sai hinh */}
           <div className="w-full flex justify-center">
             <Image
               src="/landing-page/PAGE 3/20.png"
               alt="Model with Cellic sunscreen"
-              width={600}
-              height={800}
-              className="w-full max-w-[600px] h-auto object-contain"
+              width={400}
+              height={500}
+              className="w-full max-w-[400px] md:max-w-[500px] h-auto object-contain"
               quality={100}
               unoptimized
             />
@@ -437,48 +471,40 @@ export default function LandingPage() {
 
       {/* Section 4: Ingredients */}
       <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 flex items-center justify-center relative overflow-hidden">
-        <div className="w-full max-w-[1600px] mx-auto relative flex flex-col md:block">
-          {/* Flex container with two columns */}
-          <div className="flex relative order-1 md:order-none justify-center md:justify-start">
-            <div className="basis-1/5 flex-shrink-0 hidden md:block"></div>
-            <div className="w-full md:basis-4/5 flex-shrink-0 relative md:w-auto">
+        <div className="w-full max-w-[1600px] mx-auto flex flex-col items-center gap-8 md:gap-12">
+          {/* Header - outside card */}
+          <h2 className="text-heading-2 text-center">THÀNH PHẦN</h2>
 
-              {/* Background Card */}
-              <div className="bg-gradient-to-b from-[#D4E2EA] to-[#E9F2F6] rounded-[40px] md:rounded-[60px] p-6 md:p-12 flex relative z-0 justify-center md:justify-start">
-                <div className="basis-1/3 flex-shrink-0 hidden md:block"></div>
-                <div className="w-full md:basis-2/3 flex-shrink-0 flex flex-col gap-6 md:gap-8 md:w-auto text-center md:text-left">
-                  <h2 className="text-heading-2">THÀNH PHẦN</h2>
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI</h3>
-                    <div className="flex flex-col gap-2">
-                      <p className="text-body text-[#6BA3C7]">Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN THỰC VẬT</h3>
-                    <p className="text-body text-[#6BA3C7]">
-                      Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm, giảm kích ứng.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PROPANEDIOL</h3>
-                    <p className="text-body text-[#6BA3C7]">
-                      Có độ tinh khiết cao và mang lại hiệu quả bền vững
-                    </p>
-                  </div>
-                </div>
+          {/* Background Card */}
+          <div className="w-full max-w-[900px] bg-gradient-to-b from-[#C7DBE8] to-[#CDE1F3] rounded-[40px] md:rounded-[60px] p-6 md:p-12 flex flex-col gap-6 md:gap-8 text-left md:text-left">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] leading-[1.2]">MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI</h3>
+              <div className="flex flex-col gap-2">
+                <p className="text-body text-[#6BA3C7]">Ultrafine Titanium Dioxide, Nano Zinc Oxide, Uvinul A Plus, Octinoxate</p>
               </div>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] leading-[1.2]">PDRN THỰC VẬT</h3>
+              <p className="text-body text-[#6BA3C7]">
+                Từ nguyên liệu rau má giúp phục hồi và tái tạo da. Hoa oải hương và kim ngân hoa giúp kháng viêm, giảm kích ứng
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h3 className="text-[24px] md:text-[32px] font-bold text-[#3a76a5] leading-[1.2]">PROPANEDIOL</h3>
+              <p className="text-body text-[#6BA3C7]">
+                Có độ tinh khiết cao và mang lại hiệu quả bền vững
+              </p>
             </div>
           </div>
 
-          {/* Product Image - on bottom on mobile, absolute on desktop */}
-          <div className="relative md:absolute md:-left-28 md:top-1/2 md:-translate-y-1/2 z-10 max-w-[300px] md:w-[50%] md:max-w-none flex items-center justify-center mx-auto md:mx-0 mt-6 md:mt-0 order-2 md:order-none">
+          {/* Product Image - below content */}
+          <div className="w-full flex justify-center">
             <Image
               src="/landing-page/PAGE 4/product.png"
               alt="Cellic sunscreen products"
-              width={800}
-              height={1000}
-              className="w-full h-auto object-contain"
+              width={600}
+              height={750}
+              className="w-full max-w-[350px] md:max-w-[500px] h-auto object-contain"
               quality={100}
               unoptimized
             />
@@ -488,72 +514,33 @@ export default function LandingPage() {
 
       {/* Section 5: PDRN - Có thể bạn chưa biết? */}
       <section className="landing__pdrn w-full py-[120px] px-10">
-        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-4 md:gap-12">
           {/* Section Title */}
           <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
 
-          {/* Row 1: Image LEFT, Text RIGHT */}
-          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-none">
-              <Image
-                src="/landing-page/PAGE 5/31.png"
-                alt="PDRN information"
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-                quality={100}
-                unoptimized
-              />
-            </div>
-            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
-              <h3 className="text-body !font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
-              <p className="text-body">
-                Kích thích sự tăng sinh của tế bào sừng và nguyên bào sợi, giúp phục hồi da bị tổn thương.
-              </p>
-            </div>
-          </div>
+          <PDRNRow
+            imageSrc="/landing-page/PAGE 5/31.png"
+            imageAlt="PDRN information"
+            title="Hỗ trợ tái tạo tế bào da"
+            description="Kích thích sự tăng sinh của tế bào sừng và nguyên bào sợi, giúp phục hồi da bị tổn thương."
+            imagePosition="left"
+          />
 
-          {/* Row 2: Text LEFT, Image RIGHT */}
-          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-2">
-              <Image
-                src="/landing-page/PAGE 5/32.png"
-                alt="PDRN benefits"
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-                quality={100}
-                unoptimized
-              />
-            </div>
-            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-1">
-              <h3 className="text-body !font-semibold mb-4">Cải thiện độ đàn hồi</h3>
-              <p className="text-body">
-                Tăng khả năng sống của tế bào và giảm thiểu tác hại oxy hóa, hỗ trợ củng cố hàng rào da.
-              </p>
-            </div>
-          </div>
+          <PDRNRow
+            imageSrc="/landing-page/PAGE 5/32.png"
+            imageAlt="PDRN benefits"
+            title="Cải thiện độ đàn hồi"
+            description="Tăng khả năng sống của tế bào và giảm thiểu tác hại oxy hóa, hỗ trợ củng cố hàng rào da."
+            imagePosition="right"
+          />
 
-          {/* Row 3: Image LEFT, Text RIGHT */}
-          <div className="w-full flex flex-col md:flex-row overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
-            <div className="w-full md:w-1/3 h-[200px] md:h-[300px] flex-shrink-0 order-1 md:order-none">
-              <Image
-                src="/landing-page/PAGE 5/33.png"
-                alt="PDRN protection"
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-                quality={100}
-                unoptimized
-              />
-            </div>
-            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
-              <h3 className="text-body !font-semibold mb-4">Bảo vệ da khỏi tác hại môi trường</h3>
-              <p className="text-body">
-                PDRN tạo lớp bảo vệ tự nhiên, giúp da chống lại các tác động từ môi trường và duy trì độ ẩm cần thiết.
-              </p>
-            </div>
-          </div>
+          <PDRNRow
+            imageSrc="/landing-page/PAGE 5/33.png"
+            imageAlt="PDRN protection"
+            title="Bảo vệ da khỏi tác hại môi trường"
+            description="PDRN tạo lớp bảo vệ tự nhiên, giúp da chống lại các tác động từ môi trường và duy trì độ ẩm cần thiết."
+            imagePosition="left"
+          />
         </div>
       </section>
 
@@ -824,7 +811,7 @@ export default function LandingPage() {
               unoptimized
             />
           </div>
-          <div className="w-full bg-gradient-to-b from-[#9ED4E5] to-[#F1F8FB] rounded-[40px] md:rounded-[80px] py-[40px] px-6 md:py-[70px] md:px-20 flex flex-col items-center gap-[20px] md:gap-[30px]">
+          <div className="w-full bg-gradient-to-b from-[#9ED4E5] to-[#f6fbfd] rounded-[40px] md:rounded-[80px] py-[40px] px-6 md:py-[70px] md:px-20 flex flex-col items-center gap-[20px] md:gap-[30px]">
             <h2 className="text-heading-2 text-center">CÂU CHUYỆN THƯƠNG HIỆU</h2>
             <p className="text-body-large text-center max-w-full md:max-w-[850px]">
               Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
