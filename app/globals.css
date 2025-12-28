@@ -280,3 +280,48 @@ select::-webkit-scrollbar-thumb:hover {
   animation: none !important;
   transition: none !important;
 }
+
+/* Landing Page Typography System */
+@layer utilities {
+  /* Heading 1 - Hero titles (72px) */
+  .text-heading-1 {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[72px] font-bold leading-tight tracking-[2px] uppercase text-[#3a76a5] text-center;
+  }
+
+  /* Heading 2 - Section titles (52px) */
+  .text-heading-2 {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[32px] md:text-[52px] font-extrabold leading-tight tracking-[1px] uppercase text-[#2b6493];
+  }
+
+  /* Heading 3 - Subsection titles (36px) */
+  .text-heading-3 {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[24px] md:text-[36px] font-bold;
+  }
+
+  /* Body text - Large (36px) */
+  .text-body-large {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[22px] md:text-[36px] font-normal leading-[1.4] md:leading-[1.8] tracking-[0.3px] text-[#3a76a5];
+  }
+
+  /* Body text - Standard (30px) */
+  .text-body {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[16px] md:text-[30px] font-normal leading-[1.8] tracking-[0.3px] text-[#3a76a5];
+  }
+
+  /* Body text - Subtitle (22px) */
+  .text-body-subtitle {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[16px] md:text-[22px] font-normal leading-[1.5] text-[#3a76a5];
+  }
+
+  /* Feature text - Labels (24px) */
+  .text-label {
+    font-family: var(--font-montserrat), sans-serif;
+    @apply text-[18px] md:text-[24px] font-semibold leading-[1.4] text-[#3a76a5] text-center;
+  }
+}

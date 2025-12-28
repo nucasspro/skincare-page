@@ -1,0 +1,36 @@
+---
+alwaysApply: true
+---
+@landing-ui
+
+GLOBAL CONTEXT for the Cellic landing page (reuse this for all sections):
+
+Design:
+- This landing page is built from 10 Canva sections, each exported as a separate image.
+- Design images are stored under /design/sections:
+  - 01.png
+  - 02.png
+  - 03.png
+  - 04.png
+  - 05.png
+  - 06.png
+  - 07.png
+  - 08.png
+  - 09.png
+  - 10.png
+
+Tech / files:
+- Next.js App Router.
+- Main page: app/landing-page/page.tsx
+- Styling: Tailwind CSS only (no new SCSS).
+- Typography system (MUST be reused everywhere)
+  (these classes are defined in globals.css using Tailwind @apply with Montserrat.)
+
+General rules:
+- Full-width sections, content centered in a max-width container.
+- Each section should visually match its design image as closely as practical on desktop.
+- When I say "use the existing text styles", that means:
+  - Section titles use .text-heading-2 (or the equivalent Tailwind utilities we defined).
+  - Body copy uses .text-body.
+- Only modify the section I mention by name (e.g. section 3: .landing__three-layer).
+- No JavaScript or interactivity, layout with Tailwind utilities.
