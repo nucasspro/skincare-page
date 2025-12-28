@@ -53,7 +53,7 @@ function BenefitItem({ imageSrc, text }: BenefitItemProps) {
                     unoptimized
                 />
             </div>
-            <p className="text-body-subtitle text-center md:text-left leading-relaxed px-4 md:px-0 md:pr-30">
+            <p className="text-body text-center md:text-left px-4 md:px-0 md:pr-30">
                 {text}
             </p>
         </div>
@@ -508,7 +508,7 @@ export default function LandingPage() {
             <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
               <h3 className="text-body !font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
               <p className="text-body">
-                PDRN giúp kích thích quá trình tái tạo tế bào da, làm lành các tổn thương và cải thiện kết cấu da từ bên trong.
+                Kích thích sự tăng sinh của tế bào sừng và nguyên bào sợi, giúp phục hồi da bị tổn thương.
               </p>
             </div>
           </div>
@@ -529,7 +529,7 @@ export default function LandingPage() {
             <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-1">
               <h3 className="text-body !font-semibold mb-4">Cải thiện độ đàn hồi</h3>
               <p className="text-body">
-                Thành phần PDRN giúp tăng cường sản xuất collagen và elastin, mang lại làn da săn chắc và đàn hồi hơn.
+                Tăng khả năng sống của tế bào và giảm thiểu tác hại oxy hóa, hỗ trợ củng cố hàng rào da.
               </p>
             </div>
           </div>
@@ -557,25 +557,24 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Section 6: 3C Công dụng "Không tưởng" */}
+      <section className="relative py-[120px] px-10">
+        {/* Cloud background for this section */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <Image
+            src="/landing-page/PAGE 5/MÂY BACKGROUND.png"
+            alt="Cloud background"
+            fill
+            className="object-cover"
+            quality={100}
+            priority
+            unoptimized
+          />
+        </div>
 
-
-
-      <section className="py-[120px] px-10">
-        <div className="w-full max-w-[1600px] mx-auto px-4 md:px-[1.1vw] text-center">
-
-          {/* Background Image */}
-          <div className="hidden md:block absolute inset-0 z-0">
-              <Image
-                  src="/landing-page/PAGE 6/BACKGROUND.png"
-                  alt=""
-                  fill
-                  className="object-cover"
-                  quality={100}
-                  unoptimized
-              />
-          </div>
-
-            <div className="max-w-full md:max-w-[100vw] mx-auto px-0 md:px-[1.1vw] relative z-10">
+        {/* Content wrapper */}
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 md:px-[1.1vw] text-center">
+            <div className="max-w-full md:max-w-[100vw] mx-auto px-0 md:px-[1.1vw] relative">
               {/* Container with 3C, Header and BenefitsContainer - All same width */}
               <div className="max-w-full md:max-w-[100vw] relative">
                 {/* Large "3C" - On top, hidden on mobile */}
@@ -622,8 +621,22 @@ export default function LandingPage() {
       </section>
 
       {/* Section 7: Deep Protection & Nourishment */}
-      <section className="landing__deep-protection w-full py-[120px] px-10">
-        <div className="w-full max-w-[1400px] mx-auto relative">
+      <section className="landing__deep-protection relative w-full py-[120px] px-10">
+        {/* Cloud background for this section - different scale and position */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <Image
+            src="/landing-page/PAGE 5/MÂY BACKGROUND.png"
+            alt="Cloud background"
+            fill
+            className="object-cover object-center md:object-right-top"
+            style={{ transform: 'scale(1.8)' }}
+            quality={100}
+            priority
+            unoptimized
+          />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto">
           {/* Floating mask image - positioned above and to the left of card */}
           <div className="hidden md:block absolute -top-34 -left-34 z-10 w-[500px] h-auto">
             <Image
