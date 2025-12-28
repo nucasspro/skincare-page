@@ -626,7 +626,7 @@ export default function LandingPage() {
       <section className="landing__deep-protection w-full py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto relative">
           {/* Floating mask image - positioned above and to the left of card */}
-          <div className="absolute -top-34 -left-34 z-10 w-[500px] h-auto">
+          <div className="hidden md:block absolute -top-34 -left-34 z-10 w-[500px] h-auto">
             <Image
               src="/landing-page/PAGE 7/42.png"
               alt="Floating mask"
@@ -639,20 +639,23 @@ export default function LandingPage() {
           </div>
 
           {/* Main card */}
-          <div className="relative bg-[#E1F5FF] rounded-[40px] p-12 mt-32 flex">
+          <div className="relative bg-[#E1F5FF] rounded-[40px] p-6 md:p-12 mt-8 md:mt-32 flex flex-col md:flex-row">
             {/* Left column - 40% for big title */}
-            <div className="basis-2/5 flex-shrink-0 flex items-center justify-center">
-              <h2 className="text-heading-2 font-bold uppercase text-center text-[#2F5C91] leading-tight">
-                BẢO VỆ<br />
-                CHUYÊN SÂU VÀ<br />
-                NUÔI DƯỠNG<br />
-                CHỈ TRONG<br />
-                1 BƯỚC
+            <div className="basis-2/5 flex-shrink-0 flex items-center justify-center order-1 md:order-none mb-6 md:mb-0">
+              <h2 className="text-heading-2 text-center">
+                <span className="md:hidden">BẢO VỆ CHUYÊN SÂU VÀ NUÔI DƯỠNG CHỈ TRONG 1 BƯỚC</span>
+                <span className="hidden md:block">
+                  BẢO VỆ<br />
+                  CHUYÊN SÂU VÀ<br />
+                  NUÔI DƯỠNG<br />
+                  CHỈ TRONG<br />
+                  1 BƯỚC
+                </span>
               </h2>
             </div>
 
             {/* Right column - 60% for detailed content */}
-            <div className="basis-3/5 flex-shrink-0 flex flex-col gap-8 pl-8 ">
+            <div className="basis-3/5 flex-shrink-0 flex flex-col gap-6 md:gap-8 pl-0 md:pl-8 order-2 md:order-none text-left">
               <div className="flex flex-col gap-4">
                 <h3 className="text-body !font-bold">
                   4 MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI
