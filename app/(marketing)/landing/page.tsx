@@ -2,6 +2,7 @@
 
 import { Star } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from "react";
 import { MontserratFont, QuicksandFont } from '../../fonts';
 
@@ -13,7 +14,7 @@ interface BenefitsContainerProps {
 function BenefitsContainer({ items, backgroundImage }: BenefitsContainerProps) {
     return (
         <div className="relative rounded-[3rem] md:p-10 space-y-16 mb-10">
-            <div className="absolute inset-0 z-0">
+            <div className="hidden md:block absolute inset-0 z-0">
                 <Image
                     src={backgroundImage}
                     alt=""
@@ -40,8 +41,8 @@ interface BenefitItemProps {
 
 function BenefitItem({ imageSrc, text }: BenefitItemProps) {
     return (
-        <div className="flex flex-col md:flex-row gap-8 items-center max-w-[90%] mx-auto my-4">
-            <div className="w-24 h-24 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center max-w-full md:max-w-[90%] mx-auto my-4">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
                 <Image
                     src={imageSrc}
                     alt=""
@@ -52,13 +53,12 @@ function BenefitItem({ imageSrc, text }: BenefitItemProps) {
                     unoptimized
                 />
             </div>
-            <p className="text-body-subtitle text-left leading-relaxed pr-30">
+            <p className="text-body-subtitle text-center md:text-left leading-relaxed px-4 md:px-0 md:pr-30">
                 {text}
             </p>
         </div>
     )
 }
-
 
 interface StepProps {
     imageSrc: string
@@ -84,7 +84,6 @@ function Step({ imageSrc, alt, text }: StepProps) {
         </div>
     )
 }
-
 
 interface StarRatingProps {
     rating: number
@@ -151,8 +150,6 @@ function ReviewCard({ rating, review, author, date }: ReviewCardProps) {
         </div>
     )
 }
-
-
 
 interface StatsBarItemProps {
     label: string
@@ -415,12 +412,12 @@ export default function LandingPage() {
           </div>
 
           {/* CTA Button */}
-          <button className="mb-10 mt-6 relative group w-[200px] h-[48px] md:w-[20.8vw] md:h-[3.9vw] rounded-full bg-[#CFE5F5] border-[2px] md:border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform">
+          <Link href="/" className="mb-10 mt-6 relative group w-[200px] h-[48px] md:w-[20.8vw] md:h-[3.9vw] rounded-full bg-[#CFE5F5] border-[2px] md:border-[0.14vw] border-[#2F5C91] shadow-lg overflow-hidden transition-transform flex items-center justify-center">
               <div className="absolute inset-[2px] md:inset-[0.2vw] border-[2px] md:border-[0.14vw] border-white rounded-full pointer-events-none"></div>
-              <span className="relative z-10 text-[#2F5C91] font-bold text-[14px] md:text-[clamp(10px,1.4vw,20px)] uppercase">
+              <span className="relative z-10 text-body-large !font-bold">
                   Xem thêm
               </span>
-          </button>
+          </Link>
 
           {/* Model Image */}
           { /* TODO: longdang - Dung sai hinh */}
@@ -509,7 +506,6 @@ export default function LandingPage() {
               />
             </div>
             <div className="flex-1 p-6 md:p-10 flex flex-col justify-center order-2 md:order-none">
-              {/* // TODO: longdang - In đậm h3 */}
               <h3 className="text-body !font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
               <p className="text-body">
                 PDRN giúp kích thích quá trình tái tạo tế bào da, làm lành các tổn thương và cải thiện kết cấu da từ bên trong.
@@ -565,62 +561,65 @@ export default function LandingPage() {
 
 
       <section className="py-[120px] px-10">
-                <div className="w-full max-w-[1600px] mx-auto px-[1.1vw] text-center">
+        <div className="w-full max-w-[1600px] mx-auto px-4 md:px-[1.1vw] text-center">
 
-                    {/* Background Image */}
-                    <div className="absolute inset-0 z-0">
-                        <Image
-                            src="/landing-page/PAGE 6/BACKGROUND.png"
-                            alt=""
-                            fill
-                            className="object-cover"
-                            quality={100}
-                            unoptimized
-                        />
-                    </div>
+          {/* Background Image */}
+          <div className="hidden md:block absolute inset-0 z-0">
+              <Image
+                  src="/landing-page/PAGE 6/BACKGROUND.png"
+                  alt=""
+                  fill
+                  className="object-cover"
+                  quality={100}
+                  unoptimized
+              />
+          </div>
 
-                    <div className="max-w-[100vw] mx-auto px-[1.1vw] relative z-10">
-                        {/* Container with 3C, Header and BenefitsContainer - All same width */}
-                        <div className="max-w-[100vw] relative">
-                            {/* Large "3C" - On top */}
-                            <div className="absolute top-[5.5vw] left-[-2vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '17.7vw' }}>
-                                3
-                            </div>
-                            <div className="absolute top-[8.8vw] left-[8vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '9vw' }}>
-                                C
-                            </div>
-
-                            {/* Header - On top, below 3C */}
-                            <div className="relative z-20 top-[1.1vw] left-[15.2vw] mb-[4.4vw] pt-[8.8vw]">
-                                <h2 className="text-left font-heading uppercase tracking-tight" style={{ fontSize: 'clamp(16px, 2.4vw, 35px)' }}>
-                                    <span className="text-body-large text-[#2F5C91]">ÔNG DỤNG “KHÔNG TƯỞNG”</span>
-                                    <br />
-                                    <span className="text-body-large !font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
-                                </h2>
-                            </div>
-
-                            {/* BenefitsContainer - Background below */}
-                            <BenefitsContainer
-                                backgroundImage="/landing-page/PAGE 6/35.png"
-                                items={[
-                                    {
-                                        imageSrc: "/landing-page/PAGE 6/36.png",
-                                        text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
-                                    },
-                                    {
-                                        imageSrc: "/landing-page/PAGE 6/37.png",
-                                        text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
-                                    },
-                                    {
-                                        imageSrc: "/landing-page/PAGE 6/38.png",
-                                        text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
-                                    }
-                                ]}
-                            />
-                        </div>
-                    </div>
+            <div className="max-w-full md:max-w-[100vw] mx-auto px-0 md:px-[1.1vw] relative z-10">
+              {/* Container with 3C, Header and BenefitsContainer - All same width */}
+              <div className="max-w-full md:max-w-[100vw] relative">
+                {/* Large "3C" - On top, hidden on mobile */}
+                <div className="hidden md:block absolute top-[5.5vw] left-[-2vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '17.7vw' }}>
+                    3
                 </div>
-            </section>
+                <div className="hidden md:block absolute top-[8.8vw] left-[8vw] text-[#3a76a5] leading-none select-none pointer-events-none z-20" style={{ fontFamily: 'Montserrat', fontWeight: '900', fontSize: '9vw' }}>
+                    C
+                </div>
+
+                {/* Header - On top, below 3C */}
+                <div className="relative z-20 mb-6 md:mb-[4.4vw] pt-0 md:pt-[8.8vw] md:top-[1.1vw] md:left-[15.2vw]">
+                    <h2 className="text-heading-2 text-center md:text-left">
+                        <span className="md:hidden">3C CÔNG DỤNG "KHÔNG TƯỞNG" CỦA CELLIC MATTE SUNSCREEN</span>
+                        <span className="hidden md:block">
+                            <span className="text-body-large text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
+                            <br />
+                            <span className="text-body-large !font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
+                        </span>
+                    </h2>
+                </div>
+
+                {/* BenefitsContainer - Background below */}
+                <BenefitsContainer
+                    backgroundImage="/landing-page/PAGE 6/35.png"
+                    items={[
+                        {
+                            imageSrc: "/landing-page/PAGE 6/36.png",
+                            text: "Chống nắng đạt chuẩn SPF 50+ PA++++, kiềm dầu suốt 8h và cân bằng hệ vi sinh da, duy trì hàng rào bảo vệ tự nhiên."
+                        },
+                        {
+                            imageSrc: "/landing-page/PAGE 6/37.png",
+                            text: "Hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng và nâng tone mịn đẹp."
+                        },
+                        {
+                            imageSrc: "/landing-page/PAGE 6/38.png",
+                            text: "Công thức chứa PDRN thực vật củng cố và giúp da được nuôi dưỡng ở cấp độ tế bào trong 1 bước chống nắng.  "
+                        }
+                    ]}
+                />
+              </div>
+            </div>
+        </div>
+      </section>
 
       {/* Section 7: Deep Protection & Nourishment */}
       <section className="landing__deep-protection w-full py-[120px] px-10">
