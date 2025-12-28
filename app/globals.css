@@ -324,4 +324,8 @@ select::-webkit-scrollbar-thumb:hover {
     font-family: var(--font-montserrat), sans-serif;
     @apply text-[18px] md:text-[24px] font-semibold leading-[1.4] text-[#3a76a5] text-center;
   }
+
+  .font-quicksand {
+    font-family: var(--font-quicksand), sans-serif;
+  }
 }
