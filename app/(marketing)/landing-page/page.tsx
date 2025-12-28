@@ -145,7 +145,7 @@ function ReviewCard({ rating, review, author, date }: ReviewCardProps) {
                 {review}
             </p>
             <div className="flex justify-between items-center pt-4">
-                <span className="text-body-subtitle font-semibold fo">{author}</span>
+                <span className="text-body-subtitle !font-semibold fo">{author}</span>
                 <span className="text-body-subtitle">{date}</span>
             </div>
         </div>
@@ -183,8 +183,8 @@ function StatsBarItem({ label, percentage, color, index, hoveredIndex, hoveredPa
     return (
         <div className="flex items-center gap-4">
             <span
-                className="text-slate-500 whitespace-nowrap flex-shrink-0 w-24 text-right transition-opacity duration-200"
-                style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px', opacity }}
+                className="text-slate-500 whitespace-nowrap flex-shrink-0 w-24 text-right"
+                style={{ fontFamily: QuicksandFont.style.fontFamily, fontSize: '22.3px' }}
             >
                 {label}
             </span>
@@ -354,15 +354,15 @@ export default function LandingPage() {
       {/* Section 2: New Generation Sunscreen */}
       <section className="w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-center">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-20">
-          <div className="text-center flex flex-col gap-5">
+          <div className="text-center flex flex-col gap-4">
             <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
             <p className="text-body-large">THẤU HIỂU VÀ ĐỒNG HÀNH CÙNG LÀN DA VIỆT</p>
           </div>
           <div className="w-full flex items-center justify-center gap-20">
-            <div className="flex-none flex flex-col gap-4 text-left">
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">PDRN</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">LÀNH TÍNH<br />DỊU NHẸ</p>
+            <div className="flex-none flex flex-col gap-10 text-center">
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">4 MÀNG LỌC<br />THẾ HỆ MỚI</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PDRN</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">LÀNH TÍNH<br />DỊU NHẸ</p>
             </div>
             <div className="relative flex-none flex items-center justify-center w-[550px] h-[550px]">
               <Image
@@ -384,10 +384,10 @@ export default function LandingPage() {
                 unoptimized
               />
             </div>
-            <div className="flex-none flex flex-col gap-4 text-right">
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">KIỀM DẦU SUỐT 8H</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">NÂNG TONE<br />TỰ NHIÊN</p>
-              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1 text-center">PHỤC HỒI<br />TỔN THƯƠNG</p>
+            <div className="flex-none flex flex-col gap-10 text-center">
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">KIỀM DẦU SUỐT 8H</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">NÂNG TONE<br />TỰ NHIÊN</p>
+              <p className="text-[32px] font-bold text-[#3a76a5] flex-shrink-0 leading-[1.2] flex-1">PHỤC HỒI<br />TỔN THƯƠNG</p>
             </div>
           </div>
         </div>
@@ -424,6 +424,7 @@ export default function LandingPage() {
             </button>
 
           {/* Model Image */}
+          { /* TODO: longdang - Dung sai hinh */}
           <div className="w-full flex justify-center">
             <Image
               src="/landing-page/PAGE 3/20.png"
@@ -447,7 +448,7 @@ export default function LandingPage() {
             <div className="basis-4/5 flex-shrink-0 relative">
 
               {/* Background Card */}
-              <div className="bg-gradient-to-b from-[#BEE3F8] to-[#FFFFFF] rounded-[60px] p-12 flex relative z-0">
+              <div className="bg-gradient-to-b from-[#D4E2EA] to-[#E9F2F6] rounded-[60px] p-12 flex relative z-0">
                 <div className="basis-1/3 flex-shrink-0"></div>
                 <div className="basis-2/3 flex-shrink-0 flex flex-col gap-8">
                   <h2 className="text-heading-2 text-left text-align-left">THÀNH PHẦN</h2>
@@ -496,7 +497,7 @@ export default function LandingPage() {
           <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
 
           {/* Row 1: Image LEFT, Text RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
             <div className="w-1/3 h-[300px] flex-shrink-0">
               <Image
                 src="/landing-page/PAGE 5/31.png"
@@ -510,7 +511,7 @@ export default function LandingPage() {
             </div>
             <div className="flex-1 p-10 flex flex-col justify-center">
               {/* // TODO: longdang - In đậm h3 */}
-              <h3 className="text-body font-semibold mb-4">Hỗ trợ tái tạo tế bào da</h3>
+              <h3 className="text-body mb-4">Hỗ trợ tái tạo tế bào da</h3>
               <p className="text-body">
                 PDRN giúp kích thích quá trình tái tạo tế bào da, làm lành các tổn thương và cải thiện kết cấu da từ bên trong.
               </p>
@@ -518,7 +519,7 @@ export default function LandingPage() {
           </div>
 
           {/* Row 2: Text LEFT, Image RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
             <div className="flex-1 p-10 flex flex-col justify-center">
               {/* // TODO: longdang - In đậm h3 */}
               <h3 className="text-body font-semibold text-[20px] text-[#3a76a5] mb-4">Cải thiện độ đàn hồi</h3>
@@ -540,7 +541,7 @@ export default function LandingPage() {
           </div>
 
           {/* Row 3: Image LEFT, Text RIGHT */}
-          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#BEE3F8] to-[#E8F4F8]">
+          <div className="w-full flex overflow-hidden bg-gradient-to-b from-[#8ACBE2] to-[#A2D6E6]">
             <div className="w-1/3 h-[300px] flex-shrink-0">
               <Image
                 src="/landing-page/PAGE 5/33.png"
@@ -595,9 +596,9 @@ export default function LandingPage() {
                             {/* Header - On top, below 3C */}
                             <div className="relative z-20 top-[1.1vw] left-[15.2vw] mb-[4.4vw] pt-[8.8vw]">
                                 <h2 className="text-left font-heading uppercase tracking-tight" style={{ fontSize: 'clamp(16px, 2.4vw, 35px)' }}>
-                                    <span className="font-normal text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
+                                    <span className="text-body-large text-[#2F5C91]">ÔNG DỤNG “KHÔNG TƯỞNG”</span>
                                     <br />
-                                    <span className="font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
+                                    <span className="text-body-large !font-bold text-[#2F5C91]">CỦA CELLIC MATTE SUNSCREEN</span>
                                 </h2>
                             </div>
 
@@ -654,50 +655,45 @@ export default function LandingPage() {
             </div>
 
             {/* Right column - 60% for detailed content */}
-            <div className="basis-3/5 flex-shrink-0 flex flex-col gap-8 pl-8">
-              {/* 4 MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI */}
+            <div className="basis-3/5 flex-shrink-0 flex flex-col gap-8 pl-8 ">
               <div className="flex flex-col gap-4">
-                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
+                <h3 className="text-body !font-bold">
                   4 MÀNG LỌC CHỐNG NẮNG HIỆN ĐẠI
                 </h3>
-                <p className="text-body text-[#333333]">
+                <p className="text-body">
                   Với 2 màng lọc <strong>Ultrafine Titanium Dioxide & Nano Zinc Oxide</strong> chống nắng thế hệ mới mang lại hiệu quả bảo vệ đa tầng
                 </p>
-                <div className="flex flex-col gap-2 mt-2">
+                <div className="flex flex-col">
                   <div className="flex gap-3 items-start">
-                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">1.</span>
-                    <p className="text-body text-[#333333] flex-1">Bảo vệ da trước tác động của tia UVA, UVB, HEV.</p>
+                    <span className="text-body font-bold flex-shrink-0">1.</span>
+                    <p className="text-body flex-1">Bảo vệ da trước tác động của tia UVA, UVB, HEV.</p>
                   </div>
                   <div className="flex gap-3 items-start">
-                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">2.</span>
-                    <p className="text-body text-[#333333] flex-1">Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
+                    <span className="text-body font-bold flex-shrink-0">2.</span>
+                    <p className="text-body flex-1">Bảo vệ khỏi tác động từ ô nhiễm môi trường và bụi mịn</p>
                   </div>
                   <div className="flex gap-3 items-start">
-                    <span className="text-body font-bold text-[#3a76a5] flex-shrink-0">3.</span>
-                    <p className="text-body text-[#333333] flex-1">Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
+                    <span className="text-body font-bold flex-shrink-0">3.</span>
+                    <p className="text-body flex-1">Bảo vệ song song nuôi dưỡng hệ vi sinh</p>
                   </div>
                 </div>
               </div>
 
-              {/* CÔNG NGHỆ SMART OIL CONTROL KẾT HỢP */}
-              <div className="flex flex-col gap-4">
-                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
-                  CÔNG NGHỆ SMART OIL CONTROL KẾT HỢP
-                </h3>
-                <h4 className="text-body font-semibold text-[18px] text-[#3a76a5]">
+              <div className="flex flex-col">
+                <h3 className="text-body !font-bold">
+                  CÔNG NGHỆ SMART OIL CONTROL KẾT HỢP <br/>
                   CÔNG NGHỆ HẠT NANO
-                </h4>
-                <p className="text-body text-[#333333]">
+                </h3>
+                <p className="text-body">
                   Duy trì cảm giác thoáng da - ráo mặt - không bóng nhờn suốt 8 giờ. Tạo hiệu ứng soft focus, che phủ khuyết điểm nhẹ nhàng, cho Finish mỏng nhẹ, mịn đẹp.
                 </p>
               </div>
 
-              {/* CÔNG NGHỆ MICROBIOME */}
-              <div className="flex flex-col gap-4">
-                <h3 className="text-body font-semibold text-[20px] text-[#3a76a5]">
+              <div className="flex flex-col">
+                <h3 className="text-body !font-bold">
                   CÔNG NGHỆ MICROBIOME
                 </h3>
-                <p className="text-body text-[#333333]">
+                <p className="text-body">
                   Làm dịu và cân bằng hệ vi sinh, bảo vệ làn da nhạy cảm
                 </p>
               </div>
@@ -711,7 +707,6 @@ export default function LandingPage() {
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-16">
           <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
 
-          {/* Bordered box container - relative for absolute positioning of image */}
           <div className="relative w-full border-2 border-[#3a76a5] rounded-[40px] p-12 min-h-[500px] flex items-center mt-30">
             {/* Lab report image - positioned to overlap left side of border */}
             <div className="absolute -left-8 -top-[50] z-10 w-[500px] h-auto">
@@ -728,8 +723,8 @@ export default function LandingPage() {
 
             {/* Right content - text description */}
             <div className="ml-[480px] flex-1 flex items-center">
-              <p className="text-body text-[#333333] leading-relaxed">
-                Phiếu kết quả thử nghiệm được Viện nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín và chất lượng của sản phẩm BRIGHT MATTE SUNSCREEN với chỉ số chống nắng SPF 50+ và PA++++.
+              <p className="text-body leading-relaxed">
+                Phiếu kết quả thử nghiệm  được Viện nghiên cứu và phát triển sản phẩm thiên nhiên cấp vào ngày 28/10/2025, đảm bảo uy tín
               </p>
             </div>
           </div>
@@ -772,19 +767,19 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row gap-8">
               <ReviewCard
                 rating={5}
-                review="Tone lên nhẹ, hợp dùng buổi sáng đi làm. Da mình hơi xỉn nên rất thích kiểu nâng tone nhẹ như em này. Không bị trắng bệch như mấy dòng Hàn, mà sáng kiểu tự nhiên, kiểu healthy skin. Mình hay makeup nhẹ sau đó, lớp nền bám khá ổn."
+                review="Tone lên nhẹ, hợp dùng buổi sáng đi làm. Da mình hơi xỉn nên rất thích kiểu nâng tone nhẹ như em này. Không bị trắng bệch như mấy dòng Hàn, mà sáng kiểu tự nhiên, kiểu healthy skin. Mình hay makeup nhẹ sau đó, lớp nền bám khá ổn. Nếu Cellic có thêm phiên bản chống nước thì chắc mình chấm 5 sao luôn."
                 author="Kiều Oanh"
                 date="1 tuần trước"
               />
               <ReviewCard
                 rating={4.5}
-                review="Tốt nhưng nên cải thiện tốc độ thấm. Chống nắng ổn, không bị rát da khi ra nắng gắt, mà da cũng đỡ đổ dầu hơn. Tuy nhiên lúc mới bôi thì hơi dính nhẹ tầm 1-2 phút đầu mới set hẳn. Dù vậy, tổng thể rất đáng tiền."
+                review="Tốt nhưng nên cải thiện tốc độ thấm. Chống nắng ổn, không bị rát da khi ra nắng gắt, mà da cũng đỡ đổ dầu hơn. Tuy nhiên lúc mới bôi thì hơi dính nhẹ tầm 1-2 phút đầu mới set hẳn. Dù vậy, tổng thể rất đáng tiền, đặc biệt là vì cảm giác dịu nhẹ không gây kích ứng."
                 author="Thảo Trang"
                 date="1 tháng trước"
               />
               <ReviewCard
                 rating={5}
-                review="Finish đẹp, mịn lì mà vẫn ẩm nhẹ. Ấn tượng đầu tiên là chất kem mịn, tán ra mượt, không để lại vệt trắng. Da mình dầu vùng T nhưng dùng cả buổi vẫn thấy kiềm dầu tốt. Mùi dễ chịu, kiểu rất nhẹ."
+                review="Finish đẹp, mịn lì mà vẫn ẩm nhẹ. Ấn tượng đầu tiên là chất kem mịn, tán ra mượt, không để lại vệt trắng. Da mình dầu vùng T nhưng dùng cả buổi vẫn thấy kiềm dầu tốt, không bị loang như mấy loại trước. Mùi dễ chịu, kiểu rất nhẹ. Mình chỉ mong hãng ra thêm bản lớn để xài được lâu hơn."
                 author="Diệu Linh"
                 date="3 tuần trước"
               />
@@ -816,7 +811,7 @@ export default function LandingPage() {
               unoptimized
             />
           </div>
-          <div className="w-full bg-gradient-to-b from-[#BEE3F8] to-white rounded-[80px] py-[70px] px-20 flex flex-col items-center gap-[30px]">
+          <div className="w-full bg-gradient-to-b from-[#9ED4E5] to-[#F1F8FB] rounded-[80px] py-[70px] px-20 flex flex-col items-center gap-[30px]">
             <h2 className="text-heading-2">CÂU CHUYỆN THƯƠNG HIỆU</h2>
             <p className="text-body-large text-center max-w-[850px]">
               Sự kết hợp giữa "Cell" (Tế bào) và "Clinic" (Phòng khám) với triết lý chăm sóc da từ cấp độ tế bào bằng nền tảng khoa học y học chuẩn xác. Với sự thấu hiểu sâu sắc về làn da của người Việt, Cellic là nơi khoa học gặp gỡ sự yêu thương, nơi mỗi công thức không chỉ hiệu quả, mà còn mang lại sự an tâm trọn vẹn.
