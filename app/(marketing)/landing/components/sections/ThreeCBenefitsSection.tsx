@@ -5,7 +5,7 @@ import BenefitsContainer from './BenefitsContainer';
 
 export default function ThreeCBenefitsSection() {
   return (
-    <section className="relative py-[120px] px-10">
+    <section className="relative py-[60px] md:py-[120px] px-10">
       {/* Cloud background for this section */}
       <CloudBackground imageSrc="/landing-page/PAGE 5/MÂY BACKGROUND.png" />
 

@@ -6,7 +6,7 @@ import NumberedList from '../ui/NumberedList';
 
 export default function DeepProtectionSection() {
   return (
-    <section className="landing__deep-protection relative w-full py-[120px] px-10">
+    <section className="landing__deep-protection relative w-full py-[10px] md:py-[120px] px-10">
       {/* Cloud background for this section - different scale and position */}
       <CloudBackground
         imageSrc="/landing-page/PAGE 5/MÂY BACKGROUND.png"

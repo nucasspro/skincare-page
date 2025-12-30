@@ -9,7 +9,7 @@ export default function TestReportSection() {
 
   return (
     <>
-      <section className="landing__lab-report w-full py-[120px] px-10">
+      <section className="landing__lab-report w-full py-[60px] md:py-[120px] px-10">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-8 md:gap-16">
           <h2 className="text-heading-2 text-center">PHIẾU KIỂM NGHIỆM</h2>
 

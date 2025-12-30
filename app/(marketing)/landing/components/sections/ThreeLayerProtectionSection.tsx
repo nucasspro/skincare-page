@@ -6,7 +6,7 @@ import NumberedList from '../ui/NumberedList';
 
 export default function ThreeLayerProtectionSection() {
   return (
-    <section className="landing__three-layer w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-y snap-mandatory">
+    <section className="landing__three-layer w-full min-h-screen py-[60px] md:py-[120px] px-10 flex items-center justify-center snap-y snap-mandatory">
       <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center">
         {/* Title */}
         <h2 className="text-heading-2 mb-10 text-center">TÍNH NĂNG BẢO VỆ 3 LỚP TOÀN DIỆN</h2>

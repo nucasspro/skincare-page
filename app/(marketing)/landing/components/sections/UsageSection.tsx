@@ -4,7 +4,7 @@ import Step from '../ui/Step';
 
 export default function UsageSection() {
   return (
-    <section className="landing__usage w-full py-[120px] px-10">
+    <section className="landing__usage w-full py-[60px] md:py-[120px] px-10">
       <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-12">
         <h2 className="text-heading-2 text-center">HƯỚNG DẪN SỬ DỤNG</h2>
 

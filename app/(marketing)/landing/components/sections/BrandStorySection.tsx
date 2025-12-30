@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function BrandStorySection() {
   return (
-    <section className="w-full min-h-screen py-[150px] px-10 flex items-center justify-center">
+    <section className="w-full min-h-screen py-[40px] md:py-[150px] px-10 flex items-center justify-center">
       <div className="w-full max-w-[1200px] mx-auto flex flex-col items-center gap-[50px]">
         <div className="w-full flex items-center justify-center m-0">
           <Image
