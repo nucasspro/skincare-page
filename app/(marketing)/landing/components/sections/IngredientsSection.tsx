@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function IngredientsSection() {
   return (
-    <section className="landing__ingredients w-full min-h-screen py-[120px] px-10 flex items-center justify-center relative overflow-hidden">
+    <section className="landing__ingredients w-full min-h-screen py-[60px] md:py-[120px] px-10 flex items-center justify-center relative overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto flex flex-col items-center gap-8 md:gap-12">
         {/* Header - outside card */}
         <h2 className="text-heading-2 text-center">THÀNH PHẦN</h2>

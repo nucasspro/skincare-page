@@ -1,11 +1,11 @@
 "use client";
 
-import BenefitsContainer from './BenefitsContainer';
 import CloudBackground from '../ui/CloudBackground';
+import BenefitsContainer from './BenefitsContainer';
 
 export default function ThreeCBenefitsSection() {
   return (
-    <section className="relative py-[120px] px-10">
+    <section className="relative py-[60px] md:py-[120px] px-10">
       {/* Cloud background for this section */}
       <CloudBackground imageSrc="/landing-page/PAGE 5/MÂY BACKGROUND.png" />
 
@@ -25,7 +25,7 @@ export default function ThreeCBenefitsSection() {
             {/* Header - On top, below 3C */}
             <div className="relative z-20 mb-6 md:mb-[4.4vw] pt-0 md:pt-[8.8vw] md:top-[1.1vw] md:left-[15.2vw]">
               <h2 className="text-heading-2 text-center md:text-left">
-                <span className="md:hidden">3C CÔNG DỤNG "KHÔNG TƯỞNG" CỦA CELLIC MATTE SUNSCREEN</span>
+                <span className="md:hidden">3 CÔNG DỤNG "KHÔNG TƯỞNG" CỦA CELLIC MATTE SUNSCREEN</span>
                 <span className="hidden md:block">
                   <span className="text-body-large text-[#2F5C91]">ÔNG DỤNG "KHÔNG TƯỞNG"</span>
                   <br />

@@ -5,7 +5,7 @@ import FeatureBadge from '../ui/FeatureBadge';
 
 export default function NewGenerationSection() {
   return (
-    <section className="w-full min-h-screen py-[120px] px-10 flex items-center justify-center snap-center">
+    <section className="w-full min-h-screen py-[60px] md:py-[120px] px-10 flex items-center justify-center snap-center">
       <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center gap-8 md:gap-45">
         <div className="text-center flex flex-col gap-4">
           <h2 className="text-heading-2">KEM CHỐNG NẮNG THẾ HỆ MỚI</h2>
