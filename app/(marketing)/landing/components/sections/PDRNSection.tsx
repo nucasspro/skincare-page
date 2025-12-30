@@ -4,7 +4,7 @@ import PDRNRow from '../ui/PDRNRow';
 
 export default function PDRNSection() {
   return (
-    <section className="landing__pdrn w-full py-[120px] px-10">
+    <section className="landing__pdrn w-full py-[120px] px-8 md:px-10">
       <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-4 md:gap-12">
         {/* Section Title */}
         <h2 className="text-heading-2 text-center">PDRN - CÓ THỂ BẠN CHƯA BIẾT?</h2>
