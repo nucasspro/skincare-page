@@ -47,12 +47,12 @@ export default function StatsGraph({ items }: StatsGraphProps) {
                 ))}
                 {/* Axis */}
                 <div className="flex pl-28 text-xs text-slate-500 justify-between pt-2">
-                    <span className="rotate-[-40deg] md:rotate-0 font-quicksand" style={{ fontSize: '22.3px' }}>0%</span>
-                    <span className="hidden md:inline font-quicksand" style={{ fontSize: '22.3px' }}>20%</span>
-                    <span className="rotate-[-40deg] md:rotate-0 font-quicksand" style={{ fontSize: '22.3px' }}>40%</span>
-                    <span className="hidden md:inline font-quicksand" style={{ fontSize: '22.3px' }}>60%</span>
-                    <span className="rotate-[-40deg] md:rotate-0 font-quicksand" style={{ fontSize: '22.3px' }}>80%</span>
-                    <span className="hidden md:inline font-quicksand" style={{ fontSize: '22.3px' }}>100%</span>
+                    <span className="font-quicksand text-[18px] md:text-[22.3px]">0%</span>
+                    <span className="hidden md:inline font-quicksand text-[18px] md:text-[22.3px]">20%</span>
+                    <span className="font-quicksand text-[18px] md:text-[22.3px]">40%</span>
+                    <span className="hidden md:inline font-quicksand text-[18px] md:text-[22.3px]">60%</span>
+                    <span className="font-quicksand text-[18px] md:text-[22.3px]">80%</span>
+                    <span className="font-quicksand text-[18px] md:text-[22.3px]">100%</span>
                 </div>
             </div>
         </div>
